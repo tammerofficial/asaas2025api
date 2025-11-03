@@ -1,0 +1,50 @@
+[2025-11-03 18:43:34] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:222)
+[stacktrace]
+#0 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(138): Illuminate\\Log\\LogManager->resolve(NULL, NULL)
+#1 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(125): Illuminate\\Log\\LogManager->get(NULL)
+#2 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(703): Illuminate\\Log\\LogManager->driver()
+#3 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(402): Illuminate\\Log\\LogManager->error('The \"/Users/ali...', Array)
+#4 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(365): Illuminate\\Foundation\\Exceptions\\Handler->reportThrowable(Object(Symfony\\Component\\Finder\\Exception\\DirectoryNotFoundException))
+#5 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(562): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(Symfony\\Component\\Finder\\Exception\\DirectoryNotFoundException))
+#6 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(146): Illuminate\\Foundation\\Http\\Kernel->reportException(Object(Symfony\\Component\\Finder\\Exception\\DirectoryNotFoundException))
+#7 /Users/alialalawi/Sites/localhost/asaas/index.php(69): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#8 {main}
+"} 
+[2025-11-03 18:43:34] laravel.ERROR: The "/Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/../../../../config" directory does not exist. {"exception":"[object] (Symfony\\Component\\Finder\\Exception\\DirectoryNotFoundException(code: 0): The \"/Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/../../../../config\" directory does not exist. at /Users/alialalawi/Sites/localhost/asaas/core/vendor/symfony/finder/Finder.php:646)
+[stacktrace]
+#0 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(192): Symfony\\Component\\Finder\\Finder->in('/Users/alialala...')
+#1 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(72): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->getBaseConfiguration()
+#2 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(39): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->loadConfigurationFiles(Object(Illuminate\\Foundation\\Application), Object(Illuminate\\Config\\Repository))
+#3 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(342): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->bootstrap(Object(Illuminate\\Foundation\\Application))
+#4 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(186): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#5 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(170): Illuminate\\Foundation\\Http\\Kernel->bootstrap()
+#6 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#7 /Users/alialalawi/Sites/localhost/asaas/index.php(69): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#8 {main}
+"} 
+[2025-11-03 19:27:17] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:222)
+[stacktrace]
+#0 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(138): Illuminate\\Log\\LogManager->resolve(NULL, NULL)
+#1 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(125): Illuminate\\Log\\LogManager->get(NULL)
+#2 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(703): Illuminate\\Log\\LogManager->driver()
+#3 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(403): Illuminate\\Log\\LogManager->error('Method Illumina...', Array)
+#4 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(366): Illuminate\\Foundation\\Exceptions\\Handler->reportThrowable(Object(BadMethodCallException))
+#5 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(562): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(BadMethodCallException))
+#6 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(146): Illuminate\\Foundation\\Http\\Kernel->reportException(Object(BadMethodCallException))
+#7 /Users/alialalawi/Sites/localhost/asaas/index.php(69): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#8 {main}
+"} 
+[2025-11-03 19:27:17] laravel.ERROR: Method Illuminate\Foundation\Application::runningInOctane does not exist. {"exception":"[object] (BadMethodCallException(code: 0): Method Illuminate\\Foundation\\Application::runningInOctane does not exist. at /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Macroable/Traits/Macroable.php:115)
+[stacktrace]
+#0 /Users/alialalawi/Sites/localhost/asaas/core/config/cache.php(24): Illuminate\\Foundation\\Application->__call('runningInOctane', Array)
+#1 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(97): require('/Users/alialala...')
+#2 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(97): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->Illuminate\\Foundation\\Bootstrap\\{closure}()
+#3 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(78): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->loadConfigurationFile(Object(Illuminate\\Config\\Repository), 'cache', '/Users/alialala...', Array)
+#4 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(39): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->loadConfigurationFiles(Object(Illuminate\\Foundation\\Application), Object(Illuminate\\Config\\Repository))
+#5 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(341): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->bootstrap(Object(Illuminate\\Foundation\\Application))
+#6 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(186): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#7 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(170): Illuminate\\Foundation\\Http\\Kernel->bootstrap()
+#8 /Users/alialalawi/Sites/localhost/asaas/core/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#9 /Users/alialalawi/Sites/localhost/asaas/index.php(69): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#10 {main}
+"} 
