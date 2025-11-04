@@ -50,6 +50,25 @@ deployment:
     - /bin/chown -R tammerify:tammerify $DEPLOYPATH/core/storage || true
     - /bin/chown -R tammerify:tammerify $DEPLOYPATH/core/bootstrap/cache || true
     
+    # Clear Laravel cache files that contain local paths
+    - /bin/rm -f $DEPLOYPATH/core/bootstrap/cache/config.php || true
+    - /bin/rm -f $DEPLOYPATH/core/bootstrap/cache/services.php || true
+    - /bin/rm -f $DEPLOYPATH/core/bootstrap/cache/routes.php || true
+    - /bin/rm -f $DEPLOYPATH/core/bootstrap/cache/packages.php || true
+    
+    # Recreate .gitkeep in bootstrap/cache after clearing cache
+    - /bin/touch $DEPLOYPATH/core/bootstrap/cache/.gitkeep || true
+    
+    # Clear framework cache files
+    - /bin/rm -rf $DEPLOYPATH/core/storage/framework/cache/data/* || true
+    - /bin/rm -rf $DEPLOYPATH/core/storage/framework/views/* || true
+    - /bin/rm -rf $DEPLOYPATH/core/storage/framework/sessions/* || true
+    
+    # Recreate .gitkeep files after clearing
+    - /bin/touch $DEPLOYPATH/core/storage/framework/cache/data/.gitkeep || true
+    - /bin/touch $DEPLOYPATH/core/storage/framework/views/.gitkeep || true
+    - /bin/touch $DEPLOYPATH/core/storage/framework/sessions/.gitkeep || true
+    
     # Protect sensitive files with .htaccess
     - /bin/echo "# Protect .env file" > $DEPLOYPATH/core/.htaccess
     - /bin/echo "<Files .env>" >> $DEPLOYPATH/core/.htaccess
