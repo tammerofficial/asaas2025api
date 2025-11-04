@@ -17,3 +17,7 @@ yarn-error.log
 **/caddy
 frankenphp
 frankenphp-worker.php
+
+# Laravel cache files (but keep .gitkeep)
+/bootstrap/cache/*
+!/bootstrap/cache/.gitkeep
