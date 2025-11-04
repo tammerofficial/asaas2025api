@@ -46,7 +46,13 @@ class TenantDashboardController extends Controller
         $total_admin = Admin::count();
         $total_user= User::count();
         $all_blogs = Blog::count();
-        $total_products = Product::count();;
+        
+        // Only get products count if tenant has products permission
+        $total_products = 0;
+        if (tenant_plan_sidebar_permission('products')) {
+            $total_products = Product::count();
+        }
+        
         $total_orders = ProductOrder::count();
         $total_sale = ProductOrder::where('payment_status', 'success')->sum('total_amount');
 //        $current_package = tenant()->payment_log;

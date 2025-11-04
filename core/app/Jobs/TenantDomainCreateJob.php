@@ -32,7 +32,7 @@ class TenantDomainCreateJob implements ShouldQueue
     public function handle()
     {
         $this->tenant->domains()->create([
-            'domain' => $this->tenant->getTenantKey().'.'.env('CENTRAL_DOMAIN')
+            'domain' => trim($this->tenant->getTenantKey().'.'.env('CENTRAL_DOMAIN'))
         ]);
     }
 }

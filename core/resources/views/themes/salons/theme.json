@@ -1,0 +1,48 @@
+{
+  "name": "Salons",
+  "slug": "salons",
+  "description": "Beauty & Personal Services Theme - Luxury experience focused on appointment booking",
+  "author": "TammerSaaS",
+  "version": "1.0.0",
+  "status": true,
+  "screenshot": [
+    {
+      "primary": "primary.jpg"
+    }
+  ],
+  "headerHook": [
+    {
+      "loadCoreStyle": {
+        "odometer": false,
+        "common": false,
+        "magnific-popup": false
+      },
+      "style": [
+        "salons"
+      ],
+      "rtl_style": [
+        "rtl"
+      ],
+      "script": [],
+      "blade": [],
+      "navbarArea": "navbar",
+      "breadcrumbArea": "breadcrumb"
+    }
+  ],
+  "footerHook": [
+    {
+      "loadCoreScript": {
+        "odometer": false,
+        "viewport.jquery": false,
+        "main": false
+      },
+      "style": [],
+      "script": [
+        "main",
+        "booking-calendar"
+      ],
+      "blade": [],
+      "widgetArea": "footer-salons"
+    }
+  ]
+}

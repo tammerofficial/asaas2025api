@@ -48,6 +48,9 @@
 
     @yield('style')
 
+    <!-- 🎯 Intro.js Tour Library (CDN) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+
     {!! \App\Services\AdminTheme\MetaDataHelpers::Init()->getThemesStyles(get_static_option('tenant_admin_dashboard_theme'),'header') !!}
     {{-- /* Load stylesheet from admin theme */  --}}
 

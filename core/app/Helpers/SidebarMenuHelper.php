@@ -963,18 +963,29 @@ class SidebarMenuHelper
             'icon' => 'mdi mdi-home menu-icon',
         ]);
 
+        // Admin Manage - مرتبط بـ products (إعدادات الأدمن مرتبطة بالمنتجات)
         if ($admin->hasRole('Super Admin')) {
-            $this->tenant_admin_manage_menus($menu_instance);
+            if (tenant_plan_sidebar_permission('products')) {
+                $this->tenant_admin_manage_menus($menu_instance);
+            }
         }
 
+        // Users/Customers Manage - مرتبط بـ products (التحكم بالعملاء مرتبط بالمنتجات)
         if ($admin->hasRole('Super Admin')) {
-            $this->tenant_users_manage_menus($menu_instance);
+            if (tenant_plan_sidebar_permission('products')) {
+                $this->tenant_users_manage_menus($menu_instance);
+            }
         }
 
-        $this->tenant_order_manage_settings_menus($menu_instance);
+        // Order Manage - مرتبط بـ products
+        if (tenant_plan_sidebar_permission('products')) {
+            $this->tenant_order_manage_settings_menus($menu_instance);
+        }
 
         if (isPluginActive('Product')) {
-            $this->tenant_product_settings_menus($menu_instance);
+            if (tenant_plan_sidebar_permission('products')) {
+                $this->tenant_product_settings_menus($menu_instance);
+            }
         }
         if (isPluginActive('DigitalProduct')) {
             if (tenant_plan_sidebar_permission('digital_product')) {
@@ -983,29 +994,52 @@ class SidebarMenuHelper
         }
 
         if (isPluginActive('Attributes')) {
-            $this->tenant_attribute_settings_menus($menu_instance);
+            if (tenant_plan_sidebar_permission('products')) {
+                $this->tenant_attribute_settings_menus($menu_instance);
+            }
         }
 
-        $this->tenant_country_settings_menus($menu_instance);
+        // Country - مرتبط بـ products
+        if (tenant_plan_sidebar_permission('products')) {
+            $this->tenant_country_settings_menus($menu_instance);
+        }
 
-        $this->tenant_shipping_settings_menus($menu_instance);
+        // Shipping - مرتبط بـ shippingplugin
+        if (tenant_plan_sidebar_permission('shippingplugin')) {
+            $this->tenant_shipping_settings_menus($menu_instance);
+        }
 
         //        new product manage menu
-        $this->tenant_product_manage_menus($menu_instance);
+        if (tenant_plan_sidebar_permission('products')) {
+            $this->tenant_product_manage_menus($menu_instance);
+        }
 
-        $this->tenant_sales_report_settings_menus($menu_instance);
+        // Sales Report - مرتبط بـ products
+        if (tenant_plan_sidebar_permission('products')) {
+            $this->tenant_sales_report_settings_menus($menu_instance);
+        }
 
-        $this->tenant_pages_settings_menus($menu_instance);
+        // Pages - مرتبط بـ pages
+        if (tenant_plan_sidebar_permission('pages')) {
+            $this->tenant_pages_settings_menus($menu_instance);
+        }
         // all plugin:
 //        $this->tenant_all_plugin_menus($menu_instance);
 
-        $this->tenant_form_builder_settings_menus($menu_instance);
+        // Form Builder - مرتبط بـ pages (عادة)
+        if (tenant_plan_sidebar_permission('pages')) {
+            $this->tenant_form_builder_settings_menus($menu_instance);
+        }
 
         if (isPluginActive('SupportTicket')) {
-            $this->tenant_support_ticket_settings_menus($menu_instance);
+            if (tenant_plan_sidebar_permission('support_ticket')) {
+                $this->tenant_support_ticket_settings_menus($menu_instance);
+            }
         }
         if (isPluginActive('Blog')) {
-            $this->tenant_blog_settings_menus($menu_instance);
+            if (tenant_plan_sidebar_permission('blog')) {
+                $this->tenant_blog_settings_menus($menu_instance);
+            }
         }
         // External Menu Render
         foreach (getAllExternalMenu() as $externalMenu) {
@@ -1049,23 +1083,82 @@ class SidebarMenuHelper
                 }
                 if (isPluginActive('ShippingPlugin')
                     && str_contains($convert_to_array['id'], 'shipping-')) {
+                    // Check permission for shipping plugin
+                    if (!tenant_plan_sidebar_permission('shippingplugin')) {
+                        continue; // Skip this menu item if no permission
+                    }
                     $convert_to_array['parent'] = 'shipping-settings-menu-items';
                 }
                 if (isPluginActive('SmsGateway')
                     && str_contains($convert_to_array['id'], 'sms-manage-index')) {
+                    // Check permission for SMS Gateway
+                    if (!tenant_plan_sidebar_permission('smsgateway')) {
+                        continue; // Skip this menu item if no permission
+                    }
                     $convert_to_array['parent'] = 'general-settings-menu-items';
                 }
                 if (isPluginActive('CpanelAutomation')
                     && str_contains($convert_to_array['id'], 'cpanel-automation-menu')) {
+                    // Check permission for Cpanel Automation
+                    if (!tenant_plan_sidebar_permission('cpanelautomation')) {
+                        continue; // Skip this menu item if no permission
+                    }
                     $convert_to_array['parent'] = 'general-settings-menu-items';
                 }
                 if (isPluginActive('CloudStorage') && str_contains($convert_to_array['id'], 'cloud-storage-menu')) {
+                    // Check permission for Cloud Storage
+                    if (!tenant_plan_sidebar_permission('cloudstorage')) {
+                        continue; // Skip this menu item if no permission
+                    }
                     $convert_to_array['parent'] = 'general-settings-menu-items';
                 }
+                
+                // Check permissions for other plugins
+                if (isPluginActive('DomainReseller')
+                    && str_contains($convert_to_array['id'], 'domain-reseller')) {
+                    if (!tenant_plan_sidebar_permission('domainreseller')) {
+                        continue;
+                    }
+                }
+                if (isPluginActive('Pos')
+                    && str_contains($convert_to_array['id'], 'pos-')) {
+                    if (!tenant_plan_sidebar_permission('pos')) {
+                        continue;
+                    }
+                }
+                if (isPluginActive('SiteAnalytics')
+                    && str_contains($convert_to_array['id'], 'site-analytics')) {
+                    if (!tenant_plan_sidebar_permission('siteanalytics')) {
+                        continue;
+                    }
+                }
+                if (isPluginActive('WooCommerce')
+                    && str_contains($convert_to_array['id'], 'woocommerce')) {
+                    if (!tenant_plan_sidebar_permission('woocommerce')) {
+                        continue;
+                    }
+                }
 
-                if (!empty($routeName) && Route::has($routeName)) {
-                    $convert_to_array['route'] = $routeName;
-                    $menu_instance->add_menu_item($convert_to_array['id'], $convert_to_array);
+                // Check if menu item has alias and check permission
+                if (isset($convert_to_array['alias']) && !empty($convert_to_array['alias'])) {
+                    $alias = str_replace(['-', '_'], '', $convert_to_array['alias']);
+                    // Map common aliases to feature names
+                    $featureMap = [
+                        'inventory' => 'inventory',
+                        'campaign' => 'campaign',
+                        'coupon' => 'coupon',
+                        'cloudstorage' => 'cloudstorage',
+                        'cpanelautomation' => 'cpanelautomation',
+                        'domainreseller' => 'domainreseller',
+                        'pos' => 'pos',
+                        'siteanalytics' => 'siteanalytics',
+                        'smsgateway' => 'smsgateway',
+                        'woocommerce' => 'woocommerce',
+                    ];
+                    
+                    if (isset($featureMap[$alias]) && !tenant_plan_sidebar_permission($featureMap[$alias])) {
+                        continue; // Skip if no permission
+                    }
                 }
 
                 if (!empty($routeName) && Route::has($routeName)) {
@@ -1134,18 +1227,21 @@ class SidebarMenuHelper
             'parent' => 'product-order-manage-settings',
             'permissions' => ['product-order-invoice-settings'],
         ]);
-        $menu_instance->add_menu_item('inventory-manage-settings-menu-items', [
-            'route' => 'tenant.admin.product.inventory.all',
-            'label' => __('Inventory Manage'),
-            'parent' => 'product-order-manage-settings',
-            'permissions' => ['inventory-list', 'inventory-create', 'inventory-edit', 'inventory-delete'],
-        ]);
-        $menu_instance->add_menu_item('inventory-stock-settings-menu-items', [
-            'route' => 'tenant.admin.product.inventory.settings',
-            'label' => __('Inventory Settings'),
-            'parent' => 'product-order-manage-settings',
-            'permissions' => ['inventory-settings'],
-        ]);
+        // Inventory - مرتبط بـ inventory feature
+        if (tenant_plan_sidebar_permission('inventory')) {
+            $menu_instance->add_menu_item('inventory-manage-settings-menu-items', [
+                'route' => 'tenant.admin.product.inventory.all',
+                'label' => __('Inventory Manage'),
+                'parent' => 'product-order-manage-settings',
+                'permissions' => ['inventory-list', 'inventory-create', 'inventory-edit', 'inventory-delete'],
+            ]);
+            $menu_instance->add_menu_item('inventory-stock-settings-menu-items', [
+                'route' => 'tenant.admin.product.inventory.settings',
+                'label' => __('Inventory Settings'),
+                'parent' => 'product-order-manage-settings',
+                'permissions' => ['inventory-settings'],
+            ]);
+        }
         $menu_instance->add_menu_item('refund-settings-all', [
             'route' => 'tenant.admin.refund.all',
             'label' => __('All Refunds'),

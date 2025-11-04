@@ -35,6 +35,6 @@ class TenantDomainCreate
             'unique_key' => $hash_key
         ]);
 
-        $tenant->domains()->create(['domain' => $event->subdomain . '.' . env('CENTRAL_DOMAIN')]);
+        $tenant->domains()->create(['domain' => trim($event->subdomain . '.' . env('CENTRAL_DOMAIN'))]);
     }
 }

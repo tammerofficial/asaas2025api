@@ -13,48 +13,30 @@
 </div>
 
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<!-- 🚀 CDN JAVASCRIPT LIBRARIES (Fast & Cached) -->
+<!-- 🔁 LOCAL JAVASCRIPT LIBRARIES (Reverted from CDN) -->
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
 
-<!-- jQuery CDN (3.7.1 - Latest Stable) -->
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js" 
-        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" 
-        crossorigin="anonymous"></script>
+<!-- jQuery (local) -->
+<script src="{{ global_asset('assets/landlord/frontend/js/jquery-3.6.1.min.js') }}" defer></script>
 
-<!-- Bootstrap Bundle CDN (if needed) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" 
-        crossorigin="anonymous" 
-        defer></script>
+<!-- Bootstrap Bundle (local) -->
+<script src="{{ global_asset('assets/landlord/frontend/js/bootstrap.bundle.min.js') }}" defer></script>
 
-<!-- Axios CDN -->
-<script src="https://cdn.jsdelivr.net/npm/axios@1.6.2/dist/axios.min.js" 
-        integrity="sha256-VQ8m0Dd2xi0z6QuAKMa04ufRMBxv92nP+UWSqT33HGg=" 
-        crossorigin="anonymous" 
-        defer></script>
+<!-- Axios (local) -->
+<script src="{{ global_asset('assets/common/js/axios.min.js') }}" defer></script>
 
-<!-- SweetAlert2 CDN -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.2/dist/sweetalert2.all.min.js" 
-        integrity="sha256-iSkyJ41luwYhZX4JnDUop92wix0y8SBGAW5tCnnCfZ4=" 
-        crossorigin="anonymous" 
-        defer></script>
+<!-- SweetAlert2 (local) -->
+<script src="{{ global_asset('assets/landlord/common/js/sweetalert2.js') }}" defer></script>
 
-<!-- Flatpickr CDN -->
-<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js" 
-        crossorigin="anonymous" 
-        defer></script>
+<!-- Flatpickr (local) -->
+<script src="{{ global_asset('assets/common/js/flatpickr.js') }}" defer></script>
 <x-flatpicker.flatpickr-locale/>
 
-<!-- Select2 CDN -->
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js" 
-        crossorigin="anonymous" 
-        defer></script>
+<!-- Select2 (local) -->
+<script src="{{ global_asset('assets/common/js/select2.min.js') }}" defer></script>
 
-<!-- Toastr CDN -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js" 
-        integrity="sha512-lbwH47l/tPXJYG9AcFNoJaTMhGvYWhVM9YI43CT+uteTRRaiLCui8snIgyAN8XWgNjNhCqlAUdzZptso6OCoFQ==" 
-        crossorigin="anonymous" 
-        defer></script>
+<!-- Toastr (local) -->
+<script src="{{ global_asset('assets/common/js/toastr.min.js') }}" defer></script>
 
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
 <!-- 📦 LOCAL JAVASCRIPT (Custom & Required) -->

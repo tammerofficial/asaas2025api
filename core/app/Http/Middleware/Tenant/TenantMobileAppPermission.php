@@ -21,7 +21,11 @@ class TenantMobileAppPermission
 //            dd($package);
             if (!empty($package))
             {
-                $features = $package?->plan_features?->pluck('feature_name')->toArray();
+                // Only get active features (status = 1)
+                $features = $package->plan_features()
+                    ->where('status', 1)
+                    ->pluck('feature_name')
+                    ->toArray();
                 $permission = in_array('app_api',(array) $features);
                 if (!$permission)
                 {

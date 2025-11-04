@@ -170,7 +170,6 @@ return [
          */
         Intervention\Image\ImageServiceProvider::class,
         Artesaos\SEOTools\Providers\SEOToolsServiceProvider::class,
-        Paytabscom\Laravel_paytabs\PaypageServiceProvider::class,
         Milon\Barcode\BarcodeServiceProvider::class,
         /*
          * Application Service Providers...

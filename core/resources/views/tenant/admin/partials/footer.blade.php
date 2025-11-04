@@ -314,12 +314,50 @@
         //         $('body').removeClass('sidebar-icon-only'); // Expand sidebar
         //         $('#menuSearch').focus(); // Focus on search input
         //     }
-        // });
+        //         });
+    });
+</script>
+
+<!-- 🎯 Intro.js Tour Library (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    // 🎯 Dashboard Tour Function
+    // Usage: Call startDashboardTour() to begin the tour
+    // Add data-intro and data-step attributes to elements you want to highlight
+    function startDashboardTour(options = {}) {
+        const defaultOptions = {
+            prevLabel: '{{__("Previous")}}',
+            nextLabel: '{{__("Next")}}',
+            skipLabel: '{{__("Skip")}}',
+            doneLabel: '{{__("Done")}}',
+            showProgress: true,
+            showBullets: true,
+            exitOnOverlayClick: false,
+            exitOnEsc: true,
+            keyboardNavigation: true,
+            tooltipClass: 'customTooltip',
+            highlightClass: 'customHighlight',
+            disableInteraction: false
+        };
+
+        const tourOptions = Object.assign({}, defaultOptions, options);
+        
+        if (typeof introJs !== 'undefined') {
+            introJs().setOptions(tourOptions).start();
+        }
+    }
+
+    // Auto-start tour on page load if data-auto-tour attribute exists
+    $(document).ready(function() {
+        if ($('body').attr('data-auto-tour') === 'true') {
+            setTimeout(function() {
+                startDashboardTour();
+            }, 1000);
+        }
     });
 
 </script>
-
-
 
 
 

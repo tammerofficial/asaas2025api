@@ -2461,3 +2461,64 @@ table.dataTable tbody tr {
         flex-wrap: nowrap;
     }
 }
+
+/* ============================================
+   Sidebar Menu Icon Spacing - Unified Spacing
+   ============================================ */
+
+/* Ensure consistent spacing between icons and text in sidebar */
+.sidebar .nav .nav-item .nav-link i.menu-icon {
+    margin-right: 0 !important;
+    padding-right: 1rem !important; /* pe-4 = 1rem = 16px */
+    min-width: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* RTL support for Arabic */
+.rtl .sidebar .nav .nav-item .nav-link i.menu-icon {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+    padding-left: 1rem !important; /* Same spacing for RTL */
+}
+
+/* Ensure consistent spacing for menu title */
+.sidebar .nav .nav-item .nav-link .menu-title {
+    display: inline-block;
+    line-height: 1.5;
+    font-family: "Jost", "Roboto", "Open Sans", sans-serif;
+}
+
+/* RTL support for menu title - Arabic font */
+.rtl .sidebar .nav .nav-item .nav-link .menu-title {
+    font-family: "PingAR+", "Jost", "Roboto", "Open Sans", sans-serif;
+}
+
+/* Submenu items - consistent spacing */
+.sidebar .nav.sub-menu .nav-item .nav-link i.menu-icon {
+    padding-right: 1rem !important;
+}
+
+.rtl .sidebar .nav.sub-menu .nav-item .nav-link i.menu-icon {
+    padding-right: 0 !important;
+    padding-left: 1rem !important;
+}
+
+/* Ensure flex alignment for consistent spacing */
+.sidebar .nav .nav-item .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+/* Additional spacing for better visual consistency */
+.sidebar .nav .nav-item .nav-link > i.menu-icon + .menu-title {
+    margin-left: 0;
+}
+
+.rtl .sidebar .nav .nav-item .nav-link > i.menu-icon + .menu-title {
+    margin-right: 0;
+    margin-left: 0;
+}

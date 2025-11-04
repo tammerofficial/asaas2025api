@@ -110,7 +110,7 @@ class TenantGenerateHelper
     }
 
     public function createDomain(){
-        $this->getTenant()->domains()->create(['domain' => $this->getTenant()->getTenantKey().'.'.env('CENTRAL_DOMAIN')]);
+        $this->getTenant()->domains()->create(['domain' => trim($this->getTenant()->getTenantKey().'.'.env('CENTRAL_DOMAIN'))]);
         return $this;
     }
 

@@ -339,7 +339,7 @@ class MenuWithPermission
 //        }
 
         if ($this->has_icon($item)) {
-            $output .= '<i class="' . $item['icon'] .' '.$this->icon_class.' '.'pe-2'.'"></i>';
+            $output .= '<i class="' . $item['icon'] .' '.$this->icon_class.' '.'pe-4'.'"></i>';
         }
         if ($this->has_label($item) && $this->show_label) {
             $output .= '<span class="'.$this->anchor_title_class.'">' . $item['label'] . '</span>';

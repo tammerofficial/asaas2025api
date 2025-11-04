@@ -34,7 +34,7 @@ class TenantController extends Controller
         // Create default domain if provided
         if ($request->has('domain')) {
             $tenant->domains()->create([
-                'domain' => $request->domain,
+                'domain' => trim($request->domain),
             ]);
         }
 

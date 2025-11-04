@@ -1715,7 +1715,7 @@ function load_google_fonts($theme_number = '')
         $fonts_url .= '&family=' . $load_heading_font_family . ':' . $heading_italic . 'wght@' . $load_heading_font_variant;
     }
 
-    return sprintf('<link rel="preconnect" href="https://fonts.gstatic.com"> <link href="%1$s&display=swap" rel="stylesheet">', $fonts_url);
+    return sprintf('<link href="%1$s&display=swap" rel="stylesheet">', $fonts_url);
 }
 
 function wrap_random_number($number)
@@ -1923,7 +1923,11 @@ function tenant_plan_sidebar_permission($permission_name, $tenant = null) // Pla
     if (!empty($current_tenant_payment_data)) {
         $package = $current_tenant_payment_data->package;
         if (!empty($package)) {
-            $features = $package->plan_features->pluck('feature_name')->toArray();
+            // Only get active features (status = 1)
+            $features = $package->plan_features()
+                ->where('status', 1)
+                ->pluck('feature_name')
+                ->toArray();
 //            dd($features);
 //            dd($permission_name);
             if (in_array($permission_name, (array)$features)) {

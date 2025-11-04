@@ -191,7 +191,7 @@ class ReassignTenant
     public function createDomain()
     {
         $tenant = $this->getTenant();
-        $tenant->domains()->create(['domain' => $tenant->getTenantKey().'.'.env('CENTRAL_DOMAIN')]);
+        $tenant->domains()->create(['domain' => trim($tenant->getTenantKey().'.'.env('CENTRAL_DOMAIN'))]);
     }
 
     private function getPackage(): array

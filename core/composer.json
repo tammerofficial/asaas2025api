@@ -1,10 +1,4 @@
 {
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/Sharifur/paymentgateway.git"
-        }
-    ],
     "name": "laravel/laravel",
     "type": "project",
     "description": "The Laravel Framework.",
@@ -53,7 +47,6 @@
         "symfony/postmark-mailer": "^6.0",
         "twilio/sdk": "^7.11",
         "xgenious/installer": "^2.0.00",
-        "xgenious/paymentgateway": "^6.0.4",
         "xgenious/xgapiclient": "^6.0.0",
         "yajra/laravel-datatables-oracle": "^12.0"
     },

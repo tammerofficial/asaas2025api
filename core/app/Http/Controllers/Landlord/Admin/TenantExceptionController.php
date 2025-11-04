@@ -211,7 +211,7 @@ class TenantExceptionController extends Controller
             $existingDomain = $tenant->domains()->where('domain', $domain)->first();
 
             if (!$existingDomain) {
-                $tenant->domains()->create(['domain' => $domain]);
+                $tenant->domains()->create(['domain' => trim($domain)]);
             }
 
             // Run migrations

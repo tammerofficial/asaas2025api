@@ -211,7 +211,7 @@ class ReGenerateTenant
 
     public function createDomain($tenant)
     {
-        return $tenant->domains()->create(['domain' => $tenant->getTenantKey().'.'.env('CENTRAL_DOMAIN')]);
+        return $tenant->domains()->create(['domain' => trim($tenant->getTenantKey().'.'.env('CENTRAL_DOMAIN'))]);
     }
 
     private function modifyTenantData($tenant)
