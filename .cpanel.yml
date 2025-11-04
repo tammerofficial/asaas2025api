@@ -1,0 +1,47 @@
+---
+# cPanel Git Deployment Configuration
+# This file must be in the top-level directory of the repository
+# For more information, see: https://docs.cpanel.net/whm/guide-to-git-deployment/
+
+deployment:
+  tasks:
+    # Set deployment path (update this to match your cPanel account path)
+    # Replace 'username' with your actual cPanel username
+    - export DEPLOYPATH=/home/username/public_html/
+    - export APP_PATH=/home/username/app/
+    
+    # Copy core application directory (excluding sensitive files)
+    - /bin/mkdir -p $APP_PATH
+    - /bin/cp -R core/app $APP_PATH
+    - /bin/cp -R core/bootstrap $APP_PATH
+    - /bin/cp -R core/config $APP_PATH
+    - /bin/cp -R core/database $APP_PATH
+    - /bin/cp -R core/docs $APP_PATH
+    - /bin/cp -R core/Modules $APP_PATH
+    - /bin/cp -R core/plugins $APP_PATH
+    - /bin/cp -R core/resources $APP_PATH
+    - /bin/cp -R core/routes $APP_PATH
+    - /bin/cp -R core/storage $APP_PATH
+    - /bin/cp core/artisan $APP_PATH
+    - /bin/cp core/composer.json $APP_PATH
+    - /bin/cp core/composer.lock $APP_PATH
+    - /bin/cp core/package.json $APP_PATH
+    - /bin/cp core/package-lock.json $APP_PATH
+    - /bin/cp core/phpunit.xml $APP_PATH
+    - /bin/cp core/README.md $APP_PATH
+    - /bin/cp core/vite.config.js $APP_PATH
+    - /bin/cp core/server.php $APP_PATH
+    
+    # Copy public files to public_html (using rsync to avoid wildcards)
+    - /usr/bin/rsync -av --exclude='.git' core/public/ $DEPLOYPATH
+    
+    # Copy root index.php to public_html
+    - /bin/cp index.php $DEPLOYPATH
+    
+    # Copy assets directory if exists
+    - /bin/cp -R assets $DEPLOYPATH || true
+    
+    # Set proper permissions for storage and cache directories
+    - /bin/chmod -R 775 $APP_PATH/storage
+    - /bin/chmod -R 775 $APP_PATH/bootstrap/cache
+

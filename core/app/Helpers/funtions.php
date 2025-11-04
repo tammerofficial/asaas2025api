@@ -367,17 +367,18 @@ function render_favicon_by_id($id): string
     return $output;
 }
 
-function render_image_markup_by_attachment_path($id, $alt, $path, $class = null, $size = 'full', $default = false): string
+function render_image_markup_by_attachment_path($id, $alt, $path, $class = null, $size = 'full', $default = false, $is_lazy = true): string
 {
     $image_details = get_attachment_image_by_path($id, $path, $alt, $size, $default);
     if (!empty($image_details)) {
         $class_list = !empty($class) ? 'class="' . $class . '"' : '';
-        $output = '<img src="' . $image_details['img_url'] . '" ' . $class_list . ' alt="' . $image_details['img_alt'] . '"/>';
+        $lazy = $is_lazy ? 'loading="lazy"' : '';
+        $output = '<img src="' . $image_details['img_url'] . '" ' . $class_list . ' alt="' . $image_details['img_alt'] . '" ' . $lazy . '/>';
     }
     return $output;
 }
 
-function render_image_markup_by_attachment_id($id, $class = null, $size = 'full', $default = false, $is_lazy = false): string
+function render_image_markup_by_attachment_id($id, $class = null, $size = 'full', $default = false, $is_lazy = true): string
 {
     if (empty($id) && !$default) return '';
     $output = '';

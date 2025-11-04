@@ -26,8 +26,8 @@
                     <div class="col-xl-4 col-md-6 stretch-card">
                         <div class="card bg-gradient-danger card-img-holder text-white">
                             <div class="card-body">
-                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}" loading="lazy"
-                                     class="card-img-absolute" alt="circle-image">
+                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}"
+                                     class="card-img-absolute" alt="circle-image" width="140" height="67">
                                 <h4 class="font-weight-bold mb-3">{{__('Total Admins')}}<i
                                             class="las la-user-shield mdi-24px float-right"></i>
                                 </h4>
@@ -38,8 +38,8 @@
                     <div class="col-xl-4 col-md-6 stretch-card">
                         <div class="card bg-gradient-info card-img-holder text-white">
                             <div class="card-body">
-                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}" loading="lazy"
-                                     class="card-img-absolute" alt="circle-image">
+                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}"
+                                     class="card-img-absolute" alt="circle-image" width="140" height="67">
                                 <h4 class="font-weight-bold mb-3">{{__('Total Users')}}<i
                                             class="las la-user-shield mdi-24px float-right"></i>
                                 </h4>
@@ -50,8 +50,8 @@
                     <div class="col-xl-4 col-md-6 stretch-card">
                         <div class="card bg-gradient-success card-img-holder text-white">
                             <div class="card-body">
-                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}" loading="lazy"
-                                     class="card-img-absolute" alt="circle-image">
+                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}"
+                                     class="card-img-absolute" alt="circle-image" width="140" height="67">
                                 <h4 class="font-weight-bold mb-3">{{__('Total Shops')}}
                                     <i class="mdi mdi-store mdi-24px float-right"></i>
                                 </h4>
@@ -62,8 +62,8 @@
                     <div class="col-xl-4 col-md-6 stretch-card">
                         <div class="card bg-gradient-info card-img-holder text-white">
                             <div class="card-body">
-                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}" loading="lazy"
-                                     class="card-img-absolute" alt="circle-image">
+                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}"
+                                     class="card-img-absolute" alt="circle-image" width="140" height="67">
                                 <h4 class="font-weight-bold mb-3">{{__('Total Testimonial')}} <i
                                             class="mdi mdi-diamond mdi-24px float-right"></i>
                                 </h4>
@@ -74,8 +74,8 @@
                     <div class="col-xl-4 col-md-6 stretch-card">
                         <div class="card bg-gradient-primary card-img-holder text-white">
                             <div class="card-body">
-                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}" loading="lazy"
-                                     class="card-img-absolute" alt="circle-image">
+                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}"
+                                     class="card-img-absolute" alt="circle-image" width="140" height="67">
                                 <h4 class="font-weight-bold mb-3">{{__('Total Price Plan')}}<i
                                             class="mdi mdi-diamond mdi-24px float-right"></i>
                                 </h4>
@@ -89,8 +89,8 @@
                     <div class="col-xl-4 col-md-6 stretch-card mt-3">
                         <div class="card bg-gradient-warning card-img-holder text-white">
                             <div class="card-body">
-                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}" loading="lazy"
-                                     class="card-img-absolute" alt="circle-image">
+                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}"
+                                     class="card-img-absolute" alt="circle-image" width="140" height="67">
                                 <h4 class="font-weight-bold mb-3">{{__('Total Theme')}} <i
                                             class="mdi mdi-diamond mdi-24px float-right"></i>
                                 </h4>

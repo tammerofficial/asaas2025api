@@ -81,10 +81,16 @@
     <link href="{{ global_asset('assets/landlord/admin/css/style.css') }}" rel="stylesheet">
     
     <!-- Non-Critical CSS - Can be deferred -->
-    <link href="{{ global_asset('assets/common/css/fontawesome-iconpicker.min.css') }}" rel="stylesheet" media="print" onload="this.media='all'">
-    <link href="{{ global_asset('assets/landlord/frontend/css/line-awesome.min.css') }}" rel="stylesheet" media="print" onload="this.media='all'">
-    <link href="{{ global_asset('assets/landlord/admin/css/nice-select.css') }}" rel="stylesheet" media="print" onload="this.media='all'">
-    <link href="{{ global_asset('assets/common/css/custom-style.css') }}" rel="stylesheet" media="print" onload="this.media='all'">
+    <link rel="preload" href="{{ global_asset('assets/common/css/fontawesome-iconpicker.min.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="{{ global_asset('assets/common/css/fontawesome-iconpicker.min.css') }}" rel="stylesheet"></noscript>
+    
+    <link rel="preload" href="{{ global_asset('assets/landlord/frontend/css/line-awesome.min.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="{{ global_asset('assets/landlord/frontend/css/line-awesome.min.css') }}" rel="stylesheet"></noscript>
+    
+    <link rel="preload" href="{{ global_asset('assets/landlord/admin/css/nice-select.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="{{ global_asset('assets/landlord/admin/css/nice-select.css') }}" rel="stylesheet"></noscript>
+    
+    <link href="{{ global_asset('assets/common/css/custom-style.css') }}" rel="stylesheet">
     
     <!-- Dark mode CSS -->
     @if(!empty(get_static_option('dark_mode_for_admin_panel')))
