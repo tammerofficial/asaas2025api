@@ -24,9 +24,22 @@ deployment:
     # Copy web.config if exists
     - /bin/cp web.config $DEPLOYPATH || true
     
+    # Create required storage directories if they don't exist
+    - /bin/mkdir -p $DEPLOYPATH/core/storage/logs
+    - /bin/mkdir -p $DEPLOYPATH/core/storage/framework/cache
+    - /bin/mkdir -p $DEPLOYPATH/core/storage/framework/cache/data
+    - /bin/mkdir -p $DEPLOYPATH/core/storage/framework/sessions
+    - /bin/mkdir -p $DEPLOYPATH/core/storage/framework/views
+    - /bin/mkdir -p $DEPLOYPATH/core/storage/app/public
+    - /bin/mkdir -p $DEPLOYPATH/core/bootstrap/cache
+    
     # Set proper permissions for storage and cache directories
     - /bin/chmod -R 775 $DEPLOYPATH/core/storage
     - /bin/chmod -R 775 $DEPLOYPATH/core/bootstrap/cache
+    
+    # Set ownership (adjust username if needed)
+    - /bin/chown -R tammerify:tammerify $DEPLOYPATH/core/storage || true
+    - /bin/chown -R tammerify:tammerify $DEPLOYPATH/core/bootstrap/cache || true
     
     # Protect sensitive files with .htaccess
     - /bin/echo "# Protect .env file" > $DEPLOYPATH/core/.htaccess
