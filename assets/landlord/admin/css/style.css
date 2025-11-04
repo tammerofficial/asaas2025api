@@ -20068,7 +20068,7 @@ dl li {
 }
 
 .sidebar .nav .nav-item {
-    padding: 0 1.4rem;
+    padding: 0 0;
     -webkit-transition-duration: 0.25s;
     transition-duration: 0.25s;
     transition-property: background;

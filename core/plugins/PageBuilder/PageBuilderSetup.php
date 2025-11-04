@@ -21,6 +21,22 @@ use Plugins\PageBuilder\Addons\Landlord\Common\TemplateDesign;
 use Plugins\PageBuilder\Addons\Landlord\Common\Themes;
 use Plugins\PageBuilder\Addons\Landlord\Common\VideoArea;
 use Plugins\PageBuilder\Addons\Landlord\Common\WhyChooseUs;
+use Plugins\PageBuilder\Addons\Common\Hero\Hero;
+use Plugins\PageBuilder\Addons\Common\Heading\Heading;
+use Plugins\PageBuilder\Addons\Common\TextEditor\TextEditor;
+use Plugins\PageBuilder\Addons\Common\Button\Button;
+use Plugins\PageBuilder\Addons\Common\IconBox\IconBox;
+use Plugins\PageBuilder\Addons\Common\PricingTable\PricingTable;
+use Plugins\PageBuilder\Addons\Common\Tabs\Tabs;
+use Plugins\PageBuilder\Addons\Common\Testimonials\Testimonials;
+use Plugins\PageBuilder\Addons\Common\Reviews\Reviews;
+use Plugins\PageBuilder\Addons\Common\CallToAction\CallToAction;
+use Plugins\PageBuilder\Addons\Common\LogosCarousel\LogosCarousel;
+use Plugins\PageBuilder\Addons\Common\StepsTimeline\StepsTimeline;
+use Plugins\PageBuilder\Addons\Common\VideoBox\VideoBox;
+use Plugins\PageBuilder\Addons\Common\FormWidget\FormWidget;
+use Plugins\PageBuilder\Addons\Common\BackgroundOverlay\BackgroundOverlay;
+use Plugins\PageBuilder\Addons\Common\ImageLottie\ImageLottie;
 use Plugins\PageBuilder\Addons\Landlord\Header\AboutHeaderStyleOne;
 use Plugins\PageBuilder\Addons\Landlord\Header\FeaturesStyleOne;
 use Plugins\PageBuilder\Addons\Landlord\Header\HeaderStyleOne;
@@ -199,7 +215,23 @@ class PageBuilderSetup
             $globalAddons = [
                 RawHTML::class,
                 FaqOne::class,
-
+                // Common theme-agnostic addons
+                Hero::class,
+                Heading::class,
+                TextEditor::class,
+                Button::class,
+                IconBox::class,
+                PricingTable::class,
+                Tabs::class,
+                Testimonials::class,
+                Reviews::class,
+                CallToAction::class,
+                LogosCarousel::class,
+                StepsTimeline::class,
+                VideoBox::class,
+                FormWidget::class,
+                BackgroundOverlay::class,
+                ImageLottie::class,
             ];
 
             foreach ($globalAddons as $globalItem) {
@@ -309,11 +341,29 @@ class PageBuilderSetup
     {
         $widget_class = $args['namespace'];
         if (class_exists($widget_class)) {
-            $instance = new $widget_class($args);
-            if ($instance->enable()) {
-                return $instance->frontend_render();
+            try {
+                $instance = new $widget_class($args);
+                if ($instance->enable()) {
+                    try {
+                        return $instance->frontend_render();
+                    } catch (\Exception $e) {
+                        \Log::error('PageBuilder Frontend Render Error', [
+                            'addon' => $widget_class,
+                            'error' => $e->getMessage(),
+                            'trace' => $e->getTraceAsString()
+                        ]);
+                        return ''; // Graceful degradation - don't break page
+                    }
+                }
+            } catch (\Exception $e) {
+                \Log::error('PageBuilder Addon Instantiation Error', [
+                    'addon' => $widget_class,
+                    'error' => $e->getMessage()
+                ]);
+                return '';
             }
         }
+        return '';
     }
 
     public static function render_frontend_pagebuilder_content_by_location($location): string
