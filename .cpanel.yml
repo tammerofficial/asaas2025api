@@ -1,13 +1,13 @@
 ---
 # cPanel Git Deployment Configuration
 # This file must be in the top-level directory of the repository
-# Repository Path: /home/tammerify/public_html/asaas
-# All files will be deployed directly to this directory
+# Repository Path: /home/tammerify/public_html/
+# All files will be deployed directly to public_html
 
 deployment:
   tasks:
-    # Set deployment path to match cPanel repository path
-    - export DEPLOYPATH=/home/tammerify/public_html/asaas/
+    # Set deployment path to public_html directly
+    - export DEPLOYPATH=/home/tammerify/public_html/
     
     # Copy entire core directory to deployment path
     - /bin/cp -R core $DEPLOYPATH
