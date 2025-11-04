@@ -157,17 +157,6 @@
       0 => 'Milon\\Barcode\\BarcodeServiceProvider',
     ),
   ),
-  'mollie/laravel-mollie' => 
-  array (
-    'aliases' => 
-    array (
-      'Mollie' => 'Mollie\\Laravel\\Facades\\Mollie',
-    ),
-    'providers' => 
-    array (
-      0 => 'Mollie\\Laravel\\MollieServiceProvider',
-    ),
-  ),
   'nesbot/carbon' => 
   array (
     'providers' => 
@@ -205,13 +194,6 @@
     'providers' => 
     array (
       0 => 'Pion\\Laravel\\ChunkUpload\\Providers\\ChunkUploadServiceProvider',
-    ),
-  ),
-  'sharifur/payfast' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Billow\\PayfastServiceProvider',
     ),
   ),
   'spatie/laravel-activitylog' => 
@@ -260,17 +242,6 @@
       0 => 'Spatie\\WebhookServer\\WebhookServerServiceProvider',
     ),
   ),
-  'srmklive/paypal' => 
-  array (
-    'aliases' => 
-    array (
-      'PayPal' => 'Srmklive\\PayPal\\Facades\\PayPal',
-    ),
-    'providers' => 
-    array (
-      0 => 'Srmklive\\PayPal\\Providers\\PayPalServiceProvider',
-    ),
-  ),
   'stancl/tenancy' => 
   array (
     'aliases' => 
@@ -283,29 +254,11 @@
       0 => 'Stancl\\Tenancy\\TenancyServiceProvider',
     ),
   ),
-  'stevebauman/location' => 
-  array (
-    'aliases' => 
-    array (
-      'Location' => 'Stevebauman\\Location\\Facades\\Location',
-    ),
-    'providers' => 
-    array (
-      0 => 'Stevebauman\\Location\\LocationServiceProvider',
-    ),
-  ),
   'xgenious/installer' => 
   array (
     'providers' => 
     array (
       0 => 'Xgenious\\Installer\\InstallerServiceProvider',
-    ),
-  ),
-  'xgenious/paymentgateway' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Xgenious\\Paymentgateway\\Providers\\PaymentgatewayServiceProvider',
     ),
   ),
   'xgenious/xgapiclient' => 

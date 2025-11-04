@@ -1919,6 +1919,12 @@ function tenant_plan_sidebar_permission($permission_name, $tenant = null) // Pla
     $inventory = false;
 
     $tenant = !empty($tenant) ? $tenant : tenant();
+    
+    // Check if tenant exists and has renewal_payment_log_id
+    if (empty($tenant) || empty($tenant->renewal_payment_log_id)) {
+        return false;
+    }
+    
     $current_tenant_payment_data = PaymentLogs::where('id', $tenant->renewal_payment_log_id)->first() ?? [];
     if (!empty($current_tenant_payment_data)) {
         $package = $current_tenant_payment_data->package;

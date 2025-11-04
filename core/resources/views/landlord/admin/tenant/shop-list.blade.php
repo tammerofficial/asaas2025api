@@ -60,7 +60,9 @@
                                     <p>{{__('Package:').' '}} {{$tenant?->payment_log?->package_name}}</p>
 
                                     @php
-                                        $custom_theme_name = get_static_option_central($tenant->theme_slug."_theme_name") ?? getIndividualThemeDetails($tenant->theme_slug)['name'];
+                                        $themeDetails = getIndividualThemeDetails($tenant->theme_slug) ?? [];
+                                        $custom_theme_name = get_static_option_central($tenant->theme_slug . "_theme_name")
+                                            ?? ($themeDetails['name'] ?? $tenant->theme_slug);
                                     @endphp
                                     <p>{{__('Theme:').' '}} {{$custom_theme_name}}</p>
                                 </td>

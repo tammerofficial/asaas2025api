@@ -14,6 +14,8 @@ use App\Models\Tenant;
 use Database\Seeders\Tenant\DefaultDataSeeder;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Artisan;
 use Intervention\Image\Facades\Image;
 
 class PricePlanController extends Controller
@@ -214,9 +216,10 @@ class PricePlanController extends Controller
                 $price_plan->plan_features()->delete();
                 $features = $request->features;
                 foreach ($features as $feat) {
-                    PlanFeature::where('plan_id', $price_plan->id)->create([
+                    PlanFeature::create([
                         'plan_id' => $price_plan->id,
                         'feature_name' => $feat,
+                        'status' => 1, // Always set status to active (1) when feature is added
                     ]);
                 }
             }
@@ -248,7 +251,36 @@ class PricePlanController extends Controller
 
         }
 
+        // Clear cache for all tenants using this plan
+        $this->clearPlanCache($price_plan->id);
+
         return response()->success(ResponseMessage::SettingsSaved());
+    }
+
+    /**
+     * Clear cache for all tenants using this plan
+     */
+    protected function clearPlanCache($planId)
+    {
+        // Clear Eloquent relationship cache
+        Cache::forget("price_plan_{$planId}_features");
+        
+        // Get all tenants using this plan
+        $tenants = Tenant::where('price_plan_id', $planId)->get();
+        
+        foreach ($tenants as $tenant) {
+            // Clear dashboard statistics cache
+            Cache::forget("tenant_dashboard_stats_{$tenant->id}");
+            Cache::forget("tenant_dashboard_stats_detailed_{$tenant->id}");
+            
+            // Clear view cache
+            Cache::forget("tenant_sidebar_menu_{$tenant->id}");
+        }
+        
+        // Clear all application cache
+        Artisan::call('cache:clear');
+        Artisan::call('view:clear');
+        Artisan::call('config:clear');
     }
 
     public function price_plan_settings()

@@ -114,7 +114,7 @@ class SidebarMenuHelper
             'route' => '#',
             'label' => __('Pages'),
             'parent' => null,
-            'permissions' => ['page-list', 'page-create', 'page-edit', 'page-delete'],
+            'permissions' => [],
             'icon' => 'mdi mdi-file',
         ]);
         $menu_instance->add_menu_item('pages-settings-all-page-settings', [
@@ -1019,7 +1019,7 @@ class SidebarMenuHelper
             $this->tenant_sales_report_settings_menus($menu_instance);
         }
 
-        // Pages - مرتبط بـ pages
+        // Pages - مرتبط بـ pages (لا نحتاج للتحقق من plugin، فقط الصلاحية)
         if (tenant_plan_sidebar_permission('pages')) {
             $this->tenant_pages_settings_menus($menu_instance);
         }
@@ -1036,10 +1036,9 @@ class SidebarMenuHelper
                 $this->tenant_support_ticket_settings_menus($menu_instance);
             }
         }
-        if (isPluginActive('Blog')) {
-            if (tenant_plan_sidebar_permission('blog')) {
-                $this->tenant_blog_settings_menus($menu_instance);
-            }
+        // Blog - مرتبط بـ blog (لا نحتاج للتحقق من plugin، فقط الصلاحية)
+        if (tenant_plan_sidebar_permission('blog')) {
+            $this->tenant_blog_settings_menus($menu_instance);
         }
         // External Menu Render
         foreach (getAllExternalMenu() as $externalMenu) {
@@ -1178,7 +1177,10 @@ class SidebarMenuHelper
 
         $this->tenant_general_settings_menus($menu_instance);
 
-        $this->tenant_payment_settings_menus($menu_instance);
+        // Payment Settings - مرتبط بـ products (إعدادات الدفع مرتبطة بالمنتجات)
+        if (tenant_plan_sidebar_permission('products')) {
+            $this->tenant_payment_settings_menus($menu_instance);
+        }
 
         return $menu_instance->render_menu_items();
     }
@@ -1436,7 +1438,7 @@ class SidebarMenuHelper
             'route' => '#',
             'label' => __('Blogs'),
             'parent' => null,
-            'permissions' => ['blog-list', 'blog-create', 'blog-edit', 'blog-delete', 'blog-settings','newsletter-list', 'newsletter-create', 'newsletter-edit', 'newsletter-delete'],
+            'permissions' => [],
             'icon' => 'mdi mdi-blogger',
         ]);
 
@@ -1860,7 +1862,7 @@ class SidebarMenuHelper
             'route' => '#',
             'label' => __('Form Builder'),
             'parent' => null,
-            'permissions' => ['form-builder'],
+            'permissions' => [],
             'icon' => 'mdi mdi-format-float-left',
         ]);
 

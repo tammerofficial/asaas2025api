@@ -7,8 +7,11 @@ use App\Http\Requests\Api\Central\PricePlan\StorePricePlanRequest;
 use App\Http\Requests\Api\Central\PricePlan\UpdatePricePlanRequest;
 use App\Http\Resources\Api\Central\PricePlanResource;
 use App\Models\PricePlan;
+use App\Models\Tenant;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Artisan;
 
 class PricePlanController extends BaseApiController
 {
@@ -122,6 +125,9 @@ class PricePlanController extends BaseApiController
         // Clear related cache
         $this->clearCache('central_price_plans*');
         $this->clearCache("central_price_plan_{$plan->id}*");
+        
+        // Clear tenant caches for this plan
+        $this->clearPlanCache($plan->id);
 
         // Load relationships efficiently
         $plan->load([
@@ -153,6 +159,32 @@ class PricePlanController extends BaseApiController
             'success' => true,
             'message' => 'Price plan deleted successfully',
         ]);
+    }
+
+    /**
+     * Clear cache for all tenants using this plan
+     */
+    protected function clearPlanCache($planId)
+    {
+        // Clear Eloquent relationship cache
+        Cache::forget("price_plan_{$planId}_features");
+        
+        // Get all tenants using this plan
+        $tenants = Tenant::where('price_plan_id', $planId)->get();
+        
+        foreach ($tenants as $tenant) {
+            // Clear dashboard statistics cache
+            Cache::forget("tenant_dashboard_stats_{$tenant->id}");
+            Cache::forget("tenant_dashboard_stats_detailed_{$tenant->id}");
+            
+            // Clear view cache
+            Cache::forget("tenant_sidebar_menu_{$tenant->id}");
+        }
+        
+        // Clear all application cache
+        Artisan::call('cache:clear');
+        Artisan::call('view:clear');
+        Artisan::call('config:clear');
     }
 }
 

@@ -13,7 +13,7 @@ class CreatePlanFeaturesTable extends Migration
             $table->id();
             $table->bigInteger('plan_id');
             $table->string('feature_name');
-            $table->boolean('status')->default(0);
+            $table->boolean('status')->default(1); // Default to active (1) instead of inactive (0)
             $table->timestamps();
         });
     }

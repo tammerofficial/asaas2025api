@@ -44,21 +44,34 @@ class TenantDashboardController extends Controller
         $render_view_file = $theme_meta_instance->getThemeOverrideViews($theme_name,'dashboard',self::BASE_PATH.'admin-home');
         //todo:: remove the test code
         $total_admin = Admin::count();
-        $total_user= User::count();
-        $all_blogs = Blog::count();
+        
+        // Only get users count if tenant has products permission (customers related to products)
+        $total_user = 0;
+        if (tenant_plan_sidebar_permission('products')) {
+            $total_user = User::count();
+        }
+        
+        // Only get blogs count if tenant has blog permission
+        $all_blogs = 0;
+        if (tenant_plan_sidebar_permission('blog')) {
+            $all_blogs = Blog::count();
+        }
         
         // Only get products count if tenant has products permission
         $total_products = 0;
+        $total_orders = 0;
+        $total_sale = 0;
+        $recent_order_logs = collect();
+        
         if (tenant_plan_sidebar_permission('products')) {
             $total_products = Product::count();
+            $total_orders = ProductOrder::count();
+            $total_sale = ProductOrder::where('payment_status', 'success')->sum('total_amount');
+            $recent_order_logs = ProductOrder::orderBy('id','desc')->select('id','name', 'email', 'total_amount', 'payment_gateway', 'payment_status', 'status','created_at')->take(10)->get();
         }
         
-        $total_orders = ProductOrder::count();
-        $total_sale = ProductOrder::where('payment_status', 'success')->sum('total_amount');
 //        $current_package = tenant()->payment_log;
         $current_package = PaymentLogs::where('id', tenant()->renewal_payment_log_id)->first();
-
-        $recent_order_logs = ProductOrder::orderBy('id','desc')->select('id','name', 'email', 'total_amount', 'payment_gateway', 'payment_status', 'status','created_at')->take(10)->get();
 
 
         return view($render_view_file,compact('total_admin','total_user','all_blogs',

@@ -41,6 +41,7 @@
                             </div>
                         </div>
                     </div>
+                    @if(tenant_plan_sidebar_permission('products'))
                     <div class="col-xl-4 col-md-6 stretch-card">
                         <div class="card bg-gradient-info card-img-holder text-white">
                             <div class="card-body">
@@ -51,6 +52,8 @@
                             </div>
                         </div>
                     </div>
+                    @endif
+                    @if(tenant_plan_sidebar_permission('blog'))
                     <div class="col-xl-4 col-md-6 stretch-card">
                         <div class="card bg-gradient-success card-img-holder text-white">
                             <div class="card-body">
@@ -61,6 +64,8 @@
                             </div>
                         </div>
                     </div>
+                    @endif
+                    @if(tenant_plan_sidebar_permission('products'))
                     <div class="col-xl-4 col-md-6 stretch-card">
                         <div class="card bg-gradient-info card-img-holder text-white">
                             <div class="card-body">
@@ -71,6 +76,8 @@
                             </div>
                         </div>
                     </div>
+                    @endif
+                    @if(tenant_plan_sidebar_permission('products'))
                     <div class="col-xl-4 col-md-6 stretch-card">
                         <div class="card bg-gradient-primary card-img-holder text-white">
                             <div class="card-body">
@@ -91,7 +98,9 @@
                             </div>
                         </div>
                     </div>
+                    @endif
 
+                    @if(tenant_plan_sidebar_permission('products'))
                     <div class="col-12">
                         <div class="recent_order_wrap mt-4">
                             <h3 class=" text-center mb-4">{{__('Recent Order Logs')}}</h3>
@@ -110,30 +119,37 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($recent_order_logs as $key => $data)
+                                    @if($recent_order_logs->count() > 0)
+                                        @foreach($recent_order_logs as $key => $data)
+                                            <tr>
+                                                <td>{{ $data->id }}</td>
+                                                <td>{{ $data->name ?? '' }}</td>
+                                                <td> {{$data->email}} </td>
+                                                <td> {{amount_with_currency_symbol($data->total_amount)}} </td>
+                                                <td>{{$data->status}}</td>
+                                                @php
+                                                    $payment_status_color = match ($data->payment_status){
+                                                        'success' => 'text-success',
+                                                        'pending' => 'text-warning',
+                                                        'failed' => 'text-danger'
+                                                    }
+                                                @endphp
+                                                <td class="{{$payment_status_color}}">{{$data->payment_status}}</td>
+                                                <td>{{str_replace('_',' ',$data->payment_gateway)}}</td>
+                                                <td>{{$data->created_at->diffForHumans()}}</td>
+                                            </tr>
+                                        @endforeach
+                                    @else
                                         <tr>
-                                            <td>{{ $data->id }}</td>
-                                            <td>{{ $data->name ?? '' }}</td>
-                                            <td> {{$data->email}} </td>
-                                            <td> {{amount_with_currency_symbol($data->total_amount)}} </td>
-                                            <td>{{$data->status}}</td>
-                                            @php
-                                                $payment_status_color = match ($data->payment_status){
-                                                    'success' => 'text-success',
-                                                    'pending' => 'text-warning',
-                                                    'failed' => 'text-danger'
-                                                }
-                                            @endphp
-                                            <td class="{{$payment_status_color}}">{{$data->payment_status}}</td>
-                                            <td>{{str_replace('_',' ',$data->payment_gateway)}}</td>
-                                            <td>{{$data->created_at->diffForHumans()}}</td>
+                                            <td colspan="8" class="text-center">{{__('No orders found')}}</td>
                                         </tr>
-                                    @endforeach
+                                    @endif
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
