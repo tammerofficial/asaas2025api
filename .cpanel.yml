@@ -12,8 +12,16 @@ deployment:
     # Copy root index.php FIRST (most important file - must be preserved)
     - /bin/cp -f index.php $DEPLOYPATH/index.php || /bin/cp index.php $DEPLOYPATH
     
+    # Backup sensitive files before copying core directory
+    - if [ -f $DEPLOYPATH/core/.env ]; then /bin/cp $DEPLOYPATH/core/.env $DEPLOYPATH/core/.env.backup; fi
+    - if [ -f $DEPLOYPATH/core/storage/.gitignore ]; then /bin/cp $DEPLOYPATH/core/storage/.gitignore $DEPLOYPATH/core/storage/.gitignore.backup; fi
+    
     # Copy entire core directory to deployment path
     - /bin/cp -R core $DEPLOYPATH
+    
+    # Restore sensitive files from backup (if they existed)
+    - if [ -f $DEPLOYPATH/core/.env.backup ]; then /bin/mv $DEPLOYPATH/core/.env.backup $DEPLOYPATH/core/.env; fi
+    - if [ -f $DEPLOYPATH/core/storage/.gitignore.backup ]; then /bin/mv $DEPLOYPATH/core/storage/.gitignore.backup $DEPLOYPATH/core/storage/.gitignore; fi
     
     # Copy assets directory if exists
     - /bin/cp -R assets $DEPLOYPATH || true
@@ -80,7 +88,16 @@ deployment:
     - /bin/cp -f index.php $DEPLOYPATH/index.php || /bin/cp index.php $DEPLOYPATH
     - /bin/chmod 644 $DEPLOYPATH/index.php || true
     
-    # Create .env file on server from .env.production template
-    - /bin/cp -f core/.env.production $DEPLOYPATH/core/.env || true
-    - /bin/chmod 600 $DEPLOYPATH/core/.env || true
+    # Protect sensitive files - only create .env if it doesn't exist
+    # This ensures existing .env on server is never overwritten during deployments
+    - if [ ! -f $DEPLOYPATH/core/.env ]; then /bin/cp core/.env.production $DEPLOYPATH/core/.env; fi
+    - /bin/chmod 600 $DEPLOYPATH/core/.env 2>/dev/null || true
+    
+    # Ensure .env is protected from being overwritten
+    - if [ -f $DEPLOYPATH/core/.env ]; then /bin/chmod 600 $DEPLOYPATH/core/.env; fi
+    
+    # Protect storage directory - don't overwrite existing storage files
+    - /bin/chmod -R 755 $DEPLOYPATH/core/storage 2>/dev/null || true
+    - /bin/chmod -R 777 $DEPLOYPATH/core/storage/logs 2>/dev/null || true
+    - /bin/chmod -R 777 $DEPLOYPATH/core/storage/framework 2>/dev/null || true
 
