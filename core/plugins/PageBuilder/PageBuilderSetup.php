@@ -37,6 +37,24 @@ use Plugins\PageBuilder\Addons\Common\VideoBox\VideoBox;
 use Plugins\PageBuilder\Addons\Common\FormWidget\FormWidget;
 use Plugins\PageBuilder\Addons\Common\BackgroundOverlay\BackgroundOverlay;
 use Plugins\PageBuilder\Addons\Common\ImageLottie\ImageLottie;
+use Plugins\PageBuilder\Addons\Common\Divider\Divider;
+use Plugins\PageBuilder\Addons\Common\Spacer\Spacer;
+use Plugins\PageBuilder\Addons\Common\Accordion\Accordion;
+use Plugins\PageBuilder\Addons\Common\Table\Table;
+use Plugins\PageBuilder\Addons\Common\Breadcrumb\Breadcrumb;
+use Plugins\PageBuilder\Addons\Common\Alert\Alert;
+use Plugins\PageBuilder\Addons\Common\Counter\Counter;
+use Plugins\PageBuilder\Addons\Common\ProgressBar\ProgressBar;
+use Plugins\PageBuilder\Addons\Common\FlipBox\FlipBox;
+use Plugins\PageBuilder\Addons\Common\Typewriter\Typewriter;
+use Plugins\PageBuilder\Addons\Common\Countdown\Countdown;
+use Plugins\PageBuilder\Addons\Common\Gallery\Gallery;
+use Plugins\PageBuilder\Addons\Common\ImageComparison\ImageComparison;
+use Plugins\PageBuilder\Addons\Common\ModalBox\ModalBox;
+use Plugins\PageBuilder\Addons\Common\HotSpots\HotSpots;
+use Plugins\PageBuilder\Addons\Common\GoogleMaps\GoogleMaps;
+use Plugins\PageBuilder\Addons\Common\Newsletter\Newsletter as CommonNewsletter;
+use Plugins\PageBuilder\Addons\Common\SocialIcons\SocialIcons;
 use Plugins\PageBuilder\Addons\Landlord\Header\AboutHeaderStyleOne;
 use Plugins\PageBuilder\Addons\Landlord\Header\FeaturesStyleOne;
 use Plugins\PageBuilder\Addons\Landlord\Header\HeaderStyleOne;
@@ -232,6 +250,28 @@ class PageBuilderSetup
                 FormWidget::class,
                 BackgroundOverlay::class,
                 ImageLottie::class,
+                // Phase 1 - Safest addons (no external dependencies)
+                Divider::class,
+                Spacer::class,
+                Accordion::class,
+                Table::class,
+                Breadcrumb::class,
+                Alert::class,
+                // Phase 2 - Moderate addons (light JavaScript)
+                Counter::class,
+                ProgressBar::class,
+                FlipBox::class,
+                Typewriter::class,
+                // Phase 3 - Higher complexity addons
+                Countdown::class,
+                Gallery::class,
+                ImageComparison::class,
+                ModalBox::class,
+                HotSpots::class,
+                // Phase 4 - External dependencies
+                GoogleMaps::class,
+                CommonNewsletter::class,
+                SocialIcons::class,
             ];
 
             foreach ($globalAddons as $globalItem) {
