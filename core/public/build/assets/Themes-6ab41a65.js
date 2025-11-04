@@ -1,0 +1,1 @@
+import{P as o}from"./PlaceholderPage-603ecc72.js";import{_ as t,k as a,o as n,z as s}from"./_plugin-vue_export-helper-335f4554.js";const c={name:"Themes",components:{PlaceholderPage:o}};function r(p,m,l,_,d,h){const e=a("PlaceholderPage");return n(),s(e,{title:"Themes",endpoint:"/api/central/v1/themes"})}const P=t(c,[["render",r]]);export{P as default};

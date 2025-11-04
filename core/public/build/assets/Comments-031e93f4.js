@@ -1,0 +1,1 @@
+import{P as o}from"./PlaceholderPage-603ecc72.js";import{_ as t,k as n,o as a,z as s}from"./_plugin-vue_export-helper-335f4554.js";const c={name:"BlogComments",components:{PlaceholderPage:o}};function r(m,l,p,_,d,i){const e=n("PlaceholderPage");return a(),s(e,{title:"Blog Comments",endpoint:"/api/central/v1/blog-comments"})}const g=t(c,[["render",r]]);export{g as default};

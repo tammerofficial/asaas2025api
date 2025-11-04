@@ -1,0 +1,1 @@
+import{P as o}from"./PlaceholderPage-603ecc72.js";import{_ as t,k as a,o as n,z as r}from"./_plugin-vue_export-helper-335f4554.js";const c={name:"BlogCreate",components:{PlaceholderPage:o}};function s(l,p,_,d,m,i){const e=a("PlaceholderPage");return n(),r(e,{title:"Add New Blog",endpoint:"/api/central/v1/blogs"})}const P=t(c,[["render",s]]);export{P as default};

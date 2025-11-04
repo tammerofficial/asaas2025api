@@ -45,6 +45,63 @@ Route::group(['middleware' => ['auth:admin','adminglobalVariable', 'set_lang'],'
         Route::post('/change-password','update_change_password');
     });
 
+    /* ------------------------------------------
+        VUE.JS DASHBOARD V1 ROUTES
+    -------------------------------------------- */
+    Route::controller(\App\Http\Controllers\Central\V1\VueDashboardController::class)->group(function (){
+        Route::get('/v1', 'index')->name('landlord.admin.vue.dashboard.v1');
+    });
+    
+    /* ------------------------------------------
+        VUE.JS DASHBOARD V1 WEB API ROUTES (JSON)
+    -------------------------------------------- */
+    Route::controller(\App\Http\Controllers\Central\V1\WebApiController::class)->prefix('v1/api')->group(function (){
+        // Dashboard
+        Route::get('/dashboard/stats', 'dashboardStats')->name('landlord.admin.vue.api.dashboard.stats');
+        Route::get('/dashboard/recent-orders', 'recentOrders')->name('landlord.admin.vue.api.dashboard.recent-orders');
+        Route::get('/dashboard/chart-data', 'chartData')->name('landlord.admin.vue.api.dashboard.chart-data');
+        
+        // Tenants
+        Route::get('/tenants', 'tenants')->name('landlord.admin.vue.api.tenants');
+        
+        // Packages
+        Route::get('/packages', 'packages')->name('landlord.admin.vue.api.packages');
+        
+        // Orders
+        Route::get('/orders', 'orders')->name('landlord.admin.vue.api.orders');
+        Route::get('/orders/{id}', 'orderDetails')->name('landlord.admin.vue.api.orders.details');
+        
+        // Payments
+        Route::get('/payments', 'payments')->name('landlord.admin.vue.api.payments');
+        
+        // Admins
+        Route::get('/admins', 'admins')->name('landlord.admin.vue.api.admins');
+        
+        // Blog
+        Route::get('/blogs', 'blogs')->name('landlord.admin.vue.api.blogs');
+        Route::get('/blog/categories', 'blogCategories')->name('landlord.admin.vue.api.blog.categories');
+        
+        // Pages
+        Route::get('/pages', 'pages')->name('landlord.admin.vue.api.pages');
+        
+        // Coupons
+        Route::get('/coupons', 'coupons')->name('landlord.admin.vue.api.coupons');
+        
+        // Subscriptions
+        Route::get('/subscriptions/subscribers', 'subscribers')->name('landlord.admin.vue.api.subscribers');
+        Route::get('/subscriptions/stores', 'stores')->name('landlord.admin.vue.api.stores');
+        Route::get('/subscriptions/payment-histories', 'paymentHistories')->name('landlord.admin.vue.api.payment-histories');
+        Route::get('/subscriptions/custom-domains', 'customDomains')->name('landlord.admin.vue.api.custom-domains');
+        
+        // Support Tickets
+        Route::get('/support/tickets', 'supportTickets')->name('landlord.admin.vue.api.support.tickets');
+        Route::get('/support/tickets/{id}', 'supportTicketDetails')->name('landlord.admin.vue.api.support.ticket.details');
+        Route::get('/support/departments', 'supportDepartments')->name('landlord.admin.vue.api.support.departments');
+        
+        // Media
+        Route::get('/media', 'media')->name('landlord.admin.vue.api.media');
+    });
+
     Route::controller(UpdateInfoController::class)->group(function (){
         Route::get('update-info','mark_update_info')->name('landlord.admin.update.info');
     });

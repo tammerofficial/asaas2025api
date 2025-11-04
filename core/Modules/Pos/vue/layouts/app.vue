@@ -24,8 +24,8 @@
 }
 .paymentMethod__card li:is(:hover, .active){
     color: #ffffff;
-    background: #b66dff;
-    border-color: #b66dff;
+    background: #7f1625;
+    border-color: #7f1625;
 }
 .cross-icon{
     cursor: pointer;

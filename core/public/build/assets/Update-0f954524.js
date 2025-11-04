@@ -1,0 +1,1 @@
+import{P as o}from"./PlaceholderPage-603ecc72.js";import{_ as t,k as a,o as n,z as c}from"./_plugin-vue_export-helper-335f4554.js";const r={name:"Update",components:{PlaceholderPage:o}};function p(s,d,l,_,m,i){const e=a("PlaceholderPage");return n(),c(e,{title:"Update",endpoint:"/api/central/v1/update"})}const u=t(r,[["render",p]]);export{u as default};

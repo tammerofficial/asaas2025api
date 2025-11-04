@@ -17,7 +17,7 @@
                         <h4 class="header-title mb-4">{{__('All Admin Created By Super Admin')}}</h4>
                         <div class="table-wrap recent_order_logs">
                             <table class="table table-default table-striped table-bordered">
-                                <thead class="text-white" style="background-color: #b66dff">
+                                <thead class="text-white" style="background-color: #7f1625">
                                 <tr>
                                     <th>{{__('ID')}}</th>
                                     <th>{{__('Name')}}</th>

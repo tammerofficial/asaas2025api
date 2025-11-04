@@ -1,0 +1,1 @@
+import{P as o}from"./PlaceholderPage-603ecc72.js";import{_ as s,k as n,o as r,z as t}from"./_plugin-vue_export-helper-335f4554.js";const a={name:"Permissions",components:{PlaceholderPage:o}};function c(i,p,m,l,_,P){const e=n("PlaceholderPage");return r(),t(e,{title:"Permissions",endpoint:"/api/central/v1/permissions"})}const h=s(a,[["render",c]]);export{h as default};

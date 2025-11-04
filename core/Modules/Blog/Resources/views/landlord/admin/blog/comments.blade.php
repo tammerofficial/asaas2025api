@@ -36,7 +36,7 @@
                        </div>
                        <div class="table-wrap table-responsive">
                            <table class="table table-default table-striped table-bordered">
-                               <thead class="text-white" style="background-color: #b66dff">
+                               <thead class="text-white" style="background-color: #7f1625">
                                    <th class="no-sort">
                                       <div class="mark-all-checkbox">
                                           <input type="checkbox" class="all-checkbox">

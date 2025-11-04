@@ -25,7 +25,7 @@
 
         small {
             font-size: 12px;
-            color: #b66dff;
+            color: #7f1625;
         }
 
         .price_plan_info {

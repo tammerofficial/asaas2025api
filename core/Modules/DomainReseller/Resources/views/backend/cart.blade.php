@@ -57,7 +57,7 @@
         }
 
         .agreement-heading{
-            background-color: #b66dff;
+            background-color: #7f1625;
             color: #ffffff;
         }
         .agreement-content{

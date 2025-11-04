@@ -26,7 +26,7 @@
                     <div class="col-xl-4 col-md-6 stretch-card">
                         <div class="card bg-gradient-danger card-img-holder text-white">
                             <div class="card-body">
-                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}"
+                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}" loading="lazy"
                                      class="card-img-absolute" alt="circle-image">
                                 <h4 class="font-weight-bold mb-3">{{__('Total Admins')}}<i
                                             class="las la-user-shield mdi-24px float-right"></i>
@@ -38,7 +38,7 @@
                     <div class="col-xl-4 col-md-6 stretch-card">
                         <div class="card bg-gradient-info card-img-holder text-white">
                             <div class="card-body">
-                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}"
+                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}" loading="lazy"
                                      class="card-img-absolute" alt="circle-image">
                                 <h4 class="font-weight-bold mb-3">{{__('Total Users')}}<i
                                             class="las la-user-shield mdi-24px float-right"></i>
@@ -50,7 +50,7 @@
                     <div class="col-xl-4 col-md-6 stretch-card">
                         <div class="card bg-gradient-success card-img-holder text-white">
                             <div class="card-body">
-                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}"
+                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}" loading="lazy"
                                      class="card-img-absolute" alt="circle-image">
                                 <h4 class="font-weight-bold mb-3">{{__('Total Shops')}}
                                     <i class="mdi mdi-store mdi-24px float-right"></i>
@@ -62,7 +62,7 @@
                     <div class="col-xl-4 col-md-6 stretch-card">
                         <div class="card bg-gradient-info card-img-holder text-white">
                             <div class="card-body">
-                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}"
+                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}" loading="lazy"
                                      class="card-img-absolute" alt="circle-image">
                                 <h4 class="font-weight-bold mb-3">{{__('Total Testimonial')}} <i
                                             class="mdi mdi-diamond mdi-24px float-right"></i>
@@ -74,7 +74,7 @@
                     <div class="col-xl-4 col-md-6 stretch-card">
                         <div class="card bg-gradient-primary card-img-holder text-white">
                             <div class="card-body">
-                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}"
+                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}" loading="lazy"
                                      class="card-img-absolute" alt="circle-image">
                                 <h4 class="font-weight-bold mb-3">{{__('Total Price Plan')}}<i
                                             class="mdi mdi-diamond mdi-24px float-right"></i>
@@ -89,7 +89,7 @@
                     <div class="col-xl-4 col-md-6 stretch-card mt-3">
                         <div class="card bg-gradient-warning card-img-holder text-white">
                             <div class="card-body">
-                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}"
+                                <img src="{{global_asset('assets/landlord/admin/images/circle.png')}}" loading="lazy"
                                      class="card-img-absolute" alt="circle-image">
                                 <h4 class="font-weight-bold mb-3">{{__('Total Theme')}} <i
                                             class="mdi mdi-diamond mdi-24px float-right"></i>
@@ -119,7 +119,7 @@
                             <h3 class=" text-center mb-4">{{__('Recent Order Logs')}}</h3>
                             <div class="recent_order_logs">
                                 <table class="table table-bordered">
-                                    <thead class="text-white" style="background-color: #b66dff">
+                                    <thead class="text-white" style="background-color: #7f1625">
                                     <tr>
                                         <th> {{__('ID')}} </th>
                                         <th> {{__('Order ID')}}</th>
@@ -165,8 +165,10 @@
 @endsection
 
 @section('scripts')
-    <script src="{{asset('assets/landlord/admin/js/update-info.js')}}"></script>
-    <script src="{{asset('assets/common/js/chart.js')}}"></script>
+    @if(count($update_info) > 0)
+        <script src="{{asset('assets/landlord/admin/js/update-info.js')}}" defer></script>
+    @endif
+    <script src="{{asset('assets/common/js/chart.js')}}" defer></script>
     <script>
         $.ajax({
             url: '{{route('landlord.admin.home.chart.data.month')}}',

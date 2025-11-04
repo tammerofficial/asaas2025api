@@ -10,7 +10,7 @@
         .selected_text {
             top: 0;
             left: 0;
-            background-color: #b66dff;
+            background-color: #7f1625;
             padding: 15px;
             position: absolute;
             color: white;
@@ -22,7 +22,7 @@
         }
 
         .active_theme {
-            background-color: #b66dff;
+            background-color: #7f1625;
         }
 
         .modal-image {

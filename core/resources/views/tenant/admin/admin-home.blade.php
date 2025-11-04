@@ -97,7 +97,7 @@
                             <h3 class=" text-center mb-4">{{__('Recent Order Logs')}}</h3>
                             <div class="recent_order_logs">
                                 <table class="table table-responsive table-bordered">
-                                    <thead class="text-white" style="background-color: #b66dff">
+                                    <thead class="text-white" style="background-color: #7f1625">
                                     <tr>
                                         <th> {{__('Order ID')}} </th>
                                         <th> {{__('Customer Name')}} </th>

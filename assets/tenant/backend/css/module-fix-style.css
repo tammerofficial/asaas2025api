@@ -1314,7 +1314,7 @@ table.dataTable thead td {
     justify-content: center;
     height: 35px;
     width: 35px;
-    color: #b66dff !important;
+    color: #7f1625 !important;
     border-radius: 3px;
 }
 
@@ -1588,7 +1588,7 @@ table.dataTable tbody tr {
     transition: all .3s;
 }
 .sidebar-icon-only .sidebar .nav .nav-item.hover-open .sub-menu .nav-link:hover .menu-title {
-    color: #b66dff;
+    color: #7f1625;
 }
 
 .media_upload_modal_backdrop{

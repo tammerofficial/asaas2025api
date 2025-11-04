@@ -8,6 +8,12 @@ const host = "nazmart.test";
 
 export default defineConfig({
     root: dirname(fileURLToPath(import.meta.url)),
+    base: '/',
+    build: {
+        outDir: 'public/build',
+        manifest: true,
+        emptyOutDir: true,
+    },
     plugins: [
         vue({
             template: {
@@ -18,13 +24,25 @@ export default defineConfig({
             },
         }),
         laravel({
-            buildDirectory: "../../core/Modules/Pos/_build",
-            input: ['resources/css/app.css', 'resources/js/app.js'],
+            input: [
+                'resources/css/app.css', 
+                'resources/js/app.js',
+                'resources/css/central-v1.css', 
+                'resources/js/central/central-v1.js'
+            ],
             refresh: true,
             detectTls: host,
         }),
     ],
     server: {
-        host: host
-    }
+        host: host,
+        hmr: {
+            host: host,
+        },
+    },
+    resolve: {
+        alias: {
+            '@': '/resources/js',
+        },
+    },
 });

@@ -77,7 +77,8 @@
         "files": [
             "app/Helpers/funtions.php",
             "app/Helpers/module-helper.php",
-            "app/Helpers/theme-helper.php"
+            "app/Helpers/theme-helper.php",
+            "app/Helpers/brand_color_helpers.php"
         ]
     },
     "autoload-dev": {

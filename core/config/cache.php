@@ -116,6 +116,12 @@ return [
     |
     */
 
-    'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache'),
+    /*
+     * Cache prefix is dynamically set by TenantCacheServiceProvider
+     * - Central: 'central'
+     * - Tenant: 'tenant_{tenant_id}'
+     * This ensures complete cache isolation between tenants
+     */
+    'prefix' => env('CACHE_PREFIX', 'cache'),
 
 ];

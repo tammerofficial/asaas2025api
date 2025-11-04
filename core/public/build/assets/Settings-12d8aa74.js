@@ -1,0 +1,1 @@
+import{P as o}from"./PlaceholderPage-603ecc72.js";import{_ as t,k as n,o as s,z as a}from"./_plugin-vue_export-helper-335f4554.js";const c={name:"BlogSettings",components:{PlaceholderPage:o}};function r(l,p,i,_,g,m){const e=n("PlaceholderPage");return s(),a(e,{title:"Blog Settings",endpoint:"/api/central/v1/blog-settings"})}const P=t(c,[["render",r]]);export{P as default};

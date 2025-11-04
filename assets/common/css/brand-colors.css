@@ -1,0 +1,124 @@
+/**
+ * 🎨 Brand Colors CSS Variables
+ * 
+ * ملف متغيرات الألوان الرئيسية - يحتوي على جميع ألوان البراند
+ * Brand Colors CSS Variables - Contains all brand color definitions
+ * 
+ * Primary Brand Color: #7f1625 (Burgundy/Deep Red)
+ * Old Color: #b66dff (Purple) - REPLACED
+ */
+
+:root {
+    /* 🎯 Primary Brand Colors */
+    --brand-primary: #7f1625;
+    --brand-primary-dark: #5a0f19;
+    --brand-primary-darker: #3d0a11;
+    --brand-primary-light: #a01d2f;
+    --brand-primary-lighter: #c5253d;
+    --brand-primary-pale: #e6394f;
+    --brand-primary-hover: #5a0f19;  /* For hover states */
+    
+    /* 🎨 RGBA Variations */
+    --brand-primary-rgba-20: rgba(127, 22, 37, 0.2);
+    --brand-primary-rgba-30: rgba(127, 22, 37, 0.3);
+    --brand-primary-rgba-50: rgba(127, 22, 37, 0.5);
+    --brand-primary-rgba-70: rgba(127, 22, 37, 0.7);
+    --brand-primary-rgba-90: rgba(127, 22, 37, 0.9);
+    
+    /* ✅ Success Colors */
+    --brand-success: #28a745;
+    --brand-success-light: #34ce57;
+    --brand-success-dark: #1e7e34;
+    
+    /* ⚠️ Warning Colors */
+    --brand-warning: #ffc107;
+    --brand-warning-light: #ffd454;
+    --brand-warning-dark: #d39e00;
+    
+    /* ❌ Danger Colors */
+    --brand-danger: #dc3545;
+    --brand-danger-light: #e4606d;
+    --brand-danger-dark: #bd2130;
+    
+    /* ℹ️ Info Colors */
+    --brand-info: #17a2b8;
+    --brand-info-light: #3fbfd2;
+    --brand-info-dark: #117a8b;
+    
+    /* ⚪ Neutral Colors */
+    --brand-white: #ffffff;
+    --brand-gray-100: #f8f9fa;
+    --brand-gray-200: #e9ecef;
+    --brand-gray-300: #dee2e6;
+    --brand-gray-400: #ced4da;
+    --brand-gray-500: #adb5bd;
+    --brand-gray-600: #6c757d;
+    --brand-gray-700: #495057;
+    --brand-gray-800: #343a40;
+    --brand-gray-900: #212529;
+    --brand-black: #000000;
+    
+    /* 🎭 UI Element Colors */
+    --brand-background: #ffffff;
+    --brand-background-dark: #f8f9fa;
+    --brand-border: #dee2e6;
+    --brand-border-light: #e9ecef;
+    --brand-text-primary: #212529;
+    --brand-text-secondary: #6c757d;
+    --brand-text-muted: #888888;
+    --brand-link: #7f1625;
+    --brand-link-hover: #5a0f19;
+    
+    /* 🔄 Bootstrap Override */
+    --bs-primary: #7f1625;
+    --bs-primary-rgb: 127, 22, 37;
+}
+
+/* 🎨 Utility Classes for Quick Usage */
+
+/* Background Colors */
+.bg-brand-primary { background-color: var(--brand-primary) !important; }
+.bg-brand-primary-light { background-color: var(--brand-primary-light) !important; }
+.bg-brand-primary-dark { background-color: var(--brand-primary-dark) !important; }
+
+/* Override Bootstrap bg-primary */
+.bg-primary {
+    --bs-bg-opacity: 1;
+    background-color: var(--brand-primary) !important;
+}
+
+/* Text Colors */
+.text-brand-primary { color: var(--brand-primary) !important; }
+.text-brand-primary-light { color: var(--brand-primary-light) !important; }
+.text-brand-primary-dark { color: var(--brand-primary-dark) !important; }
+
+/* Border Colors */
+.border-brand-primary { border-color: var(--brand-primary) !important; }
+.border-brand-primary-light { border-color: var(--brand-primary-light) !important; }
+.border-brand-primary-dark { border-color: var(--brand-primary-dark) !important; }
+
+/* Button Hover Effects */
+.btn-brand-primary {
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
+    color: white;
+}
+
+.btn-brand-primary:hover {
+    background-color: var(--brand-primary-hover);
+    border-color: var(--brand-primary-hover);
+}
+
+.btn-brand-primary:focus {
+    box-shadow: 0 0 0 0.25rem var(--brand-primary-rgba-50);
+}
+
+/* Link Colors */
+a.brand-link {
+    color: var(--brand-primary);
+}
+
+a.brand-link:hover {
+    color: var(--brand-primary-dark);
+}
+

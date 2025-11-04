@@ -1,0 +1,1 @@
+import{P as o}from"./PlaceholderPage-603ecc72.js";import{_ as a,k as t,o as n,z as s}from"./_plugin-vue_export-helper-335f4554.js";const c={name:"BlogTags",components:{PlaceholderPage:o}};function r(l,p,_,g,m,d){const e=t("PlaceholderPage");return n(),s(e,{title:"Blog Tags",endpoint:"/api/central/v1/blog-tags"})}const P=a(c,[["render",r]]);export{P as default};
