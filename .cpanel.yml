@@ -33,9 +33,18 @@ deployment:
     - /bin/mkdir -p $DEPLOYPATH/core/storage/app/public
     - /bin/mkdir -p $DEPLOYPATH/core/bootstrap/cache
     
-    # Set proper permissions for storage and cache directories
-    - /bin/chmod -R 775 $DEPLOYPATH/core/storage
-    - /bin/chmod -R 775 $DEPLOYPATH/core/bootstrap/cache
+    # Create .gitkeep files to ensure directories are tracked
+    - /bin/touch $DEPLOYPATH/core/storage/logs/.gitkeep || true
+    - /bin/touch $DEPLOYPATH/core/storage/framework/cache/.gitkeep || true
+    - /bin/touch $DEPLOYPATH/core/storage/framework/cache/data/.gitkeep || true
+    - /bin/touch $DEPLOYPATH/core/storage/framework/sessions/.gitkeep || true
+    - /bin/touch $DEPLOYPATH/core/storage/framework/views/.gitkeep || true
+    - /bin/touch $DEPLOYPATH/core/storage/app/public/.gitkeep || true
+    - /bin/touch $DEPLOYPATH/core/bootstrap/cache/.gitkeep || true
+    
+    # Set proper permissions for storage and cache directories (777 for maximum compatibility)
+    - /bin/chmod -R 777 $DEPLOYPATH/core/storage
+    - /bin/chmod -R 777 $DEPLOYPATH/core/bootstrap/cache
     
     # Set ownership (adjust username if needed)
     - /bin/chown -R tammerify:tammerify $DEPLOYPATH/core/storage || true
