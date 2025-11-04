@@ -7,20 +7,20 @@
              data-autoplay="{{$data['autoplay'] ? 'true' : 'false'}}"
              data-speed="{{$data['speed']}}">
             <div class="logos-slider">
-                @if(array_key_exists('repeater_logo_image_', $data['repeater_data'] ?? []))
-                    @foreach($data['repeater_data']['repeater_logo_image_'] as $key => $logo_image)
+                @if(!empty($data['logo_ids']) && count($data['logo_ids']) > 0)
+                    @foreach($data['logo_ids'] as $logo_id)
                         <div class="logo-item">
-                            @if(!empty($data['repeater_data']['repeater_link_'][$key] ?? ''))
-                                <a href="{{$data['repeater_data']['repeater_link_'][$key]}}" target="_blank">
-                            @endif
-                            
-                            {!! render_image_markup_by_attachment_id($logo_image, 'medium', false, false, false) !!}
-                            
-                            @if(!empty($data['repeater_data']['repeater_link_'][$key] ?? ''))
-                                </a>
-                            @endif
+                            {!! render_image_markup_by_attachment_id(trim($logo_id), 'medium', false, false, false) !!}
                         </div>
                     @endforeach
+                    {{-- Duplicate logos for seamless loop --}}
+                    @foreach($data['logo_ids'] as $logo_id)
+                        <div class="logo-item">
+                            {!! render_image_markup_by_attachment_id(trim($logo_id), 'medium', false, false, false) !!}
+                        </div>
+                    @endforeach
+                @else
+                    <p class="text-center text-muted">{{__('No logos uploaded yet')}}</p>
                 @endif
             </div>
         </div>

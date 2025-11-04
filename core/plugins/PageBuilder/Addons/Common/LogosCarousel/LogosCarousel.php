@@ -3,11 +3,11 @@
 namespace Plugins\PageBuilder\Addons\Common\LogosCarousel;
 
 use App\Helpers\SanitizeInput;
-use Plugins\PageBuilder\Fields\Repeater;
+use Plugins\PageBuilder\Fields\ImageGallery;
 use Plugins\PageBuilder\Fields\Select;
 use Plugins\PageBuilder\Fields\Switcher;
 use Plugins\PageBuilder\Fields\Slider;
-use Plugins\PageBuilder\Helpers\RepeaterField;
+use Plugins\PageBuilder\Fields\Text;
 use Plugins\PageBuilder\PageBuilderBase;
 
 class LogosCarousel extends PageBuilderBase
@@ -25,27 +25,12 @@ class LogosCarousel extends PageBuilderBase
 
         $widget_saved_values = $this->get_settings();
 
-        $output .= Repeater::get([
-            'multi_lang' => false,
-            'settings' => $widget_saved_values,
-            'id' => 'logos_repeater',
-            'fields' => [
-                [
-                    'type' => RepeaterField::IMAGE,
-                    'name' => 'repeater_logo_image',
-                    'label' => __('Logo Image')
-                ],
-                [
-                    'type' => RepeaterField::TEXT,
-                    'name' => 'repeater_link',
-                    'label' => __('Link (Optional)')
-                ],
-                [
-                    'type' => RepeaterField::TEXT,
-                    'name' => 'repeater_alt_text',
-                    'label' => __('Alt Text')
-                ],
-            ]
+        $output .= ImageGallery::get([
+            'name' => 'logos_gallery',
+            'label' => __('Logo Images'),
+            'value' => $widget_saved_values['logos_gallery'] ?? null,
+            'dimensions' => '200x100',
+            'info' => __('Upload multiple logo images at once')
         ]);
 
         $output .= Switcher::get([
@@ -74,15 +59,25 @@ class LogosCarousel extends PageBuilderBase
 
     public function frontend_render()
     {
-        $repeater_data = $this->setting_item('logos_repeater');
+        $logos_gallery = $this->setting_item('logos_gallery') ?? '';
         $autoplay = (bool)($this->setting_item('autoplay') ?? true);
         $speed = (int)($this->setting_item('speed') ?? 3000);
         $padding_top = SanitizeInput::esc_html($this->setting_item('padding_top'));
         $padding_bottom = SanitizeInput::esc_html($this->setting_item('padding_bottom'));
         $section_id = SanitizeInput::esc_html($this->setting_item('section_id')) ?? '';
 
+        // Parse gallery images (format: "id1|id2|id3")
+        $logo_ids = [];
+        if (!empty($logos_gallery)) {
+            $logo_ids = explode('|', $logos_gallery);
+            $logo_ids = array_filter($logo_ids, function($id) {
+                return !empty(trim($id));
+            });
+        }
+
         $data = [
-            'repeater_data' => $repeater_data,
+            'logo_ids' => $logo_ids,
+            'logos_gallery' => $logos_gallery,
             'autoplay' => $autoplay,
             'speed' => $speed,
             'padding_top' => $padding_top,
