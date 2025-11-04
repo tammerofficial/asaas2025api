@@ -9,11 +9,11 @@ deployment:
     # Set deployment path to public_html directly
     - export DEPLOYPATH=/home/tammerify/public_html/
     
+    # Copy root index.php FIRST (most important file - must be preserved)
+    - /bin/cp -f index.php $DEPLOYPATH/index.php || /bin/cp index.php $DEPLOYPATH
+    
     # Copy entire core directory to deployment path
     - /bin/cp -R core $DEPLOYPATH
-    
-    # Copy root index.php to deployment path
-    - /bin/cp index.php $DEPLOYPATH
     
     # Copy assets directory if exists
     - /bin/cp -R assets $DEPLOYPATH || true
