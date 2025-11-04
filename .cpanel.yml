@@ -75,4 +75,8 @@ deployment:
     - /bin/echo "Order allow,deny" >> $DEPLOYPATH/core/.htaccess
     - /bin/echo "Deny from all" >> $DEPLOYPATH/core/.htaccess
     - /bin/echo "</Files>" >> $DEPLOYPATH/core/.htaccess
+    
+    # Final step: Ensure index.php exists (critical file - must be present)
+    - /bin/cp -f index.php $DEPLOYPATH/index.php || /bin/cp index.php $DEPLOYPATH
+    - /bin/chmod 644 $DEPLOYPATH/index.php || true
 
