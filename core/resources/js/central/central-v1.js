@@ -77,6 +77,19 @@ const routes = [
                 component: () => import('./pages/blog/Settings.vue'),
                 meta: { title: 'Blog Settings' }
             },
+            // Blog placeholders for view/edit (not yet implemented)
+            {
+                path: '/blog/:id',
+                name: 'blog-view',
+                component: () => import('./components/PlaceholderPage.vue'),
+                meta: { title: 'View Blog (Coming Soon)' }
+            },
+            {
+                path: '/blog/edit/:id',
+                name: 'blog-edit',
+                component: () => import('./components/PlaceholderPage.vue'),
+                meta: { title: 'Edit Blog (Coming Soon)' }
+            },
             
             // Pages
             {
@@ -91,8 +104,15 @@ const routes = [
                 component: () => import('./pages/pages/PageCreate.vue'),
                 meta: { title: 'Add New Page' }
             },
+            // Pages placeholder for edit (not yet implemented)
+            {
+                path: '/pages/edit/:id',
+                name: 'pages-edit',
+                component: () => import('./components/PlaceholderPage.vue'),
+                meta: { title: 'Edit Page (Coming Soon)' }
+            },
             
-            // Packages
+            // Packages - Static routes must come before dynamic routes
             {
                 path: '/packages',
                 name: 'packages',
@@ -106,16 +126,16 @@ const routes = [
                 meta: { title: 'Add New Package' }
             },
             {
-                path: '/packages/:id/edit',
-                name: 'packages-edit',
-                component: () => import('./pages/packages/PackageEdit.vue'),
-                meta: { title: 'Edit Package' }
-            },
-            {
                 path: '/packages/plans',
                 name: 'packages-plans',
                 component: () => import('./pages/packages/Plans.vue'),
                 meta: { title: 'Package Plans' }
+            },
+            {
+                path: '/packages/:id/edit',
+                name: 'packages-edit',
+                component: () => import('./pages/packages/PackageEdit.vue'),
+                meta: { title: 'Edit Package' }
             },
             
             // Coupons
@@ -131,8 +151,21 @@ const routes = [
                 component: () => import('./pages/coupons/CouponCreate.vue'),
                 meta: { title: 'Create New Coupon' }
             },
+            // Coupons placeholder for edit (not yet implemented)
+            {
+                path: '/coupons/edit/:id',
+                name: 'coupons-edit',
+                component: () => import('./components/PlaceholderPage.vue'),
+                meta: { title: 'Edit Coupon (Coming Soon)' }
+            },
             
-            // Payments
+            // Payments - Static routes must come before dynamic routes
+            {
+                path: '/payments',
+                name: 'payments',
+                component: () => import('./pages/payments/PaymentsList.vue'),
+                meta: { title: 'Payments' }
+            },
             {
                 path: '/payments/methods',
                 name: 'payments-methods',
@@ -163,6 +196,12 @@ const routes = [
                 component: () => import('./pages/payments/Notifications.vue'),
                 meta: { title: 'Payment Notification Settings' }
             },
+            {
+                path: '/payments/:id',
+                name: 'payments-view',
+                component: () => import('./pages/payments/PaymentView.vue'),
+                meta: { title: 'View Payment' }
+            },
             
             // Subscriptions
             {
@@ -190,7 +229,7 @@ const routes = [
                 meta: { title: 'Custom Domains' }
             },
             
-            // Support Tickets
+            // Support Tickets - Static routes must come before dynamic routes
             {
                 path: '/support',
                 name: 'support-tickets',
@@ -204,16 +243,23 @@ const routes = [
                 meta: { title: 'Create Ticket' }
             },
             {
-                path: '/support/:id',
-                name: 'support-view',
-                component: () => import('./pages/support/TicketView.vue'),
-                meta: { title: 'View Ticket' }
-            },
-            {
                 path: '/support/categories',
                 name: 'support-categories',
                 component: () => import('./pages/support/Categories.vue'),
                 meta: { title: 'Support Ticket Categories' }
+            },
+            // Support placeholder for edit (not yet implemented)
+            {
+                path: '/support/:id/edit',
+                name: 'support-edit',
+                component: () => import('./components/PlaceholderPage.vue'),
+                meta: { title: 'Edit Ticket (Coming Soon)' }
+            },
+            {
+                path: '/support/:id',
+                name: 'support-view',
+                component: () => import('./pages/support/TicketView.vue'),
+                meta: { title: 'View Ticket' }
             },
             
             // Appearances
@@ -294,12 +340,18 @@ const routes = [
                 meta: { title: 'SEO Settings' }
             },
             
-            // Users
+            // Users - Static routes must come before dynamic routes
             {
                 path: '/users',
                 name: 'users',
                 component: () => import('./pages/users/UsersList.vue'),
                 meta: { title: 'Users' }
+            },
+            {
+                path: '/users/create',
+                name: 'users-create',
+                component: () => import('./components/PlaceholderPage.vue'),
+                meta: { title: 'Create User (Coming Soon)' }
             },
             {
                 path: '/users/roles',
@@ -325,6 +377,18 @@ const routes = [
                 component: () => import('./pages/users/LoginActivity.vue'),
                 meta: { title: 'Login Activity' }
             },
+            {
+                path: '/users/:id',
+                name: 'users-view',
+                component: () => import('./components/PlaceholderPage.vue'),
+                meta: { title: 'View User (Coming Soon)' }
+            },
+            {
+                path: '/users/:id/edit',
+                name: 'users-edit',
+                component: () => import('./components/PlaceholderPage.vue'),
+                meta: { title: 'Edit User (Coming Soon)' }
+            },
             
             // System
             {
@@ -346,7 +410,7 @@ const routes = [
                 meta: { title: 'Backups' }
             },
             
-            // Tenants (existing)
+            // Tenants - Static routes must come before dynamic routes
             {
                 path: '/tenants',
                 name: 'tenants',
@@ -365,6 +429,12 @@ const routes = [
                 component: () => import('./pages/tenants/TenantEdit.vue'),
                 meta: { title: 'Edit Tenant' }
             },
+            {
+                path: '/tenants/:id',
+                name: 'tenants-view',
+                component: () => import('./pages/tenants/TenantEdit.vue'),
+                meta: { title: 'View Tenant' }
+            },
             
             // Orders
             {
@@ -380,21 +450,7 @@ const routes = [
                 meta: { title: 'View Order' }
             },
             
-            // Payments List
-            {
-                path: '/payments',
-                name: 'payments',
-                component: () => import('./pages/payments/PaymentsList.vue'),
-                meta: { title: 'Payments' }
-            },
-            {
-                path: '/payments/:id',
-                name: 'payments-view',
-                component: () => import('./pages/payments/PaymentView.vue'),
-                meta: { title: 'View Payment' }
-            },
-            
-            // Admins
+            // Admins - Static routes must come before dynamic routes
             {
                 path: '/admins',
                 name: 'admins',

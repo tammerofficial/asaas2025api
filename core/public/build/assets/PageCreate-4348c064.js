@@ -1,1 +1,0 @@
-import{P as o}from"./PlaceholderPage-603ecc72.js";import{_ as a,k as t,o as n,z as r}from"./_plugin-vue_export-helper-335f4554.js";const c={name:"PageCreate",components:{PlaceholderPage:o}};function s(p,l,_,d,P,m){const e=t("PlaceholderPage");return n(),r(e,{title:"Add New Page",endpoint:"/api/central/v1/pages"})}const g=a(c,[["render",s]]);export{g as default};

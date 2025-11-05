@@ -1,0 +1,223 @@
+/* Modern Dashboard V2 - Lightweight & Performance Optimized */
+/* Brand Color: #7f1625 (Red from Logo) */
+
+:root {
+    --brand-primary: #7f1625;
+    --brand-primary-dark: #5a0f19;
+    --brand-primary-light: rgba(127, 22, 37, 0.1);
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --border-color: #e9ecef;
+    --bg-white: #fff;
+}
+
+/* Modern Stats Cards - Clean & Simple */
+.modern-stat-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--brand-primary);
+    border-radius: 8px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    will-change: transform;
+}
+
+.modern-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(127, 22, 37, 0.15);
+}
+
+.modern-stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--brand-primary-light);
+    color: var(--brand-primary);
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.modern-stat-content {
+    flex: 1;
+    margin-left: 1rem;
+}
+
+.modern-stat-content h6 {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.modern-stat-content h2 {
+    color: var(--text-primary);
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* Dashboard Layout */
+.dashboard-modern {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    min-height: 100vh;
+    background: #f8f9fa;
+}
+
+.dashboard-sidebar {
+    background: var(--bg-white);
+    border-right: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.dashboard-content {
+    flex: 1;
+    padding: 2rem;
+}
+
+/* Sidebar Menu */
+.sidebar-modern {
+    padding: 1rem 0;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-item {
+    margin-bottom: 0.25rem;
+}
+
+.menu-item a {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.menu-item a:hover,
+.menu-item.active a {
+    background: var(--brand-primary-light);
+    color: var(--brand-primary);
+    border-left-color: var(--brand-primary);
+}
+
+.menu-item a i {
+    margin-right: 0.75rem;
+    font-size: 1.25rem;
+    width: 20px;
+    text-align: center;
+}
+
+/* Charts Section */
+.dashboard-charts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.chart-wrapper {
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.chart-title {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+}
+
+/* Table Section */
+.dashboard-table {
+    margin-top: 2rem;
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.dashboard-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.dashboard-table thead {
+    background-color: var(--brand-primary);
+    color: #fff;
+}
+
+.dashboard-table thead th {
+    padding: 1rem;
+    font-weight: 600;
+    text-align: left;
+}
+
+.dashboard-table tbody td {
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.dashboard-table tbody tr:hover {
+    background: var(--brand-primary-light);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dashboard-modern {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-sidebar {
+        position: fixed;
+        left: -100%;
+        z-index: 1000;
+        transition: left 0.3s ease;
+    }
+    
+    .dashboard-sidebar.open {
+        left: 0;
+    }
+    
+    .modern-stat-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .modern-stat-content {
+        margin-left: 0;
+        margin-top: 1rem;
+    }
+    
+    .dashboard-charts {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Performance Optimizations */
+.modern-stat-card,
+.modern-stat-icon {
+    contain: layout style paint;
+}
+

@@ -8,7 +8,8 @@ const host = "nazmart.test";
 
 export default defineConfig({
     root: dirname(fileURLToPath(import.meta.url)),
-    base: '/',
+    // Ensure dynamic chunks load from /build/assets/... in production
+    base: '/build/',
     build: {
         outDir: 'public/build',
         manifest: true,

@@ -1,0 +1,172 @@
+/* Modern Dashboard Design - Lightweight & Performance Optimized */
+/* Brand Color: #7f1625 (Red from Logo) */
+
+/* Stats Cards - Clean & Modern */
+.modern-stats-card {
+    background: #fff !important;
+    border: 1px solid #e9ecef !important;
+    border-left: 4px solid #7f1625 !important;
+    border-radius: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1.5rem;
+}
+
+.modern-stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(127, 22, 37, 0.15);
+}
+
+.modern-stats-card .card-body {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem !important;
+}
+
+.modern-stats-card .stats-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background: rgba(127, 22, 37, 0.1) !important;
+    color: #7f1625 !important;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.modern-stats-card .stats-content {
+    flex: 1;
+    margin-left: 1rem;
+}
+
+.modern-stats-card .stats-content h6 {
+    color: #6c757d !important;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.modern-stats-card .stats-content h2 {
+    color: #212529 !important;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* Remove old gradient backgrounds - only if they exist */
+.card.bg-gradient-primary,
+.card.bg-gradient-secondary,
+.card.bg-gradient-success,
+.card.bg-gradient-info,
+.card.bg-gradient-warning,
+.card.bg-gradient-danger {
+    background: #fff !important;
+    color: #212529 !important;
+}
+
+/* Remove card-img-holder and circle images - only if they exist */
+.card-img-holder,
+.card-img-absolute {
+    display: none !important;
+}
+
+/* Ensure cards are visible */
+.stretch-card {
+    display: block !important;
+    visibility: visible !important;
+}
+
+.col-12.stretch-card {
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* Table Header - Brand Color */
+.recent_order_logs table thead {
+    background-color: #7f1625 !important;
+}
+
+.recent_order_logs table thead th {
+    color: #fff !important;
+    font-weight: 600;
+    padding: 1rem;
+    border: none;
+}
+
+/* Chart Title */
+.chart-title {
+    color: #212529;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .modern-stats-card .card-body {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .modern-stats-card .stats-content {
+        margin-left: 0;
+        margin-top: 1rem;
+    }
+    
+    .modern-stats-card .stats-icon {
+        margin: 0 auto;
+    }
+}
+
+/* Ensure all content is visible */
+.col-12.stretch-card .card,
+.col-12.stretch-card .card-body,
+.col-12.stretch-card .row {
+    display: block !important;
+    visibility: visible !important;
+}
+
+.col-12.stretch-card .row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+}
+
+/* Ensure charts are visible */
+.chart-wrapper {
+    display: block !important;
+    visibility: visible !important;
+}
+
+.chart-wrapper canvas {
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* Ensure table is visible */
+.recent_order_logs_wrap,
+.recent_order_logs {
+    display: block !important;
+    visibility: visible !important;
+}
+
+.recent_order_logs table {
+    display: table !important;
+    visibility: visible !important;
+}
+
+/* Performance Optimizations */
+.modern-stats-card,
+.modern-stats-card .stats-icon {
+    will-change: transform;
+}
+
+/* Light weight - No heavy animations */
+/* Using simple transforms for hover effects */
+/* Solid colors instead of gradients for better performance */
+

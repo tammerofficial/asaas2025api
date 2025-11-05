@@ -189,4 +189,58 @@ class LandlordAdminController extends Controller
             'data' => $chart_data
         ]);
     }
+
+    /**
+     * Dashboard V2 - New Modern Design (Testing)
+     * Temporary method for testing the new admin-new views
+     */
+    public function dashboard_v2(){
+        $total_admin= Admin::count();
+
+        $total_user = 0;
+
+        $update_info = [];
+        try{
+             $total_user= User::count();
+             $update_info = UpdateInfo::whereNull('read_at')->get();
+        }catch(\Exception $e){
+
+        }
+
+        $all_tenants = Tenant::whereValid()->count();
+        $total_price_plan = PricePlan::count();
+        $total_brand = Brand::all()->count();
+        $total_testimonial = Testimonial::all()->count();
+        $recent_order_logs = PaymentLogs::orderBy('id','desc')->take(5)->get();
+
+        // Get messages and comments for topbar
+        $new_message = 0;
+        $all_messages = collect();
+        $new_comments = collect();
+        
+        try {
+            $all_messages = \App\Models\ContactMessage::where('status', 1)->orderBy('id','desc')->take(5)->get();
+            $new_message = $all_messages->count();
+            
+            if (isPluginActive('Blog')) {
+                $new_comments = \Modules\Blog\Entities\BlogComment::orderBy('id','desc')->take(5)->get();
+            }
+        } catch(\Exception $e) {
+            // Ignore errors
+        }
+
+        return view('landlord.admin-new.admin-home',compact(
+            'total_admin',
+            'total_user',
+            'all_tenants',
+            'total_brand',
+            'total_price_plan',
+            'total_testimonial',
+            'recent_order_logs',
+            'update_info',
+            'new_message',
+            'all_messages',
+            'new_comments'
+        ));
+    }
 }

@@ -1,245 +1,489 @@
 <template>
     <div class="packages-page">
+        <!-- Page Header -->
         <div class="page-header">
             <div>
-                <h2>📦 Packages Management</h2>
+                <h1 class="page-title">📦 Packages Management</h1>
                 <p class="page-subtitle">Manage pricing plans and packages</p>
             </div>
-            <router-link to="/packages/create" class="btn-primary">➕ Add New Package</router-link>
+            <div class="page-actions">
+                <router-link to="/packages/create" class="btn btn-primary">
+                    ➕ Add New Package
+                </router-link>
+            </div>
         </div>
 
+        <!-- Filters -->
         <div class="filters-bar">
-            <input v-model="searchQuery" type="text" placeholder="Search packages..." class="search-input" />
-            <select v-model="statusFilter" class="filter-select">
+            <div class="search-box">
+                <input 
+                    type="text" 
+                    v-model="searchQuery" 
+                    placeholder="Search packages..."
+                    class="search-input"
+                    @input="debounceSearch"
+                />
+            </div>
+            <select v-model="statusFilter" class="filter-select" @change="loadPackages(1)">
                 <option value="">All Status</option>
                 <option value="1">Active</option>
                 <option value="0">Inactive</option>
             </select>
         </div>
 
-        <DataTable
-            :columns="columns"
-            :data="packages"
-            :loading="loading"
-            :pagination="true"
-            :current-page="currentPage"
-            :total-pages="totalPages"
-            :total="total"
-            :per-page="perPage"
-            @update:current-page="currentPage = $event"
-        >
-            <template #cell-status="{ value }">
-                <StatusBadge :status="value ? 'active' : 'inactive'" />
-            </template>
-            <template #cell-price="{ value }">
-                {{ formatPrice(value) }}
-            </template>
-            <template #cell-actions="{ row }">
-                <div class="action-buttons">
-                    <router-link :to="`/packages/${row.id}/edit`" class="btn-sm btn-secondary">Edit</router-link>
-                    <button @click="deletePackage(row.id)" class="btn-sm btn-danger">Delete</button>
-                </div>
-            </template>
-        </DataTable>
+        <!-- Packages Table -->
+        <div class="table-container">
+            <div v-if="loading" class="loading-overlay">
+                <div class="spinner"></div>
+                <p>Loading packages...</p>
+            </div>
+            
+            <table v-else class="packages-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Price</th>
+                        <th>Type</th>
+                        <th>Features</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-if="packages.length === 0">
+                        <td colspan="8" class="empty-cell">
+                            No packages found
+                        </td>
+                    </tr>
+                    <tr v-else v-for="pkg in packages" :key="pkg.id">
+                        <td>{{ pkg.id }}</td>
+                        <td>
+                            <div class="package-title">
+                                <strong>{{ pkg.title || pkg.name }}</strong>
+                            </div>
+                        </td>
+                        <td>
+                            <strong class="price-text">{{ formatPrice(pkg.price) }}</strong>
+                        </td>
+                        <td>
+                            <span class="type-badge" :class="getTypeClass(pkg.type)">
+                                {{ getTypeName(pkg.type) }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="features-count">
+                                {{ Array.isArray(pkg.features) ? pkg.features.length : 0 }} features
+                            </span>
+                        </td>
+                        <td>
+                            <StatusBadge :status="pkg.status ? 'active' : 'inactive'" />
+                        </td>
+                        <td>{{ formatDate(pkg.created_at) }}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button 
+                                    class="btn-icon" 
+                                    @click="editPackage(pkg)"
+                                    title="Edit"
+                                >
+                                    ✏️
+                                </button>
+                                <button 
+                                    class="btn-icon btn-danger" 
+                                    @click="deletePackage(pkg)"
+                                    title="Delete"
+                                >
+                                    🗑️
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-        <Toast v-model:show="showToast" :type="toastType" :title="toastTitle" :message="toastMessage" />
+        <!-- Pagination -->
+        <div v-if="!loading && packages.length > 0 && pagination.last_page > 1" class="pagination">
+            <button 
+                class="pagination-btn"
+                :disabled="pagination.current_page === 1"
+                @click="loadPackages(pagination.current_page - 1)"
+            >
+                ← Previous
+            </button>
+            <span class="pagination-info">
+                Page {{ pagination.current_page }} of {{ pagination.last_page }}
+                ({{ pagination.total }} total)
+            </span>
+            <button 
+                class="pagination-btn"
+                :disabled="pagination.current_page >= pagination.last_page"
+                @click="loadPackages(pagination.current_page + 1)"
+            >
+                Next →
+            </button>
+        </div>
     </div>
 </template>
 
-<script>
-import { ref, onMounted, watch } from 'vue'
+<script setup>
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '../../services/api'
-import DataTable from '../../components/DataTable.vue'
 import StatusBadge from '../../components/StatusBadge.vue'
-import Toast from '../../components/Toast.vue'
 
-export default {
-    name: 'PackagesList',
-    components: { DataTable, StatusBadge, Toast },
-    setup() {
-        const router = useRouter()
-        const loading = ref(false)
-        const packages = ref([])
-        const searchQuery = ref('')
-        const statusFilter = ref('')
-        const currentPage = ref(1)
-        const totalPages = ref(1)
-        const total = ref(0)
-        const perPage = ref(20)
-        const showToast = ref(false)
-        const toastType = ref('success')
-        const toastTitle = ref('')
-        const toastMessage = ref('')
+const router = useRouter()
 
-        const columns = [
-            { key: 'id', label: 'ID', sortable: true },
-            { key: 'title', label: 'Title', sortable: true },
-            { key: 'price', label: 'Price', sortable: true },
-            { key: 'type', label: 'Type', sortable: false },
-            { key: 'status', label: 'Status', sortable: true },
-            { key: 'actions', label: 'Actions', sortable: false }
-        ]
+const packages = ref([])
+const loading = ref(false)
+const searchQuery = ref('')
+const statusFilter = ref('')
+const pagination = ref({ 
+    current_page: 1, 
+    last_page: 1, 
+    per_page: 20, 
+    total: 0 
+})
 
-        const fetchPackages = async () => {
-            loading.value = true
-            try {
-                const params = {
-                    page: currentPage.value,
-                    per_page: perPage.value,
-                    search: searchQuery.value,
-                    status: statusFilter.value
-                }
-                const response = await api.plans.list(params)
-                if (response.data.success) {
-                    packages.value = response.data.data.data || response.data.data || []
-                    total.value = response.data.data.total || packages.value.length
-                    totalPages.value = response.data.data.last_page || 1
-                }
-            } catch (error) {
-                console.error('Error fetching packages:', error)
-                showToastMessage('error', 'Error', 'Failed to load packages')
-            } finally {
-                loading.value = false
+let searchTimeout = null
+
+const loadPackages = async (page = 1) => {
+    loading.value = true
+    try {
+        const params = {
+            page,
+            per_page: pagination.value.per_page
+        }
+        
+        if (searchQuery.value) {
+            params.search = searchQuery.value
+        }
+        
+        if (statusFilter.value !== '') {
+            params.status = statusFilter.value
+        }
+        
+        const response = await api.packages.list(params)
+        
+        if (response.data.success) {
+            packages.value = response.data.data || []
+            if (response.data.meta) {
+                pagination.value = response.data.meta
             }
         }
-
-        const deletePackage = async (id) => {
-            if (!confirm('Are you sure you want to delete this package?')) return
-            try {
-                await api.plans.delete(id)
-                showToastMessage('success', 'Success', 'Package deleted successfully')
-                fetchPackages()
-            } catch (error) {
-                showToastMessage('error', 'Error', 'Failed to delete package')
-            }
-        }
-
-        const formatPrice = (price) => {
-            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'KWD' }).format(price || 0)
-        }
-
-        const showToastMessage = (type, title, message) => {
-            toastType.value = type
-            toastTitle.value = title
-            toastMessage.value = message
-            showToast.value = true
-        }
-
-        watch([searchQuery, statusFilter], () => {
-            currentPage.value = 1
-            fetchPackages()
-        })
-
-        watch(currentPage, () => {
-            fetchPackages()
-        })
-
-        onMounted(() => {
-            fetchPackages()
-        })
-
-        return {
-            loading,
-            packages,
-            columns,
-            searchQuery,
-            statusFilter,
-            currentPage,
-            totalPages,
-            total,
-            perPage,
-            showToast,
-            toastType,
-            toastTitle,
-            toastMessage,
-            deletePackage,
-            formatPrice
-        }
+    } catch (error) {
+        console.error('Error loading packages:', error)
+        packages.value = []
+    } finally {
+        loading.value = false
     }
 }
+
+const debounceSearch = () => {
+    clearTimeout(searchTimeout)
+    searchTimeout = setTimeout(() => {
+        loadPackages(1)
+    }, 500)
+}
+
+const formatPrice = (price) => {
+    return new Intl.NumberFormat('en-US', { 
+        style: 'currency', 
+        currency: 'KWD',
+        minimumFractionDigits: 3,
+        maximumFractionDigits: 3
+    }).format(price || 0)
+}
+
+const getTypeName = (type) => {
+    if (type === 1 || type === 'yearly') return 'Yearly'
+    return 'Monthly'
+}
+
+const getTypeClass = (type) => {
+    if (type === 1 || type === 'yearly') return 'yearly'
+    return 'monthly'
+}
+
+const formatDate = (dateString) => {
+    if (!dateString) return 'N/A'
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    })
+}
+
+const editPackage = (pkg) => {
+    router.push(`/packages/${pkg.id}/edit`)
+}
+
+const deletePackage = async (pkg) => {
+    if (!confirm(`Are you sure you want to delete package "${pkg.title || pkg.name}"?`)) {
+        return
+    }
+    
+    try {
+        await api.packages.delete(pkg.id)
+        await loadPackages(pagination.value.current_page)
+    } catch (error) {
+        console.error('Error deleting package:', error)
+        alert('Failed to delete package')
+    }
+}
+
+onMounted(() => {
+    loadPackages()
+})
 </script>
 
 <style scoped>
 .packages-page {
-    padding: 20px;
+    padding: 24px;
 }
 
+/* Page Header */
 .page-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
+    align-items: flex-start;
+    margin-bottom: 30px;
 }
 
-.page-header h2 {
-    margin: 0 0 4px 0;
-    font-size: 24px;
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
     color: #1e293b;
+    margin: 0 0 8px 0;
 }
 
 .page-subtitle {
     color: #64748b;
-    font-size: 14px;
+    font-size: 15px;
     margin: 0;
 }
 
-.filters-bar {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.search-input {
-    flex: 1;
-    max-width: 300px;
-    padding: 10px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-}
-
-.filter-select {
-    padding: 10px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    background: white;
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s;
+    font-size: 15px;
 }
 
 .btn-primary {
-    padding: 10px 20px;
     background: #3b82f6;
     color: white;
-    border: none;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 500;
-    cursor: pointer;
 }
 
-.btn-sm {
+.btn-primary:hover {
+    background: #2563eb;
+}
+
+/* Filters */
+.filters-bar {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.search-box {
+    flex: 1;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+.filter-select {
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    background: white;
+}
+
+/* Table */
+.table-container {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    position: relative;
+    min-height: 400px;
+}
+
+.packages-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.packages-table thead {
+    background: #f8fafc;
+}
+
+.packages-table th {
+    padding: 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #475569;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.packages-table td {
+    padding: 16px;
+    border-top: 1px solid #e5e7eb;
+    color: #1e293b;
+}
+
+.package-title strong {
+    color: #1e293b;
+}
+
+.price-text {
+    color: #059669;
+    font-size: 16px;
+}
+
+.type-badge {
     padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    font-size: 12px;
-    cursor: pointer;
-    margin-right: 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
 }
 
-.btn-secondary {
-    background: #6b7280;
-    color: white;
+.type-badge.monthly {
+    background: #dbeafe;
+    color: #1e40af;
 }
 
-.btn-danger {
-    background: #ef4444;
-    color: white;
+.type-badge.yearly {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.features-count {
+    color: #64748b;
+    font-size: 14px;
 }
 
 .action-buttons {
     display: flex;
     gap: 8px;
 }
+
+.btn-icon {
+    background: #f1f5f9;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s;
+}
+
+.btn-icon:hover {
+    background: #e2e8f0;
+}
+
+.btn-icon.btn-danger:hover {
+    background: #fee2e2;
+}
+
+.empty-cell {
+    text-align: center;
+    padding: 40px !important;
+    color: #64748b;
+}
+
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #e5e7eb;
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 30px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.pagination-btn {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: #2563eb;
+}
+
+.pagination-btn:disabled {
+    background: #e5e7eb;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+
+.pagination-info {
+    color: #64748b;
+    font-weight: 500;
+}
 </style>
-
-
-

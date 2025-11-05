@@ -15,10 +15,15 @@
                                 class="sort-btn"
                                 @click="sort(column.key)"
                             >
-                                <span v-if="sortColumn === column.key">
-                                    {{ sortOrder === 'asc' ? '↑' : '↓' }}
-                                </span>
-                                <span v-else>⇅</span>
+                                <svg v-if="sortColumn === column.key && sortOrder === 'asc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 17a.75.75 0 01-.75-.75V5.612L5.29 9.77a.75.75 0 01-1.08-1.04l5.25-5.5a.75.75 0 011.08 0l5.25 5.5a.75.75 0 11-1.08 1.04l-3.96-4.158V16.25A.75.75 0 0110 17z" clip-rule="evenodd"/>
+                                </svg>
+                                <svg v-else-if="sortColumn === column.key && sortOrder === 'desc'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l3.96-4.158a.75.75 0 111.08 1.04l-5.25 5.5a.75.75 0 01-1.08 0l-5.25-5.5a.75.75 0 111.08-1.04l3.96 4.158V3.75A.75.75 0 0110 3z" clip-rule="evenodd"/>
+                                </svg>
+                                <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M2.24 6.8a.75.75 0 001.06-.04l1.95-2.1v8.59a.75.75 0 001.5 0V4.66l1.95 2.1a.75.75 0 101.1-1.02l-3.25-3.5a.75.75 0 00-1.1 0L2.2 5.74a.75.75 0 00.04 1.06zm8 6.4a.75.75 0 00-.04 1.06l3.25 3.5a.75.75 0 001.1 0l3.25-3.5a.75.75 0 10-1.1-1.02l-1.95 2.1V6.75a.75.75 0 00-1.5 0v8.59l-1.95-2.1a.75.75 0 00-1.06-.04z" clip-rule="evenodd"/>
+                                </svg>
                             </button>
                         </div>
                     </th>
@@ -168,13 +173,19 @@ export default {
     border: none;
     cursor: pointer;
     color: #9ca3af;
-    font-size: 12px;
     padding: 0;
     transition: color 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.sort-btn svg {
+    width: 14px;
+    height: 14px;
 }
 
 .sort-btn:hover {
-    color: #3b82f6;
+    color: #7f1625;
 }
 
 .table tbody tr {

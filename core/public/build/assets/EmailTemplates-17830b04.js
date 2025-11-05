@@ -1,1 +1,0 @@
-import{P as a}from"./PlaceholderPage-603ecc72.js";import{_ as o,k as t,o as n,z as s}from"./_plugin-vue_export-helper-335f4554.js";const l={name:"EmailTemplates",components:{PlaceholderPage:a}};function c(r,p,m,i,_,d){const e=t("PlaceholderPage");return n(),s(e,{title:"Email Templates",endpoint:"/api/central/v1/email-templates"})}const h=o(l,[["render",c]]);export{h as default};

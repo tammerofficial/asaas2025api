@@ -1,1 +1,0 @@
-import{P as o}from"./PlaceholderPage-603ecc72.js";import{_ as t,k as a,o as n,z as s}from"./_plugin-vue_export-helper-335f4554.js";const r={name:"Roles",components:{PlaceholderPage:o}};function c(l,p,_,m,d,i){const e=a("PlaceholderPage");return n(),s(e,{title:"Roles",endpoint:"/api/central/v1/roles"})}const h=t(r,[["render",c]]);export{h as default};

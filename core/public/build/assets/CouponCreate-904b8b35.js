@@ -1,1 +1,0 @@
-import{P as o}from"./PlaceholderPage-603ecc72.js";import{_ as n,k as t,o as a,z as r}from"./_plugin-vue_export-helper-335f4554.js";const c={name:"CouponCreate",components:{PlaceholderPage:o}};function p(s,l,_,m,d,i){const e=t("PlaceholderPage");return a(),r(e,{title:"Create New Coupon",endpoint:"/api/central/v1/coupons"})}const C=n(c,[["render",p]]);export{C as default};

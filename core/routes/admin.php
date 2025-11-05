@@ -32,12 +32,19 @@ use App\Http\Controllers\Landlord\Admin\PaymentSettingsController;
 /* ------------------------------------------
      LANDLORD ADMIN ROUTES
 -------------------------------------------- */
+
+// Temporary route for testing new admin-new design
+Route::middleware(['auth:admin','adminglobalVariable', 'set_lang'])->group(function (){
+    Route::get('/admin-new', [LandlordAdminController::class, 'dashboard_v2'])->name('landlord.admin.home.v2.test');
+});
+
 Route::group(['middleware' => ['auth:admin','adminglobalVariable', 'set_lang'],'prefix' => 'admin-home'],function (){
     /* ------------------------------------------
         ADMIN DASHBOARD ROUTES
     -------------------------------------------- */
     Route::controller(LandlordAdminController::class)->group(function (){
         Route::get('/','dashboard')->name('landlord.admin.home');
+        Route::get('/admin-new','dashboard_v2')->name('landlord.admin.home.v2'); // Temporary route for testing new design
         Route::get('/health','health')->name('landlord.admin.health');
         Route::get('/edit-profile','edit_profile')->name('landlord.admin.edit.profile');
         Route::get('/change-password','change_password')->name('landlord.admin.change.password');
@@ -95,11 +102,73 @@ Route::group(['middleware' => ['auth:admin','adminglobalVariable', 'set_lang'],'
         
         // Support Tickets
         Route::get('/support/tickets', 'supportTickets')->name('landlord.admin.vue.api.support.tickets');
+        Route::post('/support/tickets', 'storeSupportTicket')->name('landlord.admin.vue.api.support.tickets.store');
         Route::get('/support/tickets/{id}', 'supportTicketDetails')->name('landlord.admin.vue.api.support.ticket.details');
+        Route::put('/support/tickets/{id}', 'updateSupportTicket')->name('landlord.admin.vue.api.support.tickets.update');
+        Route::delete('/support/tickets/{id}', 'deleteSupportTicket')->name('landlord.admin.vue.api.support.tickets.delete');
         Route::get('/support/departments', 'supportDepartments')->name('landlord.admin.vue.api.support.departments');
         
         // Media
         Route::get('/media', 'media')->name('landlord.admin.vue.api.media');
+        
+        // Blog CRUD
+        Route::post('/blogs', 'storeBlog')->name('landlord.admin.vue.api.blogs.store');
+        Route::get('/blogs/{id}', 'getBlog')->name('landlord.admin.vue.api.blogs.show');
+        Route::put('/blogs/{id}', 'updateBlog')->name('landlord.admin.vue.api.blogs.update');
+        Route::delete('/blogs/{id}', 'deleteBlog')->name('landlord.admin.vue.api.blogs.delete');
+        Route::get('/blog/tags', 'blogTags')->name('landlord.admin.vue.api.blog.tags');
+        Route::get('/blog/comments', 'blogComments')->name('landlord.admin.vue.api.blog.comments');
+        
+        // Pages CRUD
+        Route::post('/pages', 'storePage')->name('landlord.admin.vue.api.pages.store');
+        Route::get('/pages/{id}', 'getPage')->name('landlord.admin.vue.api.pages.show');
+        Route::put('/pages/{id}', 'updatePage')->name('landlord.admin.vue.api.pages.update');
+        Route::delete('/pages/{id}', 'deletePage')->name('landlord.admin.vue.api.pages.delete');
+        
+        // Packages CRUD
+        Route::post('/packages', 'storePackage')->name('landlord.admin.vue.api.packages.store');
+        Route::get('/packages/{id}', 'getPackage')->name('landlord.admin.vue.api.packages.show');
+        Route::put('/packages/{id}', 'updatePackage')->name('landlord.admin.vue.api.packages.update');
+        Route::delete('/packages/{id}', 'deletePackage')->name('landlord.admin.vue.api.packages.delete');
+        
+        // Coupons CRUD
+        Route::post('/coupons', 'storeCoupon')->name('landlord.admin.vue.api.coupons.store');
+        Route::get('/coupons/{id}', 'getCoupon')->name('landlord.admin.vue.api.coupons.show');
+        Route::put('/coupons/{id}', 'updateCoupon')->name('landlord.admin.vue.api.coupons.update');
+        Route::delete('/coupons/{id}', 'deleteCoupon')->name('landlord.admin.vue.api.coupons.delete');
+        
+        // Tenants CRUD
+        Route::post('/tenants', 'storeTenant')->name('landlord.admin.vue.api.tenants.store');
+        Route::get('/tenants/{id}', 'getTenant')->name('landlord.admin.vue.api.tenants.show');
+        Route::put('/tenants/{id}', 'updateTenant')->name('landlord.admin.vue.api.tenants.update');
+        Route::delete('/tenants/{id}', 'deleteTenant')->name('landlord.admin.vue.api.tenants.delete');
+        
+        // Admins CRUD
+        Route::post('/admins', 'storeAdmin')->name('landlord.admin.vue.api.admins.store');
+        Route::get('/admins/{id}', 'getAdmin')->name('landlord.admin.vue.api.admins.show');
+        Route::put('/admins/{id}', 'updateAdmin')->name('landlord.admin.vue.api.admins.update');
+        Route::delete('/admins/{id}', 'deleteAdmin')->name('landlord.admin.vue.api.admins.delete');
+        
+        // Payments CRUD
+        Route::get('/payments/{id}', 'payments')->name('landlord.admin.vue.api.payments.show');
+        
+        // Users Management
+        Route::get('/users', 'users')->name('landlord.admin.vue.api.users');
+        Route::get('/users/roles', 'roles')->name('landlord.admin.vue.api.users.roles');
+        Route::get('/users/permissions', 'permissions')->name('landlord.admin.vue.api.users.permissions');
+        Route::get('/users/activity-logs', 'activityLogs')->name('landlord.admin.vue.api.users.activity-logs');
+        
+        // Appearances
+        Route::get('/appearances/themes', 'themes')->name('landlord.admin.vue.api.appearances.themes');
+        Route::get('/appearances/menus', 'menus')->name('landlord.admin.vue.api.appearances.menus');
+        Route::get('/appearances/widgets', 'widgets')->name('landlord.admin.vue.api.appearances.widgets');
+        
+        // Settings
+        Route::get('/settings', 'getSettings')->name('landlord.admin.vue.api.settings');
+        Route::put('/settings', 'updateSettings')->name('landlord.admin.vue.api.settings.update');
+        
+        // System
+        Route::get('/system/languages', 'languages')->name('landlord.admin.vue.api.system.languages');
     });
 
     Route::controller(UpdateInfoController::class)->group(function (){
@@ -636,3 +705,17 @@ Route::prefix('media-upload')->controller(MediaUploaderController::class)->group
 
 // Unique Checker
 Route::post('unique-checker', [GeneralSettingsController::class, 'unique_checker'])->name('landlord.unique-checker');
+
+/* ------------------------------------------
+    VUE.JS DASHBOARD V1 CATCH-ALL ROUTE
+    Must be last to catch all Vue Router routes
+    -------------------------------------------- */
+Route::prefix('admin-home')
+    ->middleware(['auth:admin','adminglobalVariable', 'set_lang'])
+    ->controller(\App\Http\Controllers\Central\V1\VueDashboardController::class)
+    ->group(function (){
+        // Catch-all route for Vue Router - must be after all other routes
+        Route::get('/v1/{any}', 'index')
+            ->where('any', '^(?!api/).*')
+            ->name('landlord.admin.vue.dashboard.v1.any');
+});

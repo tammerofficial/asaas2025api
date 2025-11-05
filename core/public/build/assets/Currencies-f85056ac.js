@@ -1,0 +1,1 @@
+import{P as o}from"./PlaceholderPage-87cc6d31.js";import{_ as r,k as n,o as c,z as t}from"./_plugin-vue_export-helper-25c71bc9.js";const a={name:"Currencies",components:{PlaceholderPage:o}};function s(p,i,l,_,m,d){const e=n("PlaceholderPage");return c(),t(e,{title:"Currencies",endpoint:"/api/central/v1/currencies"})}const P=r(a,[["render",s]]);export{P as default};
