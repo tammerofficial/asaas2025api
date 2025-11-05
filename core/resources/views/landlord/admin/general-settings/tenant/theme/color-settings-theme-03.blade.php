@@ -1,4 +1,5 @@
 <div class="col">
+    @include('landlord.admin.general-settings.tenant.theme.partials.header-footer-builder-links')
     <h4 class="mb-4">{{__('Theme Three')}}</h4>
 
     <x-colorpicker.input value="{{get_static_option('main_color_one_'.$suffix,'#ff805d')}}" name="main_color_one_{{$suffix}}" label="{{__('Site Main Color One')}}"/>

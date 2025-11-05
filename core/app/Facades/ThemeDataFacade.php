@@ -29,6 +29,10 @@ use Illuminate\Support\Facades\Facade;
  * @method static getFooterWidgetArea
  * @method static getHeaderNavbarArea
  * @method static getHeaderBreadcrumbArea
+ * @method static hasPageBuilderHeader()
+ * @method static hasPageBuilderFooter()
+ * @method static renderPageBuilderHeader()
+ * @method static renderPageBuilderFooter()
  * @method static renderThemeView($view = '', $data = [])
  * @method static getAllThemeScreenshot($theme_slug)
  * @method static renderPrimaryThemeScreenshot($theme_slug)

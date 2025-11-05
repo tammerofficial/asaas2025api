@@ -92,6 +92,31 @@ Route::middleware([
     });
 
     /*--------------------------
+      HEADER BUILDER
+    --------------------------*/
+    Route::controller(\App\Http\Controllers\Tenant\Admin\HeaderBuilderController::class)->group(function (){
+        Route::get('/appearance/header-builder', 'index')->name('admin.header.builder');
+        Route::post('/appearance/header-builder/new', 'store')->name('admin.header.builder.store');
+        Route::post('/appearance/header-builder/update', 'update')->name('admin.header.builder.update');
+        Route::post('/appearance/header-builder/delete', 'delete')->name('admin.header.builder.delete');
+        Route::post('/appearance/header-builder/update-order', 'updateOrder')->name('admin.header.builder.update.order');
+        Route::post('/appearance/header-builder/get-addon-markup', 'getAddonMarkup')->name('admin.header.builder.get.addon.markup');
+        Route::post('/appearance/header-builder/save-settings', 'saveSettings')->name('admin.header.builder.save.settings');
+    });
+
+    /*--------------------------
+      FOOTER BUILDER
+    --------------------------*/
+    Route::controller(\App\Http\Controllers\Tenant\Admin\FooterBuilderController::class)->group(function (){
+        Route::get('/appearance/footer-builder', 'index')->name('admin.footer.builder');
+        Route::post('/appearance/footer-builder/new', 'store')->name('admin.footer.builder.store');
+        Route::post('/appearance/footer-builder/update', 'update')->name('admin.footer.builder.update');
+        Route::post('/appearance/footer-builder/delete', 'delete')->name('admin.footer.builder.delete');
+        Route::post('/appearance/footer-builder/update-order', 'updateOrder')->name('admin.footer.builder.update.order');
+        Route::post('/appearance/footer-builder/get-addon-markup', 'getAddonMarkup')->name('admin.footer.builder.get.addon.markup');
+    });
+
+    /*--------------------------
       PAGE BUILDER
     --------------------------*/
     Route::controller(\App\Http\Controllers\Landlord\Admin\PageBuilderController::class)->group(function () {

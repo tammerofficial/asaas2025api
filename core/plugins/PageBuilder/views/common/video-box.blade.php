@@ -111,6 +111,7 @@
     width: 100%;
     min-height: 500px;
     overflow: hidden;
+    z-index: 1;
 }
 
 .video-background-wrapper {

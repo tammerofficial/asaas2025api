@@ -2474,7 +2474,7 @@ table.dataTable tbody tr {
 
 /* Sidebar Navigation Items */
 .sidebar .nav .nav-item {
-    padding: 0 0;
+    padding: 1px 0rem;
     position: relative;
     margin-bottom: 2px;
     transition: all 0.3s ease;

@@ -169,7 +169,7 @@
         top: 10px;
         width: 20px;
         height: 20px;
-        background-color: #8880f9;
+        background-color: #7f1625;
         text-align: center;
         color: #fff;
         font-size: 12px;
@@ -389,7 +389,14 @@
     .available-form-field li {
         position: relative;
         z-index: 0;
-        background: #fff8f8;
+        background: #f9f9f9;
+        border-radius: 13px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+        transition: box-shadow 0.2s ease;
+    }
+    
+    .available-form-field li:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.06);
     }
 
     .all-addons-wrapper ul.ui-sortable li.widget-handler:hover .imageupshow img {

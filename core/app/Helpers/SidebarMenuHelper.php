@@ -1994,6 +1994,20 @@ class SidebarMenuHelper
             'permissions' => ['widget-builder'],
         ]);
 
+        $menu_instance->add_menu_item('header-builder-settings-all', [
+            'route' => 'tenant.admin.header.builder',
+            'label' => __('Header Builder'),
+            'parent' => 'appearance-settings-menu-items',
+            'permissions' => null,
+        ]);
+
+        $menu_instance->add_menu_item('footer-builder-settings-all', [
+            'route' => 'tenant.admin.footer.builder',
+            'label' => __('Footer Builder'),
+            'parent' => 'appearance-settings-menu-items',
+            'permissions' => null,
+        ]);
+
         $menu_instance->add_menu_item('404-settings-all', [
             'route' => 'tenant.admin.404.page.settings',
             'label' => __('404 Settings'),

@@ -55,6 +55,9 @@ use Plugins\PageBuilder\Addons\Common\HotSpots\HotSpots;
 use Plugins\PageBuilder\Addons\Common\GoogleMaps\GoogleMaps;
 use Plugins\PageBuilder\Addons\Common\Newsletter\Newsletter as CommonNewsletter;
 use Plugins\PageBuilder\Addons\Common\SocialIcons\SocialIcons;
+use Plugins\PageBuilder\Addons\Common\Header\HeaderLogo;
+use Plugins\PageBuilder\Addons\Common\Header\HeaderMenu;
+use Plugins\PageBuilder\Addons\Common\Header\HeaderSearch;
 use Plugins\PageBuilder\Addons\Landlord\Header\AboutHeaderStyleOne;
 use Plugins\PageBuilder\Addons\Landlord\Header\FeaturesStyleOne;
 use Plugins\PageBuilder\Addons\Landlord\Header\HeaderStyleOne;
@@ -234,6 +237,9 @@ class PageBuilderSetup
                 RawHTML::class,
                 FaqOne::class,
                 // Common theme-agnostic addons
+                HeaderLogo::class,
+                HeaderMenu::class,
+                HeaderSearch::class,
                 Hero::class,
                 Heading::class,
                 TextEditor::class,
@@ -314,7 +320,7 @@ class PageBuilderSetup
     public static function get_tenant_admin_panel_widgets(): string
     {
         $widgets_markup = '';
-        $widget_list = self::tenant_registerd_widgets();
+        $widget_list = self::registerd_widgets();
         foreach ($widget_list as $widget) {
             try {
                 $widget_instance = new  $widget();
@@ -410,15 +416,437 @@ class PageBuilderSetup
     {
         $output = '';
         $all_widgets = PageBuilder::where(['addon_location' => $location])->orderBy('addon_order', 'ASC')->get();
+        
+        // Special wrapper for header location to create grid layout
+        if ($location === 'header') {
+            // Get header settings
+            $is_sticky = get_static_option('header_builder_sticky') === 'yes';
+            $is_transparent = get_static_option('header_builder_transparent') === 'yes';
+            
+            $sticky_class = $is_sticky ? 'pagebuilder-header-sticky' : '';
+            $transparent_class = $is_transparent ? 'pagebuilder-header-transparent' : '';
+            
+            // Add special class if transparent but not sticky (for absolute positioning)
+            if ($is_transparent && !$is_sticky) {
+                $transparent_class .= ' pagebuilder-header-transparent-only';
+            }
+            
+            $wrapper_classes = 'pagebuilder-header-wrapper ' . trim($sticky_class . ' ' . $transparent_class);
+            
+            $output .= '<style>
+/* Header Builder Grid Layout */
+.pagebuilder-header-wrapper {
+    width: 100%;
+    background: var(--header-bg-color, #fff);
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--header-border-color, #e5e5e5);
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+/* Reduce padding for header items */
+.pagebuilder-header-wrapper .pagebuilder-header-item {
+    padding: 0 !important;
+}
+
+/* Remove padding from header widgets when inside header */
+.pagebuilder-header-wrapper .common-header-logo-section,
+.pagebuilder-header-wrapper .common-header-menu-section,
+.pagebuilder-header-wrapper .common-header-search-section {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+/* Ignore data-padding attributes when inside header - Override all values including 110 */
+.pagebuilder-header-wrapper [data-padding-top],
+.pagebuilder-header-wrapper [data-padding-bottom],
+.pagebuilder-header-wrapper [data-padding-top="110"],
+.pagebuilder-header-wrapper [data-padding-top="100"],
+.pagebuilder-header-wrapper [data-padding-top="90"],
+.pagebuilder-header-wrapper [data-padding-top="80"],
+.pagebuilder-header-wrapper [data-padding-top="70"],
+.pagebuilder-header-wrapper [data-padding-top="60"],
+.pagebuilder-header-wrapper [data-padding-top="50"],
+.pagebuilder-header-wrapper [data-padding-bottom="110"],
+.pagebuilder-header-wrapper [data-padding-bottom="100"] {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* More specific override for all data-padding values inside header */
+.pagebuilder-header-wrapper [data-padding-top] {
+    padding-top: 0 !important;
+}
+
+.pagebuilder-header-wrapper [data-padding-bottom] {
+    padding-bottom: 0 !important;
+}
+
+/* Ensure header starts from top of page */
+.pagebuilder-header-wrapper {
+    margin-top: 0 !important;
+    top: 0;
+}
+
+/* Remove any spacing above header */
+body > .pagebuilder-header-wrapper:first-child,
+.pagebuilder-header-wrapper:first-of-type {
+    margin-top: 0 !important;
+}
+
+/* Sticky Header */
+.pagebuilder-header-sticky {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    box-shadow: 0 2px 10px rgba(245, 237, 237, 0.1);
+}
+
+/* Transparent Header */
+.pagebuilder-header-transparent {
+    background: transparent !important;
+    border-bottom: none !important;
+}
+
+/* Transparent Header (without sticky) - overlay on top */
+.pagebuilder-header-transparent:not(.pagebuilder-header-sticky) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+/* Remove margin/padding from content when header is transparent (not sticky) */
+.pagebuilder-header-transparent:not(.pagebuilder-header-sticky) + *,
+.pagebuilder-header-transparent:not(.pagebuilder-header-sticky) ~ * {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* Body padding when sticky */
+body.pagebuilder-header-sticky-active {
+    padding-top: var(--header-height, 80px);
+}
+
+/* Adjust content spacing when sticky */
+.pagebuilder-header-sticky + * {
+    margin-top: 0;
+}
+
+/* Ensure body starts from top when transparent header (not sticky) */
+body:has(.pagebuilder-header-transparent:not(.pagebuilder-header-sticky)) {
+    padding-top: 0 !important;
+}
+
+/* Alternative class for transparent header without sticky */
+.pagebuilder-header-transparent-only {
+    position: absolute;
+    top: 0 !important;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    margin-top: 0 !important;
+}
+
+/* Ensure header is always at top */
+.pagebuilder-header-wrapper.pagebuilder-header-transparent-only {
+    top: 0 !important;
+}
+
+/* Remove any gap before header */
+body:has(.pagebuilder-header-wrapper) {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+.pagebuilder-header-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 20px;
+    align-items: center;
+    max-width: var(--container-width, 1200px);
+    margin: 0 auto;
+    width: 100%;
+}
+.pagebuilder-header-item {
+    display: flex;
+    align-items: center;
+    min-height: 50px;
+}
+.pagebuilder-header-item:first-child { justify-content: flex-start; }
+.pagebuilder-header-item:nth-child(2) { justify-content: center; }
+.pagebuilder-header-item:last-child,
+.pagebuilder-header-item:nth-child(3) { justify-content: flex-end; }
+.pagebuilder-header-wrapper .common-header-logo-section,
+.pagebuilder-header-wrapper .common-header-menu-section,
+.pagebuilder-header-wrapper .common-header-search-section {
+    width: 100%;
+    justify-content: inherit !important;
+}
+.pagebuilder-header-wrapper .common-header-logo-section { justify-content: flex-start !important; }
+.pagebuilder-header-wrapper .common-header-menu-section { justify-content: center !important; }
+.pagebuilder-header-wrapper .common-header-search-section { justify-content: flex-end !important; }
+@media (max-width: 991px) {
+    .pagebuilder-header-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        padding: 10px 0;
+    }
+    .pagebuilder-header-item {
+        justify-content: center !important;
+        width: 100%;
+    }
+    .pagebuilder-header-wrapper .common-header-logo-section,
+    .pagebuilder-header-wrapper .common-header-menu-section,
+    .pagebuilder-header-wrapper .common-header-search-section {
+        justify-content: center !important;
+    }
+    .pagebuilder-header-wrapper .header-menu-nav ul {
+        justify-content: center;
+        flex-wrap: wrap;
+        list-style: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .pagebuilder-header-wrapper .header-menu-nav ul li {
+        list-style: none !important;
+        list-style-type: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: inline-block !important;
+        unicode-bidi: normal !important;
+    }
+    .pagebuilder-header-wrapper .header-menu-nav ul li a {
+        position: relative;
+        text-decoration: none;
+        display: inline-block;
+        padding: 8px 0;
+        transition: all 0.3s ease;
+    }
+    .pagebuilder-header-wrapper .header-menu-nav ul li a::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: #fff;
+        transition: width 0.3s ease;
+    }
+    .pagebuilder-header-wrapper .header-menu-nav ul li a:hover::after {
+        width: 100%;
+    }
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+    .pagebuilder-header-container {
+        grid-template-columns: 1fr 1.5fr 1fr;
+        gap: 15px;
+    }
+}
+[dir="rtl"] .pagebuilder-header-container { direction: rtl; }
+[dir="rtl"] .pagebuilder-header-item:first-child { justify-content: flex-end; }
+[dir="rtl"] .pagebuilder-header-item:last-child,
+[dir="rtl"] .pagebuilder-header-item:nth-child(3) { justify-content: flex-start; }
+
+/* Ensure header content is visible on transparent background */
+.pagebuilder-header-transparent .common-header-logo-section a,
+.pagebuilder-header-transparent .common-header-menu-section a,
+.pagebuilder-header-transparent .common-header-search-section {
+    color: var(--header-text-color, #fff);
+}
+
+.pagebuilder-header-transparent .common-header-menu-section .header-menu-nav ul li a {
+    color: var(--header-text-color, #fff);
+}
+
+.pagebuilder-header-transparent .common-header-menu-section .header-menu-nav ul li a:hover {
+    color: var(--header-hover-color, rgba(255,255,255,0.8));
+}
+
+/* Ensure menu items are horizontal and remove list style */
+.pagebuilder-header-wrapper .common-header-menu-section .header-menu-nav ul {
+    display: flex !important;
+    flex-direction: row !important;
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 24px;
+    align-items: center;
+}
+
+.pagebuilder-header-wrapper .common-header-menu-section .header-menu-nav ul li {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: inline-block !important;
+    unicode-bidi: normal !important;
+}
+
+/* Override any list-item display */
+.pagebuilder-header-wrapper .common-header-menu-section .header-menu-nav ul li,
+.pagebuilder-header-wrapper .common-header-menu-section .header-menu-nav li {
+    display: inline-block !important;
+    list-style: none !important;
+    list-style-type: none !important;
+}
+
+.pagebuilder-header-wrapper .common-header-menu-section .header-menu-nav ul li a {
+    position: relative;
+    text-decoration: none;
+    display: inline-block;
+    padding: 8px 0;
+    transition: all 0.3s ease;
+}
+
+/* White underline on hover */
+.pagebuilder-header-wrapper .common-header-menu-section .header-menu-nav ul li a::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #fff;
+    transition: width 0.3s ease;
+}
+
+.pagebuilder-header-wrapper .common-header-menu-section .header-menu-nav ul li a:hover::after {
+    width: 100%;
+}
+
+/* Add shadow on scroll for sticky transparent header */
+.pagebuilder-header-sticky.pagebuilder-header-transparent.scrolled {
+    background: rgba(255,255,255,0.95) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+}
+
+.pagebuilder-header-sticky.pagebuilder-header-transparent.scrolled .common-header-menu-section .header-menu-nav ul li a {
+    color: var(--heading-color, #111);
+}
+</style>';
+
+            // Add JavaScript for sticky transparent header scroll effect
+            if ($is_sticky && $is_transparent) {
+                $output .= '<script>
+                (function() {
+                    var header = document.querySelector(".pagebuilder-header-wrapper");
+                    if (header) {
+                        var scrolled = false;
+                        window.addEventListener("scroll", function() {
+                            if (window.scrollY > 50 && !scrolled) {
+                                header.classList.add("scrolled");
+                                scrolled = true;
+                            } else if (window.scrollY <= 50 && scrolled) {
+                                header.classList.remove("scrolled");
+                                scrolled = false;
+                            }
+                        });
+                    }
+                })();
+                </script>';
+            }
+            
+            // Add body class and padding if sticky
+            if ($is_sticky) {
+                $output .= '<script>
+                (function() {
+                    document.body.classList.add("pagebuilder-header-sticky-active");
+                    var header = document.querySelector(".pagebuilder-header-wrapper");
+                    if (header) {
+                        var height = header.offsetHeight;
+                        document.documentElement.style.setProperty("--header-height", height + "px");
+                    }
+                })();
+                </script>';
+            } else if ($is_transparent) {
+                // If transparent but not sticky, remove any padding/margin from next element
+                $output .= '<script>
+                (function() {
+                    var header = document.querySelector(".pagebuilder-header-wrapper");
+                    if (header) {
+                        // Ensure header is at top
+                        header.style.top = "0";
+                        header.style.marginTop = "0";
+                        header.style.paddingTop = "10px";
+                        
+                        // Remove padding from header items
+                        var items = header.querySelectorAll(".pagebuilder-header-item");
+                        items.forEach(function(item) {
+                            item.style.padding = "0";
+                        });
+                        
+                        // Remove padding from widgets
+                        var widgets = header.querySelectorAll("[data-padding-top], [data-padding-bottom]");
+                        widgets.forEach(function(widget) {
+                            widget.style.paddingTop = "0";
+                            widget.style.paddingBottom = "0";
+                        });
+                        
+                        // Remove margin/padding from next element
+                        if (header.nextElementSibling) {
+                            header.nextElementSibling.style.marginTop = "0";
+                            header.nextElementSibling.style.paddingTop = "0";
+                        }
+                    }
+                    // Also remove body padding if exists
+                    document.body.style.paddingTop = "0";
+                    document.body.style.marginTop = "0";
+                })();
+                </script>';
+            } else {
+                // For regular header, also reduce padding
+                $output .= '<script>
+                (function() {
+                    var header = document.querySelector(".pagebuilder-header-wrapper");
+                    if (header) {
+                        header.style.paddingTop = "10px";
+                        header.style.paddingBottom = "10px";
+                        
+                        // Remove padding from header items
+                        var items = header.querySelectorAll(".pagebuilder-header-item");
+                        items.forEach(function(item) {
+                            item.style.padding = "0";
+                        });
+                        
+                        // Remove padding from widgets
+                        var widgets = header.querySelectorAll("[data-padding-top], [data-padding-bottom]");
+                        widgets.forEach(function(widget) {
+                            widget.style.paddingTop = "0";
+                            widget.style.paddingBottom = "0";
+                        });
+                    }
+                })();
+                </script>';
+            }
+            
+            $output .= '<div class="' . $wrapper_classes . '">';
+            $output .= '<div class="pagebuilder-header-container">';
+        }
+        
         foreach ($all_widgets as $widget) {
-            $output .= self::render_widgets_by_name_for_frontend([
+            $widget_output = self::render_widgets_by_name_for_frontend([
                 'name' => $widget->addon_name,
                 'namespace' => $widget->addon_namespace,
                 'location' => $location,
                 'id' => $widget->id,
-                'column' => $args['column'] ?? false
             ]);
+            
+            if ($location === 'header') {
+                $output .= '<div class="pagebuilder-header-item">' . $widget_output . '</div>';
+            } else {
+                $output .= $widget_output;
+            }
         }
+        
+        // Close header wrapper
+        if ($location === 'header') {
+            $output .= '</div></div>';
+        }
+        
         return $output;
     }
 

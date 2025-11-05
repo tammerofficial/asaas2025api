@@ -204,6 +204,90 @@ class ThemeMetaData
     }
 
     /**
+     * Check if PageBuilder content exists for header location
+     *
+     * @return bool
+     */
+    public function hasPageBuilderHeader(): bool
+    {
+        $tenant_id = !is_null(tenant()) ? tenant()->id : 0;
+        $cache_key = 'pagebuilder_header_exists_' . $tenant_id;
+        
+        return \Cache::remember($cache_key, 60 * 60, function () {
+            return \App\Models\PageBuilder::where('addon_location', 'header')->exists();
+        });
+    }
+
+    /**
+     * Check if PageBuilder content exists for footer location
+     *
+     * @return bool
+     */
+    public function hasPageBuilderFooter(): bool
+    {
+        $tenant_id = !is_null(tenant()) ? tenant()->id : 0;
+        $cache_key = 'pagebuilder_footer_exists_' . $tenant_id;
+        
+        return \Cache::remember($cache_key, 60 * 60, function () {
+            return \App\Models\PageBuilder::where('addon_location', 'footer')->exists();
+        });
+    }
+
+    /**
+     * Render PageBuilder header content with caching
+     *
+     * @return string
+     */
+    public function renderPageBuilderHeader(): string
+    {
+        if (!$this->hasPageBuilderHeader()) {
+            return '';
+        }
+
+        $tenant_id = !is_null(tenant()) ? tenant()->id : 0;
+        $cache_key = 'pagebuilder_header_content_' . $tenant_id;
+        
+        try {
+            return \Cache::remember($cache_key, 24 * 60 * 60, function () {
+                return \Plugins\PageBuilder\PageBuilderSetup::render_frontend_pagebuilder_content_by_location('header');
+            });
+        } catch (\Exception $e) {
+            \Log::error('PageBuilder Header Render Error', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return ''; // Graceful degradation
+        }
+    }
+
+    /**
+     * Render PageBuilder footer content with caching
+     *
+     * @return string
+     */
+    public function renderPageBuilderFooter(): string
+    {
+        if (!$this->hasPageBuilderFooter()) {
+            return '';
+        }
+
+        $tenant_id = !is_null(tenant()) ? tenant()->id : 0;
+        $cache_key = 'pagebuilder_footer_content_' . $tenant_id;
+        
+        try {
+            return \Cache::remember($cache_key, 24 * 60 * 60, function () {
+                return \Plugins\PageBuilder\PageBuilderSetup::render_frontend_pagebuilder_content_by_location('footer');
+            });
+        } catch (\Exception $e) {
+            \Log::error('PageBuilder Footer Render Error', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return ''; // Graceful degradation
+        }
+    }
+
+    /**
      * @param string $view
      * @param array $data
      * @method renderThemeView

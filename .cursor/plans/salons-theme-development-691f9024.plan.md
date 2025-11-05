@@ -1,749 +1,260 @@
 <!-- 691f9024-aa4c-4be7-ad39-577a66f65f78 af9d45bd-297c-4f96-aa67-65985ba8bab3 -->
-# PageBuilder Additional Common Addons Plan
+# PageBuilder Header & Footer Integration Plan
 
 ## Overview
 
-Add 12 essential PageBuilder addons to the existing Common addons collection. These addons are selected from the extensive list provided, focusing on the most useful and safe to implement features that won't cause issues in the project.
+إضافة دعم PageBuilder لبناء Header و Footer بشكل ديناميكي، مع إمكانية الرجوع لملفات Blade الحالية للحفاظ على التوافق مع الثيمات الموجودة.
 
-## Selected Priority Addons
+## Current Structure Analysis
 
-From the extensive list, we've selected **12 essential addons** that are:
+### Header System:
 
-- Most useful for website owners
-- Safe to implement (no breaking changes)
-- Commonly needed across different industries
-- Easy to maintain
+- File: `core/resources/views/tenant/frontend/partials/navbar.blade.php`
+- Gets navbar filename from `theme.json` → `headerHook.navbarArea`
+- Includes: `themes.{theme}.headerNavbarArea.{navbar_name}.blade.php`
+- Example: `themes.salons.headerNavbarArea.navbar.blade.php`
 
-### Priority Order
+### Footer System:
 
-1. **Counter** - Statistics and achievements (essential)
-2. **ProgressBar** - Skills and progress visualization (very useful)
-3. **Countdown** - Marketing and sales deadlines (high value)
-4. **Accordion** - FAQ and content organization (very common)
-5. **Divider** - Visual separation (layout essential)
-6. **Spacer** - Layout spacing (layout essential)
-7. **Gallery** - Advanced image gallery (high value)
-8. **GoogleMaps** - Location display (essential for businesses)
-9. **ImageComparison** - Before/after slider (perfect for salons, clinics, etc.)
-10. **ModalBox** - Popup content (very useful)
-11. **SocialIcons** - Social media links (essential)
-12. **Newsletter** - Email marketing (high value)
+- File: `core/resources/views/tenant/frontend/partials/widget-area.blade.php`
+- Gets footer filename from `theme.json` → `footerHook.widgetArea`
+- Includes: `themes.{theme}.footerWidgetArea.{footer_name}.blade.php`
+- Example: `themes.salons.footerWidgetArea.footer-salons.blade.php`
 
-### Additional Useful Addons from Elementor List
+### PageBuilder System:
 
-From the extensive Elementor widgets list, we've identified additional useful addons that are safe and commonly needed:
+- Uses `addon_location` field to store widget location
+- Method: `render_frontend_pagebuilder_content_by_location($location)`
+- Locations are dynamic (e.g., "homepage", "about", etc.)
 
-13. **FlipBox** - Flip card effect (very engaging)
-14. **HotSpots** - Interactive hotspots on images (great for product tours)
-15. **Typewriter** - Animated typing effect (eye-catching)
-16. **Table** - Data table widget (essential for displaying structured data)
-17. **Breadcrumb** - Navigation breadcrumbs (SEO and UX friendly)
-18. **Alert** - Alert/notification messages (important for user communication)
+## Implementation Strategy
 
-## Directory Structure
+### Phase 1: Helper Functions
 
-### New Addon Classes (PHP Files)
+Create helper functions to check and render PageBuilder content for Header/Footer:
 
-```
-core/plugins/PageBuilder/Addons/Common/
-├── Counter/
-│   └── Counter.php
-├── ProgressBar/
-│   └── ProgressBar.php
-├── Countdown/
-│   └── Countdown.php
-├── Accordion/
-│   └── Accordion.php
-├── Divider/
-│   └── Divider.php
-├── Spacer/
-│   └── Spacer.php
-├── Gallery/
-│   └── Gallery.php
-├── GoogleMaps/
-│   └── GoogleMaps.php
-├── ImageComparison/
-│   └── ImageComparison.php
-├── ModalBox/
-│   └── ModalBox.php
-├── SocialIcons/
-│   └── SocialIcons.php
-└── Newsletter/
-    └── Newsletter.php
-```
+**File: `core/app/Helpers/ThemeMetaData.php`**
 
-### New View Files (Blade Templates)
+- Add `hasPageBuilderHeader()` - Check if PageBuilder content exists for header
+- Add `hasPageBuilderFooter()` - Check if PageBuilder content exists for footer
+- Add `renderPageBuilderHeader()` - Render PageBuilder header content
+- Add `renderPageBuilderFooter()` - Render PageBuilder footer content
 
-```
-core/plugins/PageBuilder/views/common/
-├── counter.blade.php
-├── progress-bar.blade.php
-├── countdown.blade.php
-├── accordion.blade.php
-├── divider.blade.php
-├── spacer.blade.php
-├── gallery.blade.php
-├── google-maps.blade.php
-├── image-comparison.blade.php
-├── modal-box.blade.php
-├── social-icons.blade.php
-└── newsletter.blade.php
+### Phase 2: Update Navbar Template
+
+Modify navbar.blade.php to check PageBuilder first, then fallback to Blade:
+
+**File: `core/resources/views/tenant/frontend/partials/navbar.blade.php`**
+
+```blade
+@php
+    // Check if PageBuilder header exists
+    $pagebuilder_header = \App\Facades\ThemeDataFacade::renderPageBuilderHeader();
+@endphp
+
+@if(!empty($pagebuilder_header))
+    {{-- Render PageBuilder Header --}}
+    {!! $pagebuilder_header !!}
+@else
+    {{-- Fallback to Blade template --}}
+    @php
+        $current_theme_slug = getSelectedThemeSlug();
+        $navbar_area_name = getHeaderNavbarArea();
+        $navbar_view = 'themes.'.$current_theme_slug.'.headerNavbarArea.'.$navbar_area_name;
+    @endphp
+    
+    @if(View::exists($navbar_view))
+        @include($navbar_view)
+    @else
+        @include('tenant.frontend.partials.pages-portion.navbars.navbar-01')
+    @endif
+@endif
 ```
 
-## Addon Specifications
-
-### 1. Counter / Number Counter
-
-**Fields:**
-
-- Number (target value)
-- Prefix (e.g., "$", "+")
-- Suffix (e.g., "+", "K", "M")
-- Icon (optional)
-- Title
-- Description
-- Animation Speed (ms)
-- Starting Number
-
-**View:** Animated counter that counts up to target number
-
-**Use Case:** Statistics, achievements, milestones (e.g., "1000+ Clients", "50 Services")
-
-### 2. Progress Bar
-
-**Fields:**
-
-- Repeater for progress items:
-  - Label
-  - Percentage (0-100)
-  - Color
-  - Animated (yes/no)
-- Style (horizontal/vertical/circular)
-- Show Percentage Text
-
-**View:** Progress bars showing skills, completion, or statistics
-
-**Use Case:** Skills section, project progress, feature completion
-
-### 3. Countdown Timer
-
-**Fields:**
-
-- Target Date/Time
-- Label (e.g., "Sale Ends In", "Event Starts In")
-- Format (Days/Hours/Minutes/Seconds)
-- Style (default/compact/minimal)
-- Timezone
-
-**View:** Countdown timer to specific date
-
-**Use Case:** Sales, events, launches, deadlines
-
-### 4. Accordion
-
-**Fields:**
-
-- Repeater for accordion items:
-  - Title
-  - Content (WYSIWYG)
-  - Icon (optional)
-  - Default Open (yes/no)
-- Style (default/boxed/minimal)
-- Allow Multiple Open
-
-**View:** Collapsible accordion sections
-
-**Use Case:** FAQ, features list, content organization
-
-### 5. Divider / Separator
-
-**Fields:**
-
-- Style (solid/dashed/dotted/double/wavy)
-- Width (px/%)
-- Color
-- Height/Thickness (px)
-- Alignment (left/center/right)
-- Margin Top/Bottom
-
-**View:** Visual separator between sections
-
-**Use Case:** Section breaks, visual separation
-
-### 6. Spacer
-
-**Fields:**
-
-- Height (px/rem/vh)
-- Visibility (all/desktop/mobile)
-- Background Color (optional)
-- Responsive Heights (desktop/tablet/mobile)
-
-**View:** Empty space/spacing element
-
-**Use Case:** Layout spacing, vertical gaps
-
-### 7. Gallery
-
-**Fields:**
-
-- Repeater for gallery items:
-  - Image
-  - Title (optional)
-  - Description (optional)
-  - Link (optional)
-- Layout (grid/masonry/carousel)
-- Columns (1-6)
-- Lightbox (yes/no)
-- Image Size
-- Spacing
-
-**View:** Advanced image gallery with lightbox
-
-**Use Case:** Portfolio, before/after, product images
-
-### 8. Google Maps
-
-**Fields:**
-
-- Address
-- Latitude
-- Longitude
-- Zoom Level (1-20)
-- Map Type (roadmap/satellite/hybrid/terrain)
-- Marker (custom image)
-- Height (px)
-- Show Info Window
-
-**View:** Embedded Google Maps
-
-**Use Case:** Location display, contact page, directions
-
-### 9. Image Comparison
-
-**Fields:**
-
-- Before Image
-- After Image
-- Slider Position (0-100%)
-- Orientation (horizontal/vertical)
-- Label Before/After
-- Show Labels
-
-**View:** Before/after image comparison slider
-
-**Use Case:** Transformations, product comparisons, before/after results (perfect for salons!)
-
-### 10. Modal Box
-
-**Fields:**
-
-- Trigger Type (button/image/custom)
-- Trigger Text/Image
-- Modal Title
-- Modal Content (WYSIWYG)
-- Size (small/medium/large/fullscreen)
-- Show Close Button
-- Close on Outside Click
-
-**View:** Popup modal box
-
-**Use Case:** Video popups, forms, detailed information
-
-### 11. Social Icons
-
-**Fields:**
-
-- Repeater for social platforms:
-  - Platform (Facebook/Instagram/Twitter/etc.)
-  - Icon (custom or preset)
-  - URL
-- Style (rounded/square/circle)
-- Size (small/medium/large)
-- Alignment (left/center/right)
-- Spacing
-
-**View:** Social media icons with links
-
-**Use Case:** Social links, footer, header
-
-### 12. Newsletter
-
-**Fields:**
-
-- Title
-- Description
-- Placeholder Text
-- Button Text
-- Success Message
-- Error Message
-- API Integration (Mailchimp/Email/None)
-- API Key (optional)
-
-**View:** Newsletter subscription form
-
-**Use Case:** Email list building, marketing
-
-## Implementation Steps
-
-### 1. Create Addon Classes
-
-Each addon will follow the same pattern as existing addons:
-
-- Extend `PageBuilderBase`
-- Implement `preview_image()`, `admin_render()`, `frontend_render()`, `enable()`, `addon_title()`
-- Use PageBuilder Fields (Text, Image, Repeater, Select, etc.)
-- Support padding/spacing via `padding_fields()`
-- Use `section_id_and_class_fields()` for custom CSS
-- Sanitize all output with `SanitizeInput`
-
-### 2. Create View Files
-
-- Location: `core/plugins/PageBuilder/views/common/`
-- Use `renderView('common.{addon-name}', $data)` method
-- Views should be responsive
-- Use existing CSS/TailwindCSS classes
-
-### 3. Register Addons
-
-Update `core/plugins/PageBuilder/PageBuilderSetup.php`:
-
-Add to `$globalAddons` array (around line 215-235):
-
-```php
-// Additional essential addons
-\Plugins\PageBuilder\Addons\Common\Counter\Counter::class,
-\Plugins\PageBuilder\Addons\Common\ProgressBar\ProgressBar::class,
-\Plugins\PageBuilder\Addons\Common\Countdown\Countdown::class,
-\Plugins\PageBuilder\Addons\Common\Accordion\Accordion::class,
-\Plugins\PageBuilder\Addons\Common\Divider\Divider::class,
-\Plugins\PageBuilder\Addons\Common\Spacer\Spacer::class,
-\Plugins\PageBuilder\Addons\Common\Gallery\Gallery::class,
-\Plugins\PageBuilder\Addons\Common\GoogleMaps\GoogleMaps::class,
-\Plugins\PageBuilder\Addons\Common\ImageComparison\ImageComparison::class,
-\Plugins\PageBuilder\Addons\Common\ModalBox\ModalBox::class,
-\Plugins\PageBuilder\Addons\Common\SocialIcons\SocialIcons::class,
-\Plugins\PageBuilder\Addons\Common\Newsletter\Newsletter::class,
+### Phase 3: Update Footer Template
+
+Modify widget-area.blade.php to check PageBuilder first:
+
+**File: `core/resources/views/tenant/frontend/partials/widget-area.blade.php`**
+
+```blade
+@php
+    // Check if PageBuilder footer exists
+    $pagebuilder_footer = \App\Facades\ThemeDataFacade::renderPageBuilderFooter();
+@endphp
+
+@if(!empty($pagebuilder_footer))
+    {{-- Render PageBuilder Footer --}}
+    {!! $pagebuilder_footer !!}
+@else
+    {{-- Fallback to Blade template --}}
+    @php
+        $current_theme_slug = getSelectedThemeSlug();
+        $widget_area_name = getFooterWidgetArea();
+        $footer_view = 'themes.'.$current_theme_slug.'.footerWidgetArea.'.$widget_area_name;
+    @endphp
+    
+    @if(View::exists($footer_view))
+        @include($footer_view)
+    @else
+        @include('tenant.frontend.partials.pages-portion.footers.footer-medicom')
+    @endif
+@endif
 ```
 
-### 4. Create Preview Images
+### Phase 4: Add Helper Methods
 
-- Location: `core/public/assets/pagebuilder-previews/common/`
-- Files: counter.jpg, progress-bar.jpg, countdown.jpg, etc.
-- Each preview should show the addon's design
+Implement helper methods in ThemeMetaData:
 
-## Files to Create
+**File: `core/app/Helpers/ThemeMetaData.php`**
 
-### PHP Classes (12 files)
+Add methods:
 
-1. `core/plugins/PageBuilder/Addons/Common/Counter/Counter.php`
-2. `core/plugins/PageBuilder/Addons/Common/ProgressBar/ProgressBar.php`
-3. `core/plugins/PageBuilder/Addons/Common/Countdown/Countdown.php`
-4. `core/plugins/PageBuilder/Addons/Common/Accordion/Accordion.php`
-5. `core/plugins/PageBuilder/Addons/Common/Divider/Divider.php`
-6. `core/plugins/PageBuilder/Addons/Common/Spacer/Spacer.php`
-7. `core/plugins/PageBuilder/Addons/Common/Gallery/Gallery.php`
-8. `core/plugins/PageBuilder/Addons/Common/GoogleMaps/GoogleMaps.php`
-9. `core/plugins/PageBuilder/Addons/Common/ImageComparison/ImageComparison.php`
-10. `core/plugins/PageBuilder/Addons/Common/ModalBox/ModalBox.php`
-11. `core/plugins/PageBuilder/Addons/Common/SocialIcons/SocialIcons.php`
-12. `core/plugins/PageBuilder/Addons/Common/Newsletter/Newsletter.php`
+1. `hasPageBuilderHeader()` - Check if widgets exist for location "header"
+2. `hasPageBuilderFooter()` - Check if widgets exist for location "footer"
+3. `renderPageBuilderHeader()` - Render all widgets with location "header"
+4. `renderPageBuilderFooter()` - Render all widgets with location "footer"
 
-### View Files (12 files)
+### Phase 5: Admin Panel Integration
 
-1. `core/plugins/PageBuilder/views/common/counter.blade.php`
-2. `core/plugins/PageBuilder/views/common/progress-bar.blade.php`
-3. `core/plugins/PageBuilder/views/common/countdown.blade.php`
-4. `core/plugins/PageBuilder/views/common/accordion.blade.php`
-5. `core/plugins/PageBuilder/views/common/divider.blade.php`
-6. `core/plugins/PageBuilder/views/common/spacer.blade.php`
-7. `core/plugins/PageBuilder/views/common/gallery.blade.php`
-8. `core/plugins/PageBuilder/views/common/google-maps.blade.php`
-9. `core/plugins/PageBuilder/views/common/image-comparison.blade.php`
-10. `core/plugins/PageBuilder/views/common/modal-box.blade.php`
-11. `core/plugins/PageBuilder/views/common/social-icons.blade.php`
-12. `core/plugins/PageBuilder/views/common/newsletter.blade.php`
+Add Header/Footer builder pages in admin panel:
 
-### Configuration Update
+**Option A: Separate Pages**
 
-1. `core/plugins/PageBuilder/PageBuilderSetup.php` - Add 12 new addons to global registration
+- Route: `/admin/appearance/header-builder`
+- Route: `/admin/appearance/footer-builder`
+- Controller: `HeaderBuilderController`, `FooterBuilderController`
+- Views: Use existing PageBuilder editor with location preset
 
-## Safety & Risk Analysis
+**Option B: Settings Toggle**
 
-### Risk Level: LOW
+- Add toggle in Theme Settings: "Use PageBuilder for Header/Footer"
+- If enabled, show PageBuilder editor in settings
+- If disabled, use Blade templates
 
-**Why Safe:**
+**Recommended: Option A (Separate Pages)**
 
-- Following exact same patterns as existing addons
-- Each addon uses `class_exists()` check
-- `enable()` method controls visibility
-- If addon has errors, it simply won't appear in widget list
-- Adding to `globalAddons` array only (non-breaking)
-- Existing try-catch blocks in frontend rendering already handle errors gracefully
+### Phase 6: PageBuilder Locations
 
-### Safety Measures
+Add special locations:
 
-1. **Implementation Strategy:**
+- `header` - For header widgets
+- `footer` - For footer widgets
 
-   - Add addons one by one
-   - Test each addon individually before adding to array
-   - Use proper error handling in each addon class
-   - Follow existing addon patterns exactly
+These locations will be available in PageBuilder dropdown when editing Header/Footer.
 
-2. **Code Safety:**
+## Files to Modify
 
-   - All output sanitized with `SanitizeInput`
-   - Use existing PageBuilder field types
-   - Return empty string on error (graceful degradation)
-   - Log errors instead of breaking page
+### 1. Core Helper
 
-3. **Rollback Plan:**
+- `core/app/Helpers/ThemeMetaData.php`
+  - Add 4 new methods for PageBuilder Header/Footer
 
-   - Quick Fix: Remove new addons from `globalAddons` array
-   - Full Rollback: Restore from backup
+### 2. Frontend Templates
 
-## Excluded Addons (Intentionally)
+- `core/resources/views/tenant/frontend/partials/navbar.blade.php`
+  - Add PageBuilder check before Blade include
 
-- **WooCommerce-specific addons** - Not applicable (we use custom products)
-- **Blog-specific addons** - Can use existing blog widgets
-- **Complex animations** - May cause performance issues
-- **Third-party integrations** - Need API keys and external dependencies
-- **Header/Footer specific** - Already handled separately
+- `core/resources/views/tenant/frontend/partials/widget-area.blade.php`
+  - Add PageBuilder check before Blade include
 
-## Technical Notes
+### 3. Admin Panel (Optional but Recommended)
 
-- All addons extend `PageBuilderBase`
-- Use `SanitizeInput` for all output
-- Support multilingual content via `admin_language_tab()` if needed
-- Include padding/spacing options via `padding_fields()`
-- Use `section_id_and_class_fields()` for custom CSS
-- Views should be mobile-responsive
-- Follow existing PageBuilder patterns for consistency
-- Use `renderView()` method for frontend rendering
+- Create `core/app/Http/Controllers/Admin/HeaderBuilderController.php`
+- Create `core/app/Http/Controllers/Admin/FooterBuilderController.php`
+- Create routes in `routes/web.php` or `routes/admin.php`
+- Create views: `resources/views/admin/header-builder.blade.php`
+- Create views: `resources/views/admin/footer-builder.blade.php`
 
-## Conclusion
+### 4. Facade Update
 
-Safe to proceed - These addons are additive and won't break existing functionality. They follow the same safe patterns as existing Common addons and will be extremely useful for website owners across all industries.
+- Update `ThemeDataFacade` if needed to expose new methods
 
-## Additional Priority Addons from Elementor List
+## Technical Details
 
-After analyzing the extensive Elementor widgets list, we've identified **6 additional useful addons** that are safe and commonly needed:
+### Location Naming Convention
 
-### Additional Addons (Priority Order)
+- Header widgets: `location = 'header'`
+- Footer widgets: `location = 'footer'`
 
-13. **FlipBox** - Flip card effect (very engaging for features/services)
-14. **HotSpots** - Interactive hotspots on images (great for product tours, team photos)
-15. **Typewriter** - Animated typing effect (eye-catching for headlines)
-16. **Table** - Data table widget (essential for pricing, schedules, comparisons)
-17. **Breadcrumb** - Navigation breadcrumbs (SEO and UX friendly)
-18. **Alert** - Alert/notification messages (important for user communication)
+### Widget Order
 
-### Additional Addon Specifications
+- Use `addon_order` field to control widget sequence
+- Header widgets: Top to bottom order
+- Footer widgets: Top to bottom order
 
-#### 13. FlipBox / Flip Card
+### Backward Compatibility
 
-**Fields:**
+- System will check PageBuilder content first
+- If no PageBuilder content exists, fallback to Blade templates
+- Existing themes continue working without changes
+- New themes can use PageBuilder or Blade or both
 
-- Front Side:
-  - Icon/Image
-  - Title
-  - Description
-- Back Side:
-  - Title
-  - Description
-  - Button (optional)
-- Flip Direction (horizontal/vertical)
-- Flip Trigger (hover/click)
-- Style (default/3d/minimal)
+### Performance Considerations
 
-**View:** Card that flips to reveal back content
+- Cache PageBuilder Header/Footer content
+- Use `Cache::remember()` for 24 hours
+- Clear cache when Header/Footer widgets are updated
 
-**Use Case:** Feature showcases, service cards, team member cards
+## Implementation Order
 
-#### 14. HotSpots / Interactive Hotspots
-
-**Fields:**
-
-- Background Image
-- Repeater for hotspots:
-  - X Position (%)
-  - Y Position (%)
-  - Tooltip Title
-  - Tooltip Content
-  - Icon (optional)
-  - Link (optional)
-- Tooltip Style (default/popup/always visible)
-
-**View:** Interactive image with clickable hotspots showing tooltips
-
-**Use Case:** Product tours, interactive maps, team photos with info
-
-#### 15. Typewriter / Animated Text
-
-**Fields:**
-
-- Static Text (before)
-- Repeater for animated words/phrases
-- Typing Speed (ms per character)
-- Deleting Speed (ms per character)
-- Cursor Style (pipe/underscore/custom)
-- Loop (yes/no)
-- Show Cursor
-
-**View:** Text that types out character by character
-
-**Use Case:** Hero headlines, attention-grabbing text
-
-#### 16. Table
-
-**Fields:**
-
-- Repeater for rows:
-  - Repeater for cells (text/content)
-- Header Row (yes/no)
-- Striped Rows (yes/no)
-- Border Style
-- Responsive (scroll/stack)
-
-**View:** Data table with rows and columns
-
-**Use Case:** Pricing tables, schedules, data comparison, feature matrices
-
-#### 17. Breadcrumb
-
-**Fields:**
-
-- Separator (/, >, |, custom)
-- Home Text
-- Show Home (yes/no)
-- Style (default/minimal/arrows)
-- Alignment
-
-**View:** Navigation breadcrumb trail
-
-**Use Case:** Page navigation, SEO, user orientation
-
-#### 18. Alert / Notification
-
-**Fields:**
-
-- Type (success/error/warning/info)
-- Title
-- Message/Content
-- Icon (yes/no/custom)
-- Dismissible (yes/no)
-- Style (default/filled/outlined)
-
-**View:** Alert/notification message box
-
-**Use Case:** Important notices, success messages, warnings
-
-## Extended Risk Analysis
-
-### Comprehensive Safety Assessment
-
-#### 1. Code Safety (CRITICAL)
-
-**Existing Safety Mechanisms:**
-
-- ✅ `class_exists()` check before instantiation
-- ✅ Try-catch blocks in `render_widgets_by_name_for_frontend()`
-- ✅ `enable()` method controls visibility
-- ✅ Graceful degradation (returns empty string on error)
-- ✅ Error logging instead of breaking page
-
-**New Addons Safety:**
-
-- All new addons MUST follow exact same pattern
-- Use `SanitizeInput` for ALL output (no exceptions)
-- No direct database queries (use existing helpers)
-- No file system operations (use existing media helpers)
-- No external API calls without try-catch
-- No JavaScript inline (use external JS files or data attributes)
-
-#### 2. Performance Impact (MODERATE)
-
-**Potential Risks:**
-
-- JavaScript libraries (Google Maps, Typewriter, etc.)
-- Heavy animations (FlipBox, Typewriter)
-- Multiple addons on same page
-
-**Mitigation:**
-
-- Lazy load JavaScript (only load when addon is present)
-- Use CSS animations where possible (better performance)
-- Limit animation complexity
-- Add loading states for async content (Google Maps)
-
-#### 3. Dependency Management (LOW-MODERATE)
-
-**External Dependencies:**
-
-- Google Maps API (requires API key)
-- Animation libraries (if needed)
-
-**Mitigation:**
-
-- Make API keys optional (show placeholder if not configured)
-- Use native browser APIs where possible
-- Bundle lightweight libraries (avoid heavy dependencies)
-- Document all dependencies clearly
-
-#### 4. Breaking Changes (LOW)
-
-**Why Safe:**
-
-- Addons are additive (don't modify existing code)
-- Each addon is independent
-- No changes to core PageBuilder logic
-- Can be disabled individually if issues arise
-
-**Rollback Strategy:**
-
-1. Remove addon from `globalAddons` array (instant)
-2. Delete addon class file (if needed)
-3. Remove view file (if needed)
-4. Clear cache
-
-#### 5. Security Risks (LOW)
-
-**Potential Concerns:**
-
-- User input sanitization
-- XSS vulnerabilities
-- API key exposure
-
-**Mitigation:**
-
-- ✅ All output sanitized with `SanitizeInput`
-- ✅ No eval() or dangerous functions
-- ✅ API keys stored in settings (not in frontend)
-- ✅ Validate all user inputs
-- ✅ Escape all HTML output
-
-### Implementation Safety Checklist
-
-For each new addon:
-
-- [ ] Extends `PageBuilderBase` (not custom base class)
-- [ ] Implements all required methods (admin_render, frontend_render, enable, addon_title, preview_image)
-- [ ] Uses existing PageBuilder Fields (Text, Image, Repeater, Select, etc.)
-- [ ] All output sanitized with `SanitizeInput`
-- [ ] No direct database queries
-- [ ] No file system operations
-- [ ] Error handling in frontend_render (try-catch)
-- [ ] Returns empty string on error (graceful degradation)
+1. **Phase 1**: Add helper methods to ThemeMetaData (4 methods)
+2. **Phase 2**: Update ThemeDataFacade annotations
+3. **Phase 3**: Update navbar.blade.php template (check PageBuilder first)
+4. **Phase 4**: Update widget-area.blade.php template (check PageBuilder first)
+5. **Phase 5**: Test backward compatibility (existing themes should still work)
+6. **Phase 6**: Create HeaderBuilderController and routes
+7. **Phase 7**: Create FooterBuilderController and routes
+8. **Phase 8**: Create admin views (header-builder.blade.php, footer-builder.blade.php)
+9. **Phase 9**: Test full flow (build header/footer in admin, verify frontend rendering)
+
+## Testing Checklist
+
+- [ ] PageBuilder header renders correctly
+- [ ] PageBuilder footer renders correctly
+- [ ] Fallback to Blade works when no PageBuilder content
+- [ ] Widget order is respected
+- [ ] All existing themes still work
+- [ ] Admin panel pages work correctly
+- [ ] Cache works properly
 - [ ] Mobile responsive
-- [ ] Follows existing naming conventions
-- [ ] Uses `renderView()` for frontend rendering
-- [ ] Includes padding/spacing options
-- [ ] Supports custom CSS classes
 
-### Testing Strategy
+## Risk Assessment
 
-#### Phase 1: Individual Testing
+**Risk Level: LOW-MODERATE**
 
-1. Create each addon one by one
-2. Test admin panel (rendering, saving)
-3. Test frontend rendering
-4. Test error scenarios (missing data, invalid input)
-5. Test on mobile devices
+**Potential Issues:**
 
-#### Phase 2: Integration Testing
+1. Performance: Multiple widgets in Header/Footer may slow down page load
+2. Caching: Need proper cache invalidation
+3. CSS Conflicts: PageBuilder widgets may conflict with theme CSS
+4. JavaScript: Widgets may need specific JS loading order
 
-1. Add to `globalAddons` array
-2. Test in PageBuilder editor
-3. Test with existing addons
-4. Test with different themes
-5. Test performance (page load time)
+**Mitigation:**
 
-#### Phase 3: User Acceptance
+- Use lazy loading for heavy widgets
+- Implement proper cache invalidation
+- Add CSS isolation for PageBuilder widgets
+- Document JS loading order requirements
 
-1. Test with real content
-2. Test edge cases
-3. Monitor error logs
-4. Gather user feedback
+## Success Criteria
 
-### Rollback Procedures
+1. ✅ Header can be built using PageBuilder
+2. ✅ Footer can be built using PageBuilder
+3. ✅ Existing themes still work (backward compatibility)
+4. ✅ Admin panel allows editing Header/Footer
+5. ✅ Widgets render in correct order
+6. ✅ Performance is acceptable
 
-#### Quick Rollback (5 minutes)
+## Next Steps
 
-1. Comment out addon in `PageBuilderSetup.php` globalAddons array
-2. Clear cache
-3. Test page loads correctly
+After implementation:
 
-#### Full Rollback (if needed)
-
-1. Remove addon from `globalAddons` array
-2. Delete addon class file
-3. Delete view file
-4. Clear all caches
-5. Verify no broken pages
-
-### Documentation Requirements
-
-For each addon:
-
-- [ ] Clear description in `addon_title()`
-- [ ] Field labels are descriptive
-- [ ] Preview image shows functionality
-- [ ] View file is well-commented
-- [ ] No hardcoded values (use translations)
-
-## Final Risk Assessment
-
-### Overall Risk Level: **LOW** ✅
-
-**Justification:**
-
-1. Following proven patterns (same as existing addons)
-2. Additive changes only (no modifications to core)
-3. Multiple safety mechanisms in place
-4. Easy rollback if issues arise
-5. Independent addons (one failure doesn't break others)
-
-### Recommended Implementation Order
-
-**Phase 1 (Safest - No External Dependencies):**
-
-1. Divider
-2. Spacer
-3. Accordion
-4. Table
-5. Breadcrumb
-6. Alert
-
-**Phase 2 (Moderate - Light JavaScript):**
-
-7. Counter
-8. ProgressBar
-9. FlipBox
-10. Typewriter
-
-**Phase 3 (Higher Complexity):**
-
-11. Countdown
-12. Gallery
-13. ImageComparison
-14. ModalBox
-15. HotSpots
-
-**Phase 4 (External Dependencies):**
-
-16. GoogleMaps (requires API key)
-17. Newsletter (may require API)
-18. SocialIcons
-
-### Conclusion
-
-✅ **Safe to Proceed** - With proper implementation following existing patterns, all addons can be added safely without breaking core functionality. The risk is LOW because:
-
-- Addons are independent and isolated
-- Multiple safety mechanisms exist
-- Easy rollback is available
-- No core modifications required
+1. Create documentation for using PageBuilder Header/Footer
+2. Add example Header/Footer templates
+3. Create video tutorial (optional)
+4. Update theme.json schema documentation
 
 ### To-dos
 
-- [ ] Copy aromatic theme directory structure to salons theme directory
+- [x] Copy aromatic theme directory structure to salons theme directory

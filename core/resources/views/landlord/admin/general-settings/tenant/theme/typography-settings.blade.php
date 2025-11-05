@@ -4,6 +4,7 @@
     $suffix = getSelectedThemeSlug();
 @endphp
 <div class="col">
+    @include('landlord.admin.general-settings.tenant.theme.partials.header-footer-builder-links')
     <h4 class="mb-4">{{__($theme_name)}}</h4>
     <div class="form-group">
         <label for="body_font_family">{{__('Font Family')}}</label>

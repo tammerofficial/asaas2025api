@@ -122,6 +122,100 @@
         <link rel="stylesheet" href="{{global_asset('assets/tenant/frontend/css/'. $tenant_id .'/dynamic-style.css')}}">
     @endif
 
+    {{-- Header Overlay Fix for PageBuilder --}}
+    <style>
+        /* Ensure Header appears above PageBuilder content (especially video backgrounds) */
+        .header-style-01,
+        .navbar-area,
+        header {
+            position: relative;
+            z-index: 9999 !important;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        
+        .navbar-area.nav-absolute {
+            position: absolute;
+            z-index: 9999 !important;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Ensure horizontal layout for Logo, Menu, Search */
+        .navbar-area .nav-container {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+        }
+        
+        .navbar-area .nav-container .responsive-mobile-menu {
+            display: flex !important;
+            align-items: center !important;
+            flex: 0 0 auto;
+            order: 1;
+        }
+        
+        .navbar-area .nav-container .navbar-collapse {
+            flex: 1 1 auto;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            order: 2;
+        }
+        
+        .navbar-area .nav-container .navbar-collapse .navbar-nav {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+        }
+        
+        .navbar-area .nav-container .nav-right-content,
+        .navbar-area .nav-container .navbar-right-content {
+            flex: 0 0 auto;
+            display: flex !important;
+            align-items: center !important;
+            order: 3;
+        }
+        
+        /* Ensure all navbar items are horizontal */
+        @media (min-width: 992px) {
+            .navbar-area .nav-container > * {
+                display: flex !important;
+                align-items: center !important;
+            }
+        }
+        
+        /* Ensure PageBuilder content is below header */
+        .common-video-box-section,
+        .video-section-background,
+        .page-builder-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Header should be visible on top of video backgrounds */
+        .video-background-fullscreen,
+        .video-section-background {
+            z-index: 0 !important;
+        }
+        
+        /* Make sure header is always visible */
+        @media (min-width: 992px) {
+            .navbar-area .nav-container {
+                flex-direction: row;
+            }
+            
+            .navbar-area .nav-container .logo-wrapper,
+            .navbar-area .nav-container .navbar-collapse,
+            .navbar-area .nav-container .nav-right-content {
+                display: flex;
+                align-items: center;
+            }
+        }
+    </style>
+
     @foreach($theme_header_js_files ?? [] as $jsFile)
         <script src="{{loadJs($jsFile)}}"></script>
     @endforeach
