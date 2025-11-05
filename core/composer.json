@@ -70,6 +70,7 @@
         "files": [
             "app/Helpers/funtions.php",
             "app/Helpers/module-helper.php",
+            "app/Helpers/pagebuilder_cache_helpers.php",
             "app/Helpers/theme-helper.php",
             "app/Helpers/brand_color_helpers.php"
         ]

@@ -123,14 +123,40 @@ abstract class PageBuilderBase
     /**
      * get_settings
      * this method will return all the settings value saved for widget
+     * Uses Redis cache with fallback to database
      * @since 1.0.0
      * */
 
     public function get_settings()
     {
-        $widget_data = !empty($this->args['id']) ? PageBuilder::find($this->args['id']) : [];
-        $widget_data = !empty($widget_data) ? json_decode($widget_data->addon_settings,true) : [];
-        return $widget_data;
+        if (empty($this->args['id'])) {
+            return [];
+        }
+
+        $widget_id = $this->args['id'];
+
+        // Try to get from cache first (Redis)
+        try {
+            $cached_settings = PageBuilder::getCachedSettings($widget_id);
+            if ($cached_settings !== null) {
+                return $cached_settings;
+            }
+        } catch (\Exception $e) {
+            // Fallback to database if cache fails
+            \Log::warning('Failed to get cached settings, falling back to database', [
+                'widget_id' => $widget_id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        // Fallback to database
+        $widget_data = PageBuilder::find($widget_id);
+        if (empty($widget_data)) {
+            return [];
+        }
+
+        $settings = json_decode($widget_data->addon_settings, true);
+        return $settings ?? [];
     }
 
     /**

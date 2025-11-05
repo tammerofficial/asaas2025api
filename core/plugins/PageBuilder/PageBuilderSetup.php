@@ -426,7 +426,31 @@ class PageBuilderSetup
     public static function render_frontend_pagebuilder_content_by_location($location): string
     {
         $output = '';
-        $all_widgets = PageBuilder::where(['addon_location' => $location])->orderBy('addon_order', 'ASC')->get();
+        
+        // Try to get widgets from cache first (Redis)
+        $tenant_id = !is_null(tenant()) ? tenant()->id : null;
+        $cacheKey = $tenant_id 
+            ? "pagebuilder_location_{$location}_tenant_{$tenant_id}"
+            : "pagebuilder_location_{$location}_central";
+        
+        try {
+            $cached_widgets = \Cache::store('redis')->remember($cacheKey, 1800, function () use ($location) {
+                return PageBuilder::where(['addon_location' => $location])
+                    ->orderBy('addon_order', 'ASC')
+                    ->get();
+            });
+            
+            $all_widgets = $cached_widgets;
+        } catch (\Exception $e) {
+            // Fallback to database if Redis fails
+            \Log::warning('Failed to get cached widgets by location, falling back to database', [
+                'location' => $location,
+                'error' => $e->getMessage(),
+            ]);
+            $all_widgets = PageBuilder::where(['addon_location' => $location])
+                ->orderBy('addon_order', 'ASC')
+                ->get();
+        }
         
         // Special wrapper for header location to create grid layout
         if ($location === 'header') {
@@ -884,21 +908,65 @@ body:has(.pagebuilder-header-wrapper) {
     public static function get_saved_addons_for_dynamic_page($page_type, $page_id): string
     {
         $output = '';
-        $all_widgets = \Cache::remember('page_id-' . $page_id, 60 * 60 * 24, function () use ($page_type, $page_id) {
-            return PageBuilder::where(['addon_page_type' => $page_type, 'addon_page_id' => $page_id])->orderBy('addon_order', 'asc')->get();
-        });
+        
+        // Use Redis cache with tenant isolation
+        $tenant_id = !is_null(tenant()) ? tenant()->id : null;
+        $cacheKey = $tenant_id 
+            ? "pagebuilder_admin_page_{$page_id}_tenant_{$tenant_id}"
+            : "pagebuilder_admin_page_{$page_id}_central";
+        
+        try {
+            $all_widgets = \Cache::store('redis')->remember(
+                $cacheKey,
+                config('cache-tenancy.ttl.pagebuilder', 3600),
+                function () use ($page_type, $page_id) {
+                    return PageBuilder::where([
+                        'addon_page_type' => $page_type,
+                        'addon_page_id' => $page_id
+                    ])->orderBy('addon_order', 'asc')->get();
+                }
+            );
+        } catch (\Exception $e) {
+            // Fallback to legacy cache if Redis fails
+            \Log::warning('Failed to get cached widgets for admin page, falling back to legacy cache', [
+                'page_id' => $page_id,
+                'page_type' => $page_type,
+                'error' => $e->getMessage(),
+            ]);
+            
+            $all_widgets = \Cache::remember(
+                'page_id-' . $page_id,
+                60 * 60 * 24,
+                function () use ($page_type, $page_id) {
+                    return PageBuilder::where([
+                        'addon_page_type' => $page_type,
+                        'addon_page_id' => $page_id
+                    ])->orderBy('addon_order', 'asc')->get();
+                }
+            );
+        }
 
         foreach ($all_widgets as $widget) {
-            $output .= self::render_widgets_by_name_for_admin([
-                'name' => $widget->addon_name,
-                'namespace' => $widget->addon_namespace,
-                'id' => $widget->id,
-                'type' => 'update',
-                'order' => $widget->addon_order,
-                'page_type' => $widget->addon_page_type,
-                'page_id' => $widget->addon_page_id,
-                'location' => $widget->addon_location
-            ]);
+            try {
+                $output .= self::render_widgets_by_name_for_admin([
+                    'name' => $widget->addon_name,
+                    'namespace' => $widget->addon_namespace,
+                    'id' => $widget->id,
+                    'type' => 'update',
+                    'order' => $widget->addon_order,
+                    'page_type' => $widget->addon_page_type,
+                    'page_id' => $widget->addon_page_id,
+                    'location' => $widget->addon_location
+                ]);
+            } catch (\Exception $e) {
+                // Log error but continue rendering other widgets
+                \Log::error('PageBuilder Admin Render Error for widget', [
+                    'widget_id' => $widget->id,
+                    'widget_name' => $widget->addon_name,
+                    'error' => $e->getMessage(),
+                ]);
+                // Continue to next widget
+            }
         }
 
         return $output;
@@ -907,18 +975,64 @@ body:has(.pagebuilder-header-wrapper) {
     public static function render_frontend_pagebuilder_content_for_dynamic_page($page_type, $page_id): string
     {
         $output = '';
-        $all_widgets = \Cache::remember('page_id-' . $page_id, 24 * 60 * 60, function () use ($page_type, $page_id) {
-            return PageBuilder::where(['addon_page_type' => $page_type, 'addon_page_id' => $page_id])->orderBy('addon_order', 'asc')->get();
-        });
+        
+        // Use Redis cache with tenant isolation
+        $tenant_id = !is_null(tenant()) ? tenant()->id : null;
+        $cacheKey = $tenant_id 
+            ? "pagebuilder_page_{$page_id}_tenant_{$tenant_id}"
+            : "pagebuilder_page_{$page_id}_central";
+        
+        try {
+            $all_widgets = \Cache::store('redis')->remember(
+                $cacheKey,
+                config('cache-tenancy.ttl.pagebuilder_preview', 1800),
+                function () use ($page_type, $page_id) {
+                    return PageBuilder::where([
+                        'addon_page_type' => $page_type,
+                        'addon_page_id' => $page_id
+                    ])->orderBy('addon_order', 'asc')->get();
+                }
+            );
+        } catch (\Exception $e) {
+            // Fallback to legacy cache if Redis fails
+            \Log::warning('Failed to get cached widgets for page, falling back to legacy cache', [
+                'page_id' => $page_id,
+                'page_type' => $page_type,
+                'error' => $e->getMessage(),
+            ]);
+            
+            $all_widgets = \Cache::remember(
+                'page_id-' . $page_id,
+                24 * 60 * 60,
+                function () use ($page_type, $page_id) {
+                    return PageBuilder::where([
+                        'addon_page_type' => $page_type,
+                        'addon_page_id' => $page_id
+                    ])->orderBy('addon_order', 'asc')->get();
+                }
+            );
+        }
 
         foreach ($all_widgets as $widget) {
-            $output .= self::render_widgets_by_name_for_frontend([
-                'name' => $widget->addon_name,
-                'namespace' => $widget->addon_namespace,
-                'id' => $widget->id,
-                'column' => $args['column'] ?? false
-            ]);
+            try {
+                $output .= self::render_widgets_by_name_for_frontend([
+                    'name' => $widget->addon_name,
+                    'namespace' => $widget->addon_namespace,
+                    'id' => $widget->id,
+                    'column' => false
+                ]);
+            } catch (\Exception $e) {
+                // Log error but continue rendering other widgets
+                \Log::error('PageBuilder Frontend Render Error for widget', [
+                    'widget_id' => $widget->id,
+                    'widget_name' => $widget->addon_name,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                // Continue to next widget instead of breaking the page
+            }
         }
+        
         return $output;
     }
 }

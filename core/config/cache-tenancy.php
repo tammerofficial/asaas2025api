@@ -59,6 +59,9 @@ return [
         'queries' => 1800, // 30 minutes
         'settings' => 43200, // 12 hours
         'translations' => 604800, // 7 days
+        'pagebuilder' => 3600, // 1 hour - PageBuilder widget settings
+        'pagebuilder_widgets' => 3600, // 1 hour - Individual widget cache
+        'pagebuilder_preview' => 1800, // 30 minutes - Preview cache
     ],
 
     /*
@@ -87,6 +90,10 @@ return [
         'settings' => 'tenant:{tenant_id}:settings',
         'users' => 'tenant:{tenant_id}:users',
         'categories' => 'tenant:{tenant_id}:categories',
+        'pagebuilder' => 'tenant:{tenant_id}:pagebuilder',
+        'pagebuilder_widgets' => 'tenant:{tenant_id}:pagebuilder:widgets',
+        'pagebuilder_header' => 'tenant:{tenant_id}:pagebuilder:header',
+        'pagebuilder_footer' => 'tenant:{tenant_id}:pagebuilder:footer',
     ],
 
     /*
@@ -115,6 +122,7 @@ return [
             'permissions',
             'roles',
             'menus',
+            'pagebuilder', // PageBuilder widgets
         ],
     ],
 

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Tenant\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\DeletePageBuilderJob;
+use App\Jobs\SavePageBuilderJob;
 use App\Models\PageBuilder;
+use App\Providers\TenantCacheServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Plugins\PageBuilder\PageBuilderSetup;
@@ -48,6 +51,7 @@ class HeaderBuilderController extends Controller
         unset($request['_token']);
         $widget_content = (array) $request->all();
 
+        // Create widget in database (needed for ID)
         $widget_id = PageBuilder::create([
             'addon_type' => $request->addon_type,
             'addon_location' => 'header', // Force location to header
@@ -59,13 +63,33 @@ class HeaderBuilderController extends Controller
             'addon_settings' => json_encode($widget_content),
         ])->id;
 
-        // Clear cache
-        $tenant_id = !is_null(tenant()) ? tenant()->id : 0;
-        Cache::forget('pagebuilder_header_exists_' . $tenant_id);
-        Cache::forget('pagebuilder_header_content_' . $tenant_id);
+        // Get tenant ID
+        $tenant_id = !is_null(tenant()) ? tenant()->id : null;
+
+        // Cache widget settings in Redis immediately (fast response)
+        $this->cacheWidgetSettings($widget_id, $widget_content, $tenant_id);
+
+        // Invalidate preview cache
+        $this->invalidatePreviewCache('header', null, $tenant_id);
+
+        // Dispatch job to update database in background (if needed for consistency)
+        if (config('queue.default') !== 'sync') {
+            $job_data = array_merge($widget_content, [
+                'addon_type' => $request->addon_type,
+                'addon_location' => 'header',
+                'addon_name' => $request->addon_name,
+                'addon_namespace' => base64_decode($request->addon_namespace),
+                'addon_page_id' => null,
+                'addon_order' => $request->addon_order ?? 0,
+                'addon_page_type' => null,
+            ]);
+
+            SavePageBuilderJob::dispatch($widget_id, $job_data, $tenant_id);
+        }
 
         $data['id'] = $widget_id;
         $data['status'] = 'ok';
+        $data['cached'] = true;
         return response()->json($data);
     }
 
@@ -83,22 +107,42 @@ class HeaderBuilderController extends Controller
         unset($request['_token']);
         $addon_content = (array) $request->all();
 
-        // Clear cache
-        $tenant_id = !is_null(tenant()) ? tenant()->id : 0;
-        Cache::forget('widget_settings_cache' . $request->id);
-        Cache::forget('pagebuilder_header_exists_' . $tenant_id);
-        Cache::forget('pagebuilder_header_content_' . $tenant_id);
+        $tenant_id = !is_null(tenant()) ? tenant()->id : null;
 
-        PageBuilder::findOrFail($request->id)->update([
+        // Cache widget settings in Redis immediately (fast response)
+        $this->cacheWidgetSettings($request->id, $addon_content, $tenant_id);
+
+        // Invalidate preview cache
+        $this->invalidatePreviewCache('header', null, $tenant_id);
+
+        // Prepare data for database update
+        $job_data = array_merge($addon_content, [
             'addon_type' => $request->addon_type,
-            'addon_location' => 'header', // Force location to header
+            'addon_location' => 'header',
             'addon_name' => $request->addon_name,
             'addon_namespace' => base64_decode($request->addon_namespace),
+            'addon_page_id' => null,
             'addon_order' => $request->addon_order ?? 0,
-            'addon_settings' => json_encode($addon_content),
+            'addon_page_type' => null,
         ]);
 
+        // Update database via queue (if not sync)
+        if (config('queue.default') !== 'sync') {
+            SavePageBuilderJob::dispatch($request->id, $job_data, $tenant_id);
+        } else {
+            // If sync queue, update immediately
+            PageBuilder::findOrFail($request->id)->update([
+                'addon_type' => $request->addon_type,
+                'addon_location' => 'header',
+                'addon_name' => $request->addon_name,
+                'addon_namespace' => base64_decode($request->addon_namespace),
+                'addon_order' => $request->addon_order ?? 0,
+                'addon_settings' => json_encode($addon_content),
+            ]);
+        }
+
         $data['status'] = 'ok';
+        $data['cached'] = true;
         return response()->json($data);
     }
 
@@ -107,13 +151,21 @@ class HeaderBuilderController extends Controller
      */
     public function delete(Request $request)
     {
-        PageBuilder::findOrFail($request->id)->delete();
+        $widget = PageBuilder::findOrFail($request->id);
 
-        // Clear cache
-        $tenant_id = !is_null(tenant()) ? tenant()->id : 0;
-        Cache::forget('widget_settings_cache' . $request->id);
-        Cache::forget('pagebuilder_header_exists_' . $tenant_id);
-        Cache::forget('pagebuilder_header_content_' . $tenant_id);
+        $tenant_id = !is_null(tenant()) ? tenant()->id : null;
+
+        // Delete from cache immediately
+        $this->clearWidgetCache($request->id, $tenant_id);
+        $this->invalidatePreviewCache('header', null, $tenant_id);
+
+        // Delete from database via queue (if not sync)
+        if (config('queue.default') !== 'sync') {
+            DeletePageBuilderJob::dispatch($request->id, $tenant_id, null, 'header');
+        } else {
+            // If sync queue, delete immediately
+            $widget->delete();
+        }
 
         return response()->json('ok');
     }
@@ -157,5 +209,74 @@ class HeaderBuilderController extends Controller
             'msg' => __('Settings saved successfully'),
             'type' => 'success'
         ]);
+    }
+
+    /**
+     * Cache widget settings in Redis
+     */
+    protected function cacheWidgetSettings(int $widget_id, array $settings, ?int $tenant_id): void
+    {
+        try {
+            $cacheKey = TenantCacheServiceProvider::getTenantCacheKey(
+                "pagebuilder_widget_{$widget_id}"
+            );
+
+            Cache::store('redis')->put(
+                $cacheKey,
+                $settings,
+                config('cache-tenancy.ttl.default', 3600)
+            );
+
+            Cache::forget('widget_settings_cache' . $widget_id);
+            Cache::put('widget_settings_cache' . $widget_id, $settings, 3600);
+        } catch (\Exception $e) {
+            \Log::warning('Failed to cache HeaderBuilder widget settings', [
+                'widget_id' => $widget_id,
+                'tenant_id' => $tenant_id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Clear widget cache
+     */
+    protected function clearWidgetCache(int $widget_id, ?int $tenant_id): void
+    {
+        try {
+            $cacheKey = TenantCacheServiceProvider::getTenantCacheKey(
+                "pagebuilder_widget_{$widget_id}"
+            );
+
+            Cache::store('redis')->forget($cacheKey);
+            Cache::forget('widget_settings_cache' . $widget_id);
+        } catch (\Exception $e) {
+            \Log::warning('Failed to clear HeaderBuilder widget cache', [
+                'widget_id' => $widget_id,
+                'tenant_id' => $tenant_id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Invalidate preview cache
+     */
+    protected function invalidatePreviewCache(?string $location, ?int $page_id, ?int $tenant_id): void
+    {
+        try {
+            if ($location && $tenant_id) {
+                if ($location === 'header') {
+                    Cache::forget('pagebuilder_header_exists_' . $tenant_id);
+                    Cache::forget('pagebuilder_header_content_' . $tenant_id);
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::warning('Failed to invalidate HeaderBuilder preview cache', [
+                'location' => $location,
+                'tenant_id' => $tenant_id,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 }
