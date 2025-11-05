@@ -46,7 +46,7 @@
 </section>
 <!-- Contact area end -->
 
-@section('scripts')
+@push('scripts')
     <script>
         $(document).on('submit', '.custom-form-builder-ten', function (e) {
             e.preventDefault();
@@ -94,6 +94,6 @@
         });
     </script>
 
-@endsection
+@endpush
 
 

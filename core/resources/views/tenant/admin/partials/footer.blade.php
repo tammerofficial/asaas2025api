@@ -370,6 +370,7 @@
 
 
 @yield('scripts')
+@stack('scripts')
 {!! \App\Services\AdminTheme\MetaDataHelpers::Init()->getThemesScriptsJs('metronic','footer') !!}
 
 <!-- footer for PWA -->

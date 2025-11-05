@@ -95,7 +95,7 @@
 
 
 
-@section("scripts")
+@push('scripts')
     <script>
         $(function () {
             $(document).on('click', '.product-list .list', function (e) {
@@ -139,4 +139,4 @@
             });
         });
     </script>
-@endsection
+@endpush

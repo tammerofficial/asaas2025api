@@ -148,5 +148,21 @@ class AppServiceProvider extends ServiceProvider
 
             return $finalUrl;
         });
+
+        /**
+         * Blade Compiler Extension to sanitize @section/@endsection directives
+         * from dynamic widget output before compilation.
+         * This prevents "Cannot end a section without first starting one" errors
+         * when widgets contain raw Blade directives in their output.
+         */
+        Blade::extend(function ($value) {
+            // Remove @section directives (case-insensitive) - more precise regex
+            $value = preg_replace('/@section\s*\([^)]+\)/i', '', $value);
+            // Remove @endsection directives (case-insensitive)
+            $value = preg_replace('/@endsection/i', '', $value);
+            // Remove @yield directives (case-insensitive) as well for safety
+            $value = preg_replace('/@yield\s*\([^)]+\)/i', '', $value);
+            return $value;
+        });
     }
 }

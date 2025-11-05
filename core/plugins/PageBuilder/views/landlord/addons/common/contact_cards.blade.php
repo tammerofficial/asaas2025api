@@ -24,7 +24,7 @@
     </div>
 </section>
 
-@section('scripts')
+@push('scripts')
     <x-custom-js.contact-form-store/>
-@endsection
+@endpush
 

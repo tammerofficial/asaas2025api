@@ -2,7 +2,7 @@
     $user_lang = get_user_lang();
 @endphp
 
-@section('style')
+@push('style')
     <style>
         .flash-countdown {
             display: -webkit-box;
@@ -48,7 +48,7 @@
             background-color: #464646;
         }
     </style>
-@endsection
+@endpush
 
 <div class="breadcrumb-area" data-padding-top="{{$data['padding_top']}}" data-padding-bottom="{{$data['padding_bottom']}}">
     <div class="shape"></div>
@@ -90,7 +90,7 @@
     </div>
 </div>
 
-@section('scripts')
+@push('scripts')
     <script src="{{global_asset('assets/common/js/loopcounter.js')}}"></script>
     <x-custom-js.newsletter-store/>
     <script>
@@ -98,7 +98,7 @@
            loopcounter('flash-countdown-1');
        });
     </script>
-@endsection
+@endpush
 
 
 

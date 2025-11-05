@@ -38,7 +38,7 @@
         <div class="pb-preview-frame" id="pb-preview-frame">
             <div class="pb-preview-inner" id="pb-preview-inner">
                 <!-- Preview Content will be loaded here via AJAX -->
-                <div class="pb-preview-loading" id="pb-preview-loading">
+                <div class="pb-preview-loading" id="pb-preview-loading" style="display: none;">
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">{{__('Loading...')}}</span>
                     </div>
@@ -46,7 +46,7 @@
                 </div>
 
                 <!-- Preview Content -->
-                <div class="pb-preview-content-area" id="pb-preview-content-area" style="display: none;">
+                <div class="pb-preview-content-area" id="pb-preview-content-area">
                     {{-- Header --}}
                     <div class="pb-preview-header" id="pb-preview-header">
                         @php
@@ -54,17 +54,26 @@
                             if(empty($headerContent)){
                                 $headerContent = \Plugins\PageBuilder\PageBuilderSetup::render_frontend_pagebuilder_content_by_location('header');
                             }
+                            // Remove any @section/@endsection directives that might break parent view
+                            $headerContent = preg_replace('/@section\s*\([^)]+\)/i', '', $headerContent);
+                            $headerContent = preg_replace('/@endsection/i', '', $headerContent);
                         @endphp
                         {!! $headerContent !!}
                     </div>
 
                     {{-- Page Content --}}
                     <div class="pb-preview-page-content" id="pb-preview-page-content">
-                        @if($page)
-                            {!! \Plugins\PageBuilder\PageBuilderSetup::render_frontend_pagebuilder_content_for_dynamic_page($pageType, $pageId) !!}
-                        @else
-                            {!! \Plugins\PageBuilder\PageBuilderSetup::render_frontend_pagebuilder_content_by_location($location) !!}
-                        @endif
+                        @php
+                            if($page){
+                                $pageContent = \Plugins\PageBuilder\PageBuilderSetup::render_frontend_pagebuilder_content_for_dynamic_page($pageType, $pageId);
+                            } else {
+                                $pageContent = \Plugins\PageBuilder\PageBuilderSetup::render_frontend_pagebuilder_content_by_location($location);
+                            }
+                            // Remove any @section/@endsection directives that might break parent view
+                            $pageContent = preg_replace('/@section\s*\([^)]+\)/i', '', $pageContent);
+                            $pageContent = preg_replace('/@endsection/i', '', $pageContent);
+                        @endphp
+                        {!! $pageContent !!}
                     </div>
 
                     {{-- Footer --}}
@@ -74,6 +83,9 @@
                             if(empty($footerContent)){
                                 $footerContent = \Plugins\PageBuilder\PageBuilderSetup::render_frontend_pagebuilder_content_by_location('footer');
                             }
+                            // Remove any @section/@endsection directives that might break parent view
+                            $footerContent = preg_replace('/@section\s*\([^)]+\)/i', '', $footerContent);
+                            $footerContent = preg_replace('/@endsection/i', '', $footerContent);
                         @endphp
                         {!! $footerContent !!}
                     </div>

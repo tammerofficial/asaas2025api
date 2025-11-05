@@ -349,6 +349,11 @@ class PageBuilderSetup
                 ]);
             }
         }
+        
+        // Remove any @section/@endsection directives that might break parent view
+        $widgets_markup = preg_replace('/@section\s*\([^)]+\)/i', '', $widgets_markup);
+        $widgets_markup = preg_replace('/@endsection/i', '', $widgets_markup);
+        
         return $widgets_markup;
     }
 
@@ -373,6 +378,11 @@ class PageBuilderSetup
                 ]);
             }
         }
+        
+        // Remove any @section/@endsection directives that might break parent view
+        $widgets_markup = preg_replace('/@section\s*\([^)]+\)/i', '', $widgets_markup);
+        $widgets_markup = preg_replace('/@endsection/i', '', $widgets_markup);
+        
         return $widgets_markup;
     }
 
@@ -389,7 +399,11 @@ class PageBuilderSetup
         if (class_exists($widget_class)) {
             $instance = new $widget_class($args);
             if ($instance->enable()) {
-                return $instance->admin_render();
+                $output = $instance->admin_render();
+                // Remove any @section/@endsection directives that might break parent view
+                $output = preg_replace('/@section\s*\([^)]+\)/i', '', $output);
+                $output = preg_replace('/@endsection/i', '', $output);
+                return $output;
             }
         }
     }
@@ -402,7 +416,11 @@ class PageBuilderSetup
                 $instance = new $widget_class($args);
                 if ($instance->enable()) {
                     try {
-                        return $instance->frontend_render();
+                        $output = $instance->frontend_render();
+                        // Remove any @section/@endsection directives that might break parent view
+                        $output = preg_replace('/@section\s*\([^)]+\)/i', '', $output);
+                        $output = preg_replace('/@endsection/i', '', $output);
+                        return $output;
                     } catch (\Exception $e) {
                         \Log::error('PageBuilder Frontend Render Error', [
                             'addon' => $widget_class,
@@ -469,111 +487,149 @@ class PageBuilderSetup
             $wrapper_classes = 'pagebuilder-header-wrapper ' . trim($sticky_class . ' ' . $transparent_class);
             
             $output .= '<style>
-/* Header Builder Grid Layout */
-.pagebuilder-header-wrapper {
+/* Header Builder Grid Layout - Scoped to preview only */
+.pb-preview-content-area .pagebuilder-header-wrapper,
+.pagebuilder-elementor-wrapper .pagebuilder-header-wrapper,
+iframe .pagebuilder-header-wrapper {
     width: 100%;
     background: var(--header-bg-color, #fff);
     padding: 10px 20px;
     border-bottom: 1px solid var(--header-border-color, #e5e5e5);
-    z-index: 1000;
+    position: relative;
+    z-index: 10;
     transition: all 0.3s ease;
 }
 
-/* Reduce padding for header items */
-.pagebuilder-header-wrapper .pagebuilder-header-item {
+/* Ensure page content wrapper has proper z-index stacking */
+.pb-preview-content-area,
+.pagebuilder-elementor-wrapper .pb-preview-content-area {
+    position: relative;
+    z-index: 1;
+}
+
+/* Page content wrapper */
+.pb-preview-content-area .pb-preview-page-content,
+.pagebuilder-elementor-wrapper .pb-preview-page-content,
+iframe .pb-preview-page-content {
+    position: relative;
+    z-index: 2;
+}
+
+/* Footer wrapper */
+.pb-preview-content-area .pb-preview-footer,
+.pagebuilder-elementor-wrapper .pb-preview-footer,
+iframe .pb-preview-footer {
+    position: relative;
+    z-index: 3;
+}
+
+/* Reduce padding for header items - Scoped to preview */
+.pb-preview-content-area .pagebuilder-header-wrapper .pagebuilder-header-item,
+.pagebuilder-elementor-wrapper .pagebuilder-header-wrapper .pagebuilder-header-item,
+iframe .pagebuilder-header-wrapper .pagebuilder-header-item {
     padding: 0 !important;
 }
 
-/* Remove padding from header widgets when inside header */
-.pagebuilder-header-wrapper .common-header-logo-section,
-.pagebuilder-header-wrapper .common-header-menu-section,
-.pagebuilder-header-wrapper .common-header-search-section {
+/* Remove padding from header widgets when inside header - Scoped to preview */
+.pb-preview-content-area .pagebuilder-header-wrapper .common-header-logo-section,
+.pb-preview-content-area .pagebuilder-header-wrapper .common-header-menu-section,
+.pb-preview-content-area .pagebuilder-header-wrapper .common-header-search-section,
+.pagebuilder-elementor-wrapper .pagebuilder-header-wrapper .common-header-logo-section,
+.pagebuilder-elementor-wrapper .pagebuilder-header-wrapper .common-header-menu-section,
+.pagebuilder-elementor-wrapper .pagebuilder-header-wrapper .common-header-search-section,
+iframe .pagebuilder-header-wrapper .common-header-logo-section,
+iframe .pagebuilder-header-wrapper .common-header-menu-section,
+iframe .pagebuilder-header-wrapper .common-header-search-section {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
     margin-top: 0 !important;
     margin-bottom: 0 !important;
 }
 
-/* Ignore data-padding attributes when inside header - Override all values including 110 */
-.pagebuilder-header-wrapper [data-padding-top],
-.pagebuilder-header-wrapper [data-padding-bottom],
-.pagebuilder-header-wrapper [data-padding-top="110"],
-.pagebuilder-header-wrapper [data-padding-top="100"],
-.pagebuilder-header-wrapper [data-padding-top="90"],
-.pagebuilder-header-wrapper [data-padding-top="80"],
-.pagebuilder-header-wrapper [data-padding-top="70"],
-.pagebuilder-header-wrapper [data-padding-top="60"],
-.pagebuilder-header-wrapper [data-padding-top="50"],
-.pagebuilder-header-wrapper [data-padding-bottom="110"],
-.pagebuilder-header-wrapper [data-padding-bottom="100"] {
+/* Ignore data-padding attributes when inside header - Scoped to preview */
+.pb-preview-content-area .pagebuilder-header-wrapper [data-padding-top],
+.pb-preview-content-area .pagebuilder-header-wrapper [data-padding-bottom],
+.pagebuilder-elementor-wrapper .pagebuilder-header-wrapper [data-padding-top],
+.pagebuilder-elementor-wrapper .pagebuilder-header-wrapper [data-padding-bottom],
+iframe .pagebuilder-header-wrapper [data-padding-top],
+iframe .pagebuilder-header-wrapper [data-padding-bottom] {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
 }
 
-/* More specific override for all data-padding values inside header */
-.pagebuilder-header-wrapper [data-padding-top] {
-    padding-top: 0 !important;
-}
-
-.pagebuilder-header-wrapper [data-padding-bottom] {
-    padding-bottom: 0 !important;
-}
-
-/* Ensure header starts from top of page */
-.pagebuilder-header-wrapper {
+/* Ensure header starts from top of page - Scoped to preview */
+.pb-preview-content-area .pagebuilder-header-wrapper,
+.pagebuilder-elementor-wrapper .pagebuilder-header-wrapper,
+iframe .pagebuilder-header-wrapper {
     margin-top: 0 !important;
     top: 0;
 }
 
-/* Remove any spacing above header */
-body > .pagebuilder-header-wrapper:first-child,
-.pagebuilder-header-wrapper:first-of-type {
+/* Remove any spacing above header - Only inside preview */
+.pb-preview-content-area body > .pagebuilder-header-wrapper:first-child,
+.pagebuilder-elementor-wrapper body > .pagebuilder-header-wrapper:first-child,
+.pb-preview-content-area .pagebuilder-header-wrapper:first-of-type,
+.pagebuilder-elementor-wrapper .pagebuilder-header-wrapper:first-of-type {
     margin-top: 0 !important;
 }
 
-/* Sticky Header */
-.pagebuilder-header-sticky {
+/* Sticky Header - Scoped to preview */
+.pb-preview-content-area .pagebuilder-header-sticky,
+.pagebuilder-elementor-wrapper .pagebuilder-header-sticky,
+iframe .pagebuilder-header-sticky {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
+    z-index: 100;
     box-shadow: 0 2px 10px rgba(245, 237, 237, 0.1);
 }
 
-/* Transparent Header */
-.pagebuilder-header-transparent {
+/* Transparent Header - Scoped to preview */
+.pb-preview-content-area .pagebuilder-header-transparent,
+.pagebuilder-elementor-wrapper .pagebuilder-header-transparent,
+iframe .pagebuilder-header-transparent {
     background: transparent !important;
     border-bottom: none !important;
 }
 
-/* Transparent Header (without sticky) - overlay on top */
-.pagebuilder-header-transparent:not(.pagebuilder-header-sticky) {
+/* Transparent Header (without sticky) - overlay on top - Scoped to preview */
+.pb-preview-content-area .pagebuilder-header-transparent:not(.pagebuilder-header-sticky),
+.pagebuilder-elementor-wrapper .pagebuilder-header-transparent:not(.pagebuilder-header-sticky),
+iframe .pagebuilder-header-transparent:not(.pagebuilder-header-sticky) {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
+    z-index: 100;
 }
 
-/* Remove margin/padding from content when header is transparent (not sticky) */
-.pagebuilder-header-transparent:not(.pagebuilder-header-sticky) + *,
-.pagebuilder-header-transparent:not(.pagebuilder-header-sticky) ~ * {
+/* Remove margin/padding from content when header is transparent (not sticky) - Scoped to preview */
+.pb-preview-content-area .pagebuilder-header-transparent:not(.pagebuilder-header-sticky) + *,
+.pb-preview-content-area .pagebuilder-header-transparent:not(.pagebuilder-header-sticky) ~ *,
+.pagebuilder-elementor-wrapper .pagebuilder-header-transparent:not(.pagebuilder-header-sticky) + *,
+.pagebuilder-elementor-wrapper .pagebuilder-header-transparent:not(.pagebuilder-header-sticky) ~ *,
+iframe .pagebuilder-header-transparent:not(.pagebuilder-header-sticky) + *,
+iframe .pagebuilder-header-transparent:not(.pagebuilder-header-sticky) ~ * {
     margin-top: 0 !important;
     padding-top: 0 !important;
 }
 
-/* Body padding when sticky */
-body.pagebuilder-header-sticky-active {
+/* Body padding when sticky - Only inside preview */
+.pb-preview-content-area body.pagebuilder-header-sticky-active,
+.pagebuilder-elementor-wrapper body.pagebuilder-header-sticky-active {
     padding-top: var(--header-height, 80px);
 }
 
-/* Adjust content spacing when sticky */
-.pagebuilder-header-sticky + * {
+/* Adjust content spacing when sticky - Only inside preview */
+.pb-preview-content-area .pagebuilder-header-sticky + *,
+.pagebuilder-elementor-wrapper .pagebuilder-header-sticky + * {
     margin-top: 0;
 }
 
-/* Ensure body starts from top when transparent header (not sticky) */
-body:has(.pagebuilder-header-transparent:not(.pagebuilder-header-sticky)) {
+/* Ensure body starts from top when transparent header (not sticky) - Only inside preview */
+.pb-preview-content-area body:has(.pagebuilder-header-transparent:not(.pagebuilder-header-sticky)),
+.pagebuilder-elementor-wrapper body:has(.pagebuilder-header-transparent:not(.pagebuilder-header-sticky)) {
     padding-top: 0 !important;
 }
 
@@ -592,8 +648,11 @@ body:has(.pagebuilder-header-transparent:not(.pagebuilder-header-sticky)) {
     top: 0 !important;
 }
 
-/* Remove any gap before header */
-body:has(.pagebuilder-header-wrapper) {
+/* Remove any gap before header - Only inside preview */
+.pb-preview-content-area body:has(.pagebuilder-header-wrapper),
+.pagebuilder-elementor-wrapper body:has(.pagebuilder-header-wrapper),
+.pb-preview-content-area .pagebuilder-header-wrapper,
+.pagebuilder-elementor-wrapper .pagebuilder-header-wrapper {
     margin-top: 0 !important;
     padding-top: 0 !important;
 }
@@ -766,20 +825,32 @@ body:has(.pagebuilder-header-wrapper) {
 
             // Add JavaScript for sticky transparent header scroll effect
             if ($is_sticky && $is_transparent) {
+                // Use scroll listener on preview frame if in preview mode, otherwise use window
                 $output .= '<script>
                 (function() {
                     var header = document.querySelector(".pagebuilder-header-wrapper");
                     if (header) {
                         var scrolled = false;
-                        window.addEventListener("scroll", function() {
-                            if (window.scrollY > 50 && !scrolled) {
+                        // Check if we are in preview mode (inside .pb-preview-frame)
+                        var previewFrame = header.closest(".pb-preview-frame");
+                        var scrollTarget = previewFrame ? previewFrame : window;
+                        
+                        var scrollHandler = function() {
+                            var scrollTop = previewFrame ? previewFrame.scrollTop : window.scrollY;
+                            if (scrollTop > 50 && !scrolled) {
                                 header.classList.add("scrolled");
                                 scrolled = true;
-                            } else if (window.scrollY <= 50 && scrolled) {
+                            } else if (scrollTop <= 50 && scrolled) {
                                 header.classList.remove("scrolled");
                                 scrolled = false;
                             }
-                        });
+                        };
+                        
+                        if (previewFrame) {
+                            previewFrame.addEventListener("scroll", scrollHandler);
+                        } else {
+                            window.addEventListener("scroll", scrollHandler);
+                        }
                     }
                 })();
                 </script>';
@@ -882,6 +953,10 @@ body:has(.pagebuilder-header-wrapper) {
             $output .= '</div></div>';
         }
         
+        // Final cleanup: Remove any remaining @section/@endsection directives
+        $output = preg_replace('/@section\s*\([^)]+\)/i', '', $output);
+        $output = preg_replace('/@endsection/i', '', $output);
+        
         return $output;
     }
 
@@ -969,6 +1044,10 @@ body:has(.pagebuilder-header-wrapper) {
             }
         }
 
+        // Remove any @section/@endsection directives that might break parent view
+        $output = preg_replace('/@section\s*\([^)]+\)/i', '', $output);
+        $output = preg_replace('/@endsection/i', '', $output);
+
         return $output;
     }
 
@@ -1032,6 +1111,10 @@ body:has(.pagebuilder-header-wrapper) {
                 // Continue to next widget instead of breaking the page
             }
         }
+        
+        // Final cleanup: Remove any remaining @section/@endsection directives
+        $output = preg_replace('/@section\s*\([^)]+\)/i', '', $output);
+        $output = preg_replace('/@endsection/i', '', $output);
         
         return $output;
     }

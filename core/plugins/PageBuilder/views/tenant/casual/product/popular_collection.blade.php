@@ -75,6 +75,6 @@
     </div>
 </section>
 <!-- Popular Collection area end -->
-{{--@section('scripts')--}}
+{{--@push('scripts')--}}
 {{--    @include('tenant.frontend.components.add-to-wishlist-js');--}}
-{{--@endsection--}}
+{{--@endpush--}}

@@ -1,5 +1,22 @@
-@extends(route_prefix().'admin.admin-master')
-@section('title') {{__('Edit With Page Builder')}} @endsection
+@extends(is_null(tenant()) ? 'landlord.admin.admin-master' : 'tenant.admin.admin-master')
+@section('title')
+{{__('Edit With Page Builder')}}
+@endsection
+
+@php
+    // Helper function to clean section directives from widget output
+    if(!function_exists('clean_section_directives')){
+        function clean_section_directives($content) {
+            if(empty($content)) return $content;
+            // Remove @section directives
+            $content = preg_replace('/@section\s*\([^)]+\)/i', '', $content);
+            // Remove @endsection directives
+            $content = preg_replace('/@endsection/i', '', $content);
+            return $content;
+        }
+    }
+@endphp
+
 @section('style')
     <x-media-upload.css/>
     <x-summernote.css/>
@@ -32,12 +49,38 @@
         .attachment-preview .thumbnail .centered img {
             object-fit: contain;
         }
+        
+        /* Toggle Buttons Styling */
+        #toggle-legacy-view,
+        #toggle-elementor-view {
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        #toggle-legacy-view:hover,
+        #toggle-elementor-view:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        #toggle-legacy-view.btn-primary,
+        #toggle-elementor-view.btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+        
+        #toggle-legacy-view i,
+        #toggle-elementor-view i {
+            margin-right: 4px;
+        }
     </style>
 @endsection
 @section('content')
     {{-- Toggle Button to Switch Between Legacy and Elementor View --}}
-    <div class="col-12 mb-3" style="position: fixed; top: 70px; right: 20px; z-index: 10000;">
-        <div class="btn-group" role="group">
+    <div class="col-12 mb-3" style="position: fixed; top: 15px; right: 300px; z-index: 10001;">
+        <div class="btn-group shadow-sm" role="group">
             <button type="button" class="btn btn-sm btn-secondary" id="toggle-legacy-view" title="{{__('Legacy View')}}">
                 <i class="mdi mdi-format-list-bulleted"></i> {{__('Legacy')}}
             </button>
@@ -101,7 +144,7 @@
     <x-media-upload.markup/>
 @endsection
 
-@section('scripts')
+@push('scripts')
     <script src="{{global_asset('assets/common/js/fontawesome-iconpicker.min.js')}}"></script>
     <script src="{{global_asset('assets/common/js/jquery.nice-select.min.js')}}"></script>
     <x-media-upload.js/>
@@ -149,6 +192,17 @@
             $('body').addClass('pagebuilder-elementor-active');
             
             // Initialize basic preview loading
+            // Add timeout fallback - if AJAX fails, show server-rendered content
+            setTimeout(function(){
+                if($('#pb-preview-loading').is(':visible')){
+                    console.warn('Preview loading timeout - showing server-rendered content');
+                    $('#pb-preview-loading').hide();
+                    $('#pb-preview-content-area').show();
+                    addWidgetEditHandlers();
+                    initializeDragDrop();
+                }
+            }, 10000); // 10 second timeout
+            
             loadPreview();
             
             // Sidebar toggle
@@ -157,15 +211,9 @@
                 $(this).find('i').toggleClass('mdi-chevron-left mdi-chevron-right');
             });
             
-            // Settings panel toggle
-            $('#pb-btn-settings-toggle').on('click', function(){
-                $('#pb-settings-panel').toggleClass('hidden');
-            });
-            
-            // Settings close
-            $('#pb-settings-close').on('click', function(){
-                $('#pb-settings-panel').addClass('hidden');
-                clearWidgetSelection();
+            // Toggle sidebar
+            $('#pb-btn-toggle-sidebar').on('click', function(){
+                $('#pb-sidebar').toggleClass('minimized');
             });
             
             // Device preview buttons
@@ -199,21 +247,14 @@
                 clearWidgetSelection();
             });
             
-            // Toggle settings panel button
-            $('#pb-settings-toggle-btn').on('click', function(){
-                $('#pb-settings-panel').toggleClass('hidden');
-                if($('#pb-settings-panel').hasClass('hidden')){
-                    $('#pb-settings-footer').hide();
-                    clearWidgetSelection();
-                }
-            });
-            
             // Close with ESC key
             $(document).on('keydown', function(e){
-                if(e.key === 'Escape' && !$('#pb-settings-panel').hasClass('hidden')){
-                    $('#pb-settings-panel').addClass('hidden');
-                    $('#pb-settings-footer').hide();
-                    clearWidgetSelection();
+                if(e.key === 'Escape'){
+                    if(!$('#pb-settings-panel').hasClass('hidden')){
+                        $('#pb-settings-panel').addClass('hidden');
+                        $('#pb-settings-footer').hide();
+                        clearWidgetSelection();
+                    }
                 }
             });
             
@@ -259,11 +300,14 @@
         
         // Load preview
         function loadPreview(){
-            $('#pb-preview-loading').show();
-            $('#pb-preview-content-area').hide();
-            $('#pb-preview-empty').hide();
+            // Show server-rendered content immediately
+            $('#pb-preview-loading').hide();
+            $('#pb-preview-content-area').show();
+            addWidgetEditHandlers();
+            initializeDragDrop();
+            updateWidgetCount();
             
-            // Load preview via AJAX
+            // Then try to load via AJAX for updates (optional)
             // Use direct URL - route name might not be registered yet
             const previewUrl = '{{url("/admin-home/get-preview")}}';
             
@@ -277,23 +321,20 @@
                     page_type: 'dynamic_page'
                 },
                 success: function(response){
-                    $('#pb-preview-loading').hide();
                     if(response.success && response.html){
+                        // Update content if AJAX succeeds
                         $('#pb-preview-content-area').html(response.html);
-                        $('#pb-preview-content-area').show();
                         addWidgetEditHandlers();
                         initializeDragDrop();
                         updateWidgetCount();
-                    } else {
-                        $('#pb-preview-empty').show();
                     }
                 },
-                error: function(){
-                    $('#pb-preview-loading').hide();
-                    // Fallback: show what's already rendered
-                    $('#pb-preview-content-area').show();
-                    addWidgetEditHandlers();
-                    initializeDragDrop();
+                error: function(xhr, status, error){
+                    // Silently fail - keep server-rendered content
+                    console.warn('Preview AJAX update failed, using server-rendered content:', {
+                        status: status,
+                        error: error
+                    });
                 }
             });
         }
@@ -876,4 +917,4 @@
     
     {{-- Legacy PageBuilder Script --}}
     <x-pagebuilder::script :page="$page"/>
-@endsection
+@endpush

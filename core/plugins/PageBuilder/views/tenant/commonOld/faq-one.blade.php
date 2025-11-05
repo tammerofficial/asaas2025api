@@ -71,6 +71,6 @@ DATA;
 </div>
 
 
-@section('scripts')
+@push('scripts')
     <x-custom-js.newsletter-store/>
-@endsection
+@endpush

@@ -81,7 +81,7 @@
     </div>
 </section>
 
-@section("scripts")
+@push('scripts')
     <script>
         $(function () {
             $(document).on('click', '.store-tabs .list', function (e) {
@@ -125,4 +125,4 @@
             });
         });
     </script>
-@endsection
+@endpush
