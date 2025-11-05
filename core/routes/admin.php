@@ -616,6 +616,8 @@ Route::controller(FormBuilderController::class)->name('landlord.')->prefix('form
         Route::post('/delete', 'delete')->name('landlord.admin.page.builder.delete');
         Route::post('/update-order', 'update_addon_order')->name('landlord.admin.page.builder.update.addon.order');
         Route::post('/get-admin-markup', 'get_admin_panel_addon_markup')->name('landlord.admin.page.builder.get.addon.markup');
+        Route::post('/get-preview', 'get_preview')->name('landlord.admin.page.builder.get.preview');
+        Route::post('/get-widget-settings', 'get_widget_settings')->name('landlord.admin.page.builder.get.widget.settings');
     });
 
     Route::get('/global-search', [GeneralSettingsController::class, 'globalSearch'])->name('landlord.admin.search.global');

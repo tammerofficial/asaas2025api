@@ -76,6 +76,14 @@
                                             <i class="mdi mdi-settings"
                                                style="vertical-align: text-bottom"></i> {{__('Edit with Page-Builder')}}
                                         </x-link-with-popover>
+                                        
+                                        {{-- Elementor Preview Button --}}
+                                        <x-link-with-popover class="success"
+                                                             url="{{route(route_prefix().'admin.pages.builder', $page->id)}}"
+                                                             popover="{{__('Edit with Live Preview (Elementor Style)')}}">
+                                            <i class="mdi mdi-eye"
+                                               style="vertical-align: text-bottom"></i> {{__('Live Preview')}}
+                                        </x-link-with-popover>
                                     @endif
 
                                     <a tabindex="0" class="btn btn-primary btn-xs mb-3 mr-1 swal_change_button"

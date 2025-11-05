@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Cache;
 
 class PageBuilder extends Model
 {
+    // Stancl Tenancy automatically switches the default connection to tenant DB
+    // No need to specify connection - it's handled by DatabaseTenancyBootstrapper
+
     protected $table = 'page_builders';
     protected $fillable = [
       'addon_name',

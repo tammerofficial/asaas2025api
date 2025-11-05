@@ -11,7 +11,7 @@ class MetaDataHelpers
         'select2' => 'assets/common/css/select2.min',
         'flatpickr' =>'assets/common/css/flatpickr.min',
         'toastr' => 'assets/common/css/toastr',
-        'flaticon' => 'assets/tenant/frontend/css/flaticon',
+        // 'flaticon' => 'assets/tenant/frontend/css/flaticon', // Removed - file does not exist
         'line-awesome' => 'assets/landlord/frontend/css/line-awesome.min',
         'module-fix-style' => 'assets/tenant/backend/css/module-fix-style',
         'dark-mode' => 'assets/landlord/admin/css/dark-mode',

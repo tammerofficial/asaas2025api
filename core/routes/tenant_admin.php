@@ -125,6 +125,8 @@ Route::middleware([
         Route::post('/delete', 'delete')->name('admin.page.builder.delete');
         Route::post('/update-order', 'update_addon_order')->name('admin.page.builder.update.addon.order');
         Route::post('/get-admin-markup', 'get_admin_panel_addon_markup')->name('admin.page.builder.get.addon.markup');
+        Route::post('/get-preview', 'get_preview')->name('admin.page.builder.get.preview');
+        Route::post('/get-widget-settings', 'get_widget_settings')->name('admin.page.builder.get.widget.settings');
     });
 
 

@@ -26,8 +26,9 @@
 <!-- Javascript Helpers -->
 {{--<script src="{{ global_asset('assets/js/helpers.js') }}"></script>--}}
 
-<x-flatpicker.flatpickr-locale/>
 {!! \App\Services\AdminTheme\MetaDataHelpers::Init()->getRenderableCoreStylesJs() !!}
+{{-- Load flatpickr locale AFTER flatpickr.js is loaded --}}
+<x-flatpicker.flatpickr-locale/>
 
 <script>
     window.appUrl = "{{ url('/') }}";
@@ -216,12 +217,17 @@
 </script>
 
 <script>
-    $(".date").flatpickr({
-        enableTime: true,
-        minDate: "today",
-        time_12hr: true,
-        altInput: true,
-        defaultDate: "2018-04-24 16:57"
+    // Initialize flatpickr only if it's loaded
+    $(document).ready(function() {
+        if (typeof flatpickr !== 'undefined') {
+            $(".date").flatpickr({
+                enableTime: true,
+                minDate: "today",
+                time_12hr: true,
+                altInput: true,
+                defaultDate: "2018-04-24 16:57"
+            });
+        }
     });
 </script>
 
