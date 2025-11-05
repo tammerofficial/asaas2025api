@@ -1,11 +1,32 @@
+@php
+    $background_type = $data['background_type'] ?? 'image';
+    $background_style = '';
+    
+    // بناء نمط الخلفية حسب النوع
+    if ($background_type === 'solid') {
+        $background_style = "background-color: {$data['background_color']};";
+    } elseif ($background_type === 'gradient') {
+        $gradient_type = $data['gradient_type'] ?? 'linear';
+        $color1 = $data['background_color'] ?? '#ffffff';
+        $color2 = $data['background_gradient_color'] ?? '#000000';
+        $direction = $data['gradient_direction'] ?? 'to right';
+        
+        if ($gradient_type === 'radial') {
+            $background_style = "background: radial-gradient(circle, {$color1} 0%, {$color2} 100%);";
+        } else {
+            $background_style = "background: linear-gradient({$direction}, {$color1} 0%, {$color2} 100%);";
+        }
+    }
+@endphp
+
 <section class="hero-section common-hero-section" 
          data-padding-top="{{$data['padding_top']}}" 
          data-padding-bottom="{{$data['padding_bottom']}}" 
          id="{{$data['section_id']}}"
-         @if(!empty($data['background_image']))
+         @if($background_type === 'image' && !empty($data['background_image']))
             {!! render_background_image_markup_by_attachment_id($data['background_image'], 'full') !!}
          @endif
-         style="position: relative;">
+         style="position: relative; @if($background_type !== 'image') {{$background_style}} @endif">
     @if(!empty($data['overlay_color']))
         <div class="hero-overlay" 
              style="background-color: {{$data['overlay_color']}}; 

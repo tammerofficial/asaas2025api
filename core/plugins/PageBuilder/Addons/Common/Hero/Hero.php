@@ -68,11 +68,60 @@ class Hero extends PageBuilderBase
             'value' => $widget_saved_values['secondary_button_url'] ?? null,
         ]);
 
+        $output .= Select::get([
+            'name' => 'background_type',
+            'label' => __('Background Type'),
+            'options' => [
+                'image' => __('Image'),
+                'solid' => __('Solid Color'),
+                'gradient' => __('Gradient'),
+            ],
+            'value' => $widget_saved_values['background_type'] ?? 'image',
+        ]);
+
         $output .= Image::get([
             'name' => 'background_image',
             'label' => __('Background Image'),
             'value' => $widget_saved_values['background_image'] ?? null,
             'dimensions' => '1920x1080 px'
+        ]);
+
+        $output .= ColorPicker::get([
+            'name' => 'background_color',
+            'label' => __('Background Color'),
+            'value' => $widget_saved_values['background_color'] ?? '#ffffff',
+        ]);
+
+        $output .= Select::get([
+            'name' => 'gradient_type',
+            'label' => __('Gradient Type'),
+            'options' => [
+                'linear' => __('Linear'),
+                'radial' => __('Radial'),
+            ],
+            'value' => $widget_saved_values['gradient_type'] ?? 'linear',
+        ]);
+
+        $output .= ColorPicker::get([
+            'name' => 'background_gradient_color',
+            'label' => __('Background Gradient Color'),
+            'value' => $widget_saved_values['background_gradient_color'] ?? '#000000',
+        ]);
+
+        $output .= Select::get([
+            'name' => 'gradient_direction',
+            'label' => __('Gradient Direction'),
+            'options' => [
+                'to right' => __('To Right'),
+                'to left' => __('To Left'),
+                'to bottom' => __('To Bottom'),
+                'to top' => __('To Top'),
+                'to bottom right' => __('To Bottom Right'),
+                'to bottom left' => __('To Bottom Left'),
+                'to top right' => __('To Top Right'),
+                'to top left' => __('To Top Left'),
+            ],
+            'value' => $widget_saved_values['gradient_direction'] ?? 'to right',
         ]);
 
         $output .= ColorPicker::get([
@@ -118,7 +167,12 @@ class Hero extends PageBuilderBase
         $button_url = SanitizeInput::esc_url($this->setting_item('button_url')) ?? '';
         $secondary_button_text = SanitizeInput::esc_html($this->setting_item('secondary_button_text')) ?? '';
         $secondary_button_url = SanitizeInput::esc_url($this->setting_item('secondary_button_url')) ?? '';
+        $background_type = SanitizeInput::esc_html($this->setting_item('background_type')) ?? 'image';
         $background_image = $this->setting_item('background_image') ?? '';
+        $background_color = SanitizeInput::esc_html($this->setting_item('background_color')) ?? '#ffffff';
+        $gradient_type = SanitizeInput::esc_html($this->setting_item('gradient_type')) ?? 'linear';
+        $background_gradient_color = SanitizeInput::esc_html($this->setting_item('background_gradient_color')) ?? '#000000';
+        $gradient_direction = SanitizeInput::esc_html($this->setting_item('gradient_direction')) ?? 'to right';
         $overlay_color = SanitizeInput::esc_html($this->setting_item('overlay_color')) ?? '#000000';
         $overlay_opacity = SanitizeInput::esc_html($this->setting_item('overlay_opacity')) ?? 50;
         $content_align = SanitizeInput::esc_html($this->setting_item('content_align')) ?? 'center';
@@ -134,7 +188,12 @@ class Hero extends PageBuilderBase
             'button_url' => $button_url,
             'secondary_button_text' => $secondary_button_text,
             'secondary_button_url' => $secondary_button_url,
+            'background_type' => $background_type,
             'background_image' => $background_image,
+            'background_color' => $background_color,
+            'gradient_type' => $gradient_type,
+            'background_gradient_color' => $background_gradient_color,
+            'gradient_direction' => $gradient_direction,
             'overlay_color' => $overlay_color,
             'overlay_opacity' => $overlay_opacity,
             'content_align' => $content_align,
