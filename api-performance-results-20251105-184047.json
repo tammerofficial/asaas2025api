@@ -1,0 +1,136 @@
+{
+  "test_date": "2025-11-05 18:45:57",
+  "base_url": "https://asaas.local/admin-home/v1/api",
+  "statistics": {
+    "total": 61,
+    "success": 0,
+    "failed": 61,
+    "auth_required": 0,
+    "average_response_time": 5.005,
+    "min_response_time": 5.001771,
+    "max_response_time": 5.008158
+  },
+  "endpoints": [
+    {"method":"GET","endpoint":"/dashboard/stats","name":"Dashboard Stats","status_code":000,"response_time":5.002112,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/dashboard/stats"}
+,
+    {"method":"GET","endpoint":"/dashboard/recent-orders","name":"Recent Orders","status_code":000,"response_time":5.005769,"time_namelookup":5.005728,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/dashboard/recent-orders"}
+,
+    {"method":"GET","endpoint":"/dashboard/chart-data","name":"Chart Data","status_code":000,"response_time":5.003016,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/dashboard/chart-data"}
+,
+    {"method":"GET","endpoint":"/tenants","name":"List Tenants","status_code":000,"response_time":5.004147,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/tenants"}
+,
+    {"method":"GET","endpoint":"/tenants/1","name":"Get Tenant","status_code":000,"response_time":5.005468,"time_namelookup":5.005422,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/tenants/1"}
+,
+    {"method":"GET","endpoint":"/packages","name":"List Packages","status_code":000,"response_time":5.002283,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/packages"}
+,
+    {"method":"GET","endpoint":"/packages/1","name":"Get Package","status_code":000,"response_time":5.005169,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/packages/1"}
+,
+    {"method":"GET","endpoint":"/orders","name":"List Orders","status_code":000,"response_time":5.005560,"time_namelookup":5.005483,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/orders"}
+,
+    {"method":"GET","endpoint":"/orders/1","name":"Get Order","status_code":000,"response_time":5.005314,"time_namelookup":5.005251,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/orders/1"}
+,
+    {"method":"GET","endpoint":"/payments","name":"List Payments","status_code":000,"response_time":5.007177,"time_namelookup":5.007099,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/payments"}
+,
+    {"method":"GET","endpoint":"/payments/1","name":"Get Payment","status_code":000,"response_time":5.006852,"time_namelookup":5.006813,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/payments/1"}
+,
+    {"method":"GET","endpoint":"/admins","name":"List Admins","status_code":000,"response_time":5.006167,"time_namelookup":5.006127,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/admins"}
+,
+    {"method":"GET","endpoint":"/admins/1","name":"Get Admin","status_code":000,"response_time":5.007600,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/admins/1"}
+,
+    {"method":"GET","endpoint":"/blogs","name":"List Blogs","status_code":000,"response_time":5.005975,"time_namelookup":5.005901,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/blogs"}
+,
+    {"method":"GET","endpoint":"/blogs/1","name":"Get Blog","status_code":000,"response_time":5.005739,"time_namelookup":5.005694,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/blogs/1"}
+,
+    {"method":"GET","endpoint":"/blog/categories","name":"Blog Categories","status_code":000,"response_time":5.006718,"time_namelookup":5.006672,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/blog/categories"}
+,
+    {"method":"GET","endpoint":"/blog/tags","name":"Blog Tags","status_code":000,"response_time":5.005584,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/blog/tags"}
+,
+    {"method":"GET","endpoint":"/blog/comments","name":"Blog Comments","status_code":000,"response_time":5.002615,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/blog/comments"}
+,
+    {"method":"GET","endpoint":"/pages","name":"List Pages","status_code":000,"response_time":5.007555,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/pages"}
+,
+    {"method":"GET","endpoint":"/pages/1","name":"Get Page","status_code":000,"response_time":5.005906,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/pages/1"}
+,
+    {"method":"GET","endpoint":"/coupons","name":"List Coupons","status_code":000,"response_time":5.004624,"time_namelookup":5.004586,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/coupons"}
+,
+    {"method":"GET","endpoint":"/coupons/1","name":"Get Coupon","status_code":000,"response_time":5.005482,"time_namelookup":5.005444,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/coupons/1"}
+,
+    {"method":"GET","endpoint":"/subscriptions/subscribers","name":"Subscribers","status_code":000,"response_time":5.004617,"time_namelookup":5.004531,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/subscriptions/subscribers"}
+,
+    {"method":"GET","endpoint":"/subscriptions/stores","name":"Stores","status_code":000,"response_time":5.001771,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/subscriptions/stores"}
+,
+    {"method":"GET","endpoint":"/subscriptions/payment-histories","name":"Payment Histories","status_code":000,"response_time":5.005695,"time_namelookup":5.005653,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/subscriptions/payment-histories"}
+,
+    {"method":"GET","endpoint":"/subscriptions/custom-domains","name":"Custom Domains","status_code":000,"response_time":5.004071,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/subscriptions/custom-domains"}
+,
+    {"method":"GET","endpoint":"/support/tickets","name":"List Tickets","status_code":000,"response_time":5.006410,"time_namelookup":5.006317,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/support/tickets"}
+,
+    {"method":"GET","endpoint":"/support/tickets/1","name":"Get Ticket","status_code":000,"response_time":5.005153,"time_namelookup":5.005119,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/support/tickets/1"}
+,
+    {"method":"GET","endpoint":"/support/departments","name":"Support Departments","status_code":000,"response_time":5.007043,"time_namelookup":5.006985,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/support/departments"}
+,
+    {"method":"GET","endpoint":"/users","name":"List Users","status_code":000,"response_time":5.005791,"time_namelookup":5.005715,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/users"}
+,
+    {"method":"GET","endpoint":"/users/roles","name":"User Roles","status_code":000,"response_time":5.005342,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/users/roles"}
+,
+    {"method":"GET","endpoint":"/users/permissions","name":"User Permissions","status_code":000,"response_time":5.005530,"time_namelookup":5.005486,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/users/permissions"}
+,
+    {"method":"GET","endpoint":"/users/activity-logs","name":"Activity Logs","status_code":000,"response_time":5.005996,"time_namelookup":5.005954,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/users/activity-logs"}
+,
+    {"method":"GET","endpoint":"/appearances/themes","name":"Themes","status_code":000,"response_time":5.005540,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/appearances/themes"}
+,
+    {"method":"GET","endpoint":"/appearances/menus","name":"Menus","status_code":000,"response_time":5.005827,"time_namelookup":5.005769,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/appearances/menus"}
+,
+    {"method":"GET","endpoint":"/appearances/widgets","name":"Widgets","status_code":000,"response_time":5.005186,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/appearances/widgets"}
+,
+    {"method":"GET","endpoint":"/settings","name":"Get Settings","status_code":000,"response_time":5.004516,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/settings"}
+,
+    {"method":"GET","endpoint":"/system/languages","name":"Languages","status_code":000,"response_time":5.005890,"time_namelookup":5.005843,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/system/languages"}
+,
+    {"method":"GET","endpoint":"/media","name":"Media Library","status_code":000,"response_time":5.003963,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/media"}
+,
+    {"method":"POST","endpoint":"/tenants","name":"Create Tenant","status_code":000,"response_time":5.005511,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/tenants"}
+,
+    {"method":"POST","endpoint":"/blogs","name":"Create Blog","status_code":000,"response_time":5.008158,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/blogs"}
+,
+    {"method":"POST","endpoint":"/pages","name":"Create Page","status_code":000,"response_time":5.002175,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/pages"}
+,
+    {"method":"POST","endpoint":"/packages","name":"Create Package","status_code":000,"response_time":5.005929,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/packages"}
+,
+    {"method":"POST","endpoint":"/coupons","name":"Create Coupon","status_code":000,"response_time":5.003949,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/coupons"}
+,
+    {"method":"POST","endpoint":"/admins","name":"Create Admin","status_code":000,"response_time":5.006010,"time_namelookup":5.005965,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/admins"}
+,
+    {"method":"POST","endpoint":"/support/tickets","name":"Create Ticket","status_code":000,"response_time":5.004919,"time_namelookup":5.004877,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/support/tickets"}
+,
+    {"method":"PUT","endpoint":"/tenants/1","name":"Update Tenant","status_code":000,"response_time":5.002454,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/tenants/1"}
+,
+    {"method":"PUT","endpoint":"/blogs/1","name":"Update Blog","status_code":000,"response_time":5.005604,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/blogs/1"}
+,
+    {"method":"PUT","endpoint":"/pages/1","name":"Update Page","status_code":000,"response_time":5.002985,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/pages/1"}
+,
+    {"method":"PUT","endpoint":"/packages/1","name":"Update Package","status_code":000,"response_time":5.005343,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/packages/1"}
+,
+    {"method":"PUT","endpoint":"/coupons/1","name":"Update Coupon","status_code":000,"response_time":5.005086,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/coupons/1"}
+,
+    {"method":"PUT","endpoint":"/admins/1","name":"Update Admin","status_code":000,"response_time":5.005758,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/admins/1"}
+,
+    {"method":"PUT","endpoint":"/support/tickets/1","name":"Update Ticket","status_code":000,"response_time":5.005173,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/support/tickets/1"}
+,
+    {"method":"PUT","endpoint":"/settings","name":"Update Settings","status_code":000,"response_time":5.002414,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/settings"}
+,
+    {"method":"DELETE","endpoint":"/tenants/999","name":"Delete Tenant","status_code":000,"response_time":5.003176,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/tenants/999"}
+,
+    {"method":"DELETE","endpoint":"/blogs/999","name":"Delete Blog","status_code":000,"response_time":5.006046,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/blogs/999"}
+,
+    {"method":"DELETE","endpoint":"/pages/999","name":"Delete Page","status_code":000,"response_time":5.004780,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/pages/999"}
+,
+    {"method":"DELETE","endpoint":"/packages/999","name":"Delete Package","status_code":000,"response_time":5.002486,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/packages/999"}
+,
+    {"method":"DELETE","endpoint":"/coupons/999","name":"Delete Coupon","status_code":000,"response_time":5.005330,"time_namelookup":5.005276,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/coupons/999"}
+,
+    {"method":"DELETE","endpoint":"/admins/999","name":"Delete Admin","status_code":000,"response_time":5.004974,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/admins/999"}
+,
+    {"method":"DELETE","endpoint":"/support/tickets/999","name":"Delete Ticket","status_code":000,"response_time":5.006124,"time_namelookup":0.000000,"time_connect":0.000000,"time_starttransfer":0.000000,"status":"timeout","url":"https://asaas.local/admin-home/v1/api/support/tickets/999"}
+  ]
+}

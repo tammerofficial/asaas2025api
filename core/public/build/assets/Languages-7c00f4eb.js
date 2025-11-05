@@ -1,1 +1,0 @@
-import{P as a}from"./PlaceholderPage-87cc6d31.js";import{_ as o,k as n,o as t,z as s}from"./_plugin-vue_export-helper-25c71bc9.js";const c={name:"Languages",components:{PlaceholderPage:a}};function r(p,l,g,_,m,d){const e=n("PlaceholderPage");return t(),s(e,{title:"Languages",endpoint:"/api/central/v1/languages"})}const f=o(c,[["render",r]]);export{f as default};

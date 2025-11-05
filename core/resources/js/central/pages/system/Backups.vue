@@ -148,24 +148,14 @@ const settings = ref({
 const loadBackups = async () => {
     loading.value = true
     try {
-        // API call to load backups
-        // const response = await api.system.backups()
-        // backups.value = response.data.data || []
-        
-        // Mock data
-        backups.value = [
-            {
-                id: 1,
-                name: 'Full Backup',
-                created_at: new Date().toISOString(),
-                size: 52428800, // 50 MB
-                type: 'Full',
-                status: 'completed'
-            }
-        ]
+        const response = await api.system.backups()
+        if (response.data.success) {
+            backups.value = response.data.data || []
+        }
     } catch (error) {
         console.error('Error loading backups:', error)
         backups.value = []
+        alert('Failed to load backups')
     } finally {
         loading.value = false
     }
@@ -174,10 +164,14 @@ const loadBackups = async () => {
 const createBackup = async () => {
     creating.value = true
     try {
-        // API call to create backup
-        await new Promise(resolve => setTimeout(resolve, 2000)) // Simulate
-        await loadBackups()
-        alert('Backup created successfully')
+        const response = await api.system.createBackup({
+            include_database: settings.value.includeDatabase,
+            include_files: settings.value.includeFiles
+        })
+        if (response.data.success) {
+            alert('Backup created successfully')
+            await loadBackups()
+        }
     } catch (error) {
         console.error('Error creating backup:', error)
         alert('Failed to create backup')
@@ -192,8 +186,11 @@ const restoreBackup = async (backup) => {
     }
     
     try {
-        // API call to restore backup
-        alert('Backup restore initiated. This may take a few minutes.')
+        const response = await api.system.restoreBackup(backup.id)
+        if (response.data.success) {
+            alert('Backup restore initiated. This may take a few minutes.')
+            await loadBackups()
+        }
     } catch (error) {
         console.error('Error restoring backup:', error)
         alert('Failed to restore backup')
@@ -214,8 +211,11 @@ const deleteBackup = async (backup) => {
     }
     
     try {
-        backups.value = backups.value.filter(b => b.id !== backup.id)
-        alert('Backup deleted successfully')
+        const response = await api.system.deleteBackup(backup.id)
+        if (response.data.success) {
+            alert('Backup deleted successfully')
+            await loadBackups()
+        }
     } catch (error) {
         console.error('Error deleting backup:', error)
         alert('Failed to delete backup')

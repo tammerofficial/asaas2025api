@@ -115,9 +115,11 @@ const activateTheme = async (theme) => {
     }
     
     try {
-        // API call to activate theme
-        await loadThemes()
-        alert('Theme activated successfully')
+        const response = await api.appearances.activateTheme(theme.id)
+        if (response.data.success) {
+            alert('Theme activated successfully')
+            await loadThemes()
+        }
     } catch (error) {
         console.error('Error activating theme:', error)
         alert('Failed to activate theme')
@@ -134,9 +136,11 @@ const deleteTheme = async (theme) => {
     }
     
     try {
-        // API call to delete theme
-        await loadThemes()
-        alert('Theme deleted successfully')
+        const response = await api.appearances.deleteTheme(theme.id)
+        if (response.data.success) {
+            alert('Theme deleted successfully')
+            await loadThemes()
+        }
     } catch (error) {
         console.error('Error deleting theme:', error)
         alert('Failed to delete theme')

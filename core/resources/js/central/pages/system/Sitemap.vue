@@ -149,13 +149,17 @@ const settings = ref({
 
 const loadSitemapInfo = async () => {
     try {
-        // API call to get sitemap info
-        // const response = await api.system.sitemap()
-        // sitemapInfo.value = response.data.data
-        sitemapInfo.value = {
-            last_generated: new Date().toISOString(),
-            total_urls: 150,
-            url: '/sitemap.xml'
+        const response = await api.system.sitemap()
+        if (response.data.success) {
+            sitemapInfo.value = response.data.data
+            if (response.data.data.settings) {
+                settings.value = {
+                    includeBlogs: response.data.data.settings.include_blogs ?? true,
+                    includePages: response.data.data.settings.include_pages ?? true,
+                    includeCategories: response.data.data.settings.include_categories ?? true,
+                    autoGenerate: response.data.data.settings.auto_generate ?? false
+                }
+            }
         }
     } catch (error) {
         console.error('Error loading sitemap info:', error)
@@ -165,10 +169,11 @@ const loadSitemapInfo = async () => {
 const generateSitemap = async () => {
     generating.value = true
     try {
-        // API call to generate sitemap
-        await new Promise(resolve => setTimeout(resolve, 2000)) // Simulate
-        await loadSitemapInfo()
-        alert('Sitemap generated successfully')
+        const response = await api.system.generateSitemap()
+        if (response.data.success) {
+            alert('Sitemap generated successfully')
+            await loadSitemapInfo()
+        }
     } catch (error) {
         console.error('Error generating sitemap:', error)
         alert('Failed to generate sitemap')
@@ -180,10 +185,16 @@ const generateSitemap = async () => {
 const updateSitemap = async () => {
     updating.value = true
     try {
-        // API call to update sitemap
-        await new Promise(resolve => setTimeout(resolve, 1500)) // Simulate
-        await loadSitemapInfo()
-        alert('Sitemap updated successfully')
+        const response = await api.system.updateSitemap({
+            include_blogs: settings.value.includeBlogs,
+            include_pages: settings.value.includePages,
+            include_categories: settings.value.includeCategories,
+            auto_generate: settings.value.autoGenerate
+        })
+        if (response.data.success) {
+            alert('Sitemap updated successfully')
+            await loadSitemapInfo()
+        }
     } catch (error) {
         console.error('Error updating sitemap:', error)
         alert('Failed to update sitemap')

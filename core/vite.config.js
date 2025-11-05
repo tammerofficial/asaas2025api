@@ -14,6 +14,14 @@ export default defineConfig({
         outDir: 'public/build',
         manifest: true,
         emptyOutDir: true,
+        rollupOptions: {
+            output: {
+                // Ensure all asset paths use the base path
+                assetFileNames: 'assets/[name]-[hash][extname]',
+                chunkFileNames: 'assets/[name]-[hash].js',
+                entryFileNames: 'assets/[name]-[hash].js',
+            },
+        },
     },
     plugins: [
         vue({
@@ -33,6 +41,8 @@ export default defineConfig({
             ],
             refresh: true,
             detectTls: host,
+            publicDirectory: 'public',
+            buildDirectory: 'build',
         }),
     ],
     server: {

@@ -1,0 +1,1 @@
+import t from"./PlaceholderPage-b826436d.js";import{_ as o,k as a,o as n,z as s}from"./_plugin-vue_export-helper-80b3f0a9.js";const c={name:"SaasSettings",components:{PlaceholderPage:t}};function r(p,i,l,_,m,d){const e=a("PlaceholderPage");return n(),s(e,{title:"SAAS Settings",endpoint:"/api/central/v1/saas-settings"})}const S=o(c,[["render",r]]);export{S as default};

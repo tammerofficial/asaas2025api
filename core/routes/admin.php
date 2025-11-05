@@ -108,6 +108,35 @@ Route::group(['middleware' => ['auth:admin','adminglobalVariable', 'set_lang'],'
         Route::delete('/support/tickets/{id}', 'deleteSupportTicket')->name('landlord.admin.vue.api.support.tickets.delete');
         Route::get('/support/departments', 'supportDepartments')->name('landlord.admin.vue.api.support.departments');
         
+        // Support Ticket Categories CRUD
+        Route::get('/support/ticket-categories', 'supportTicketCategories')->name('landlord.admin.vue.api.support.ticket-categories');
+        Route::post('/support/ticket-categories', 'storeSupportTicketCategory')->name('landlord.admin.vue.api.support.ticket-categories.store');
+        Route::get('/support/ticket-categories/{id}', 'getSupportTicketCategory')->name('landlord.admin.vue.api.support.ticket-categories.show');
+        Route::put('/support/ticket-categories/{id}', 'updateSupportTicketCategory')->name('landlord.admin.vue.api.support.ticket-categories.update');
+        Route::delete('/support/ticket-categories/{id}', 'deleteSupportTicketCategory')->name('landlord.admin.vue.api.support.ticket-categories.delete');
+        
+        // Payment Methods CRUD
+        Route::get('/payment-methods', 'paymentMethods')->name('landlord.admin.vue.api.payment-methods');
+        Route::post('/payment-methods', 'storePaymentMethod')->name('landlord.admin.vue.api.payment-methods.store');
+        Route::get('/payment-methods/{id}', 'getPaymentMethod')->name('landlord.admin.vue.api.payment-methods.show');
+        Route::put('/payment-methods/{id}', 'updatePaymentMethod')->name('landlord.admin.vue.api.payment-methods.update');
+        Route::delete('/payment-methods/{id}', 'deletePaymentMethod')->name('landlord.admin.vue.api.payment-methods.delete');
+        
+        // Payment Settings
+        Route::get('/payment-settings', 'paymentSettings')->name('landlord.admin.vue.api.payment-settings');
+        Route::put('/payment-settings', 'updatePaymentSettings')->name('landlord.admin.vue.api.payment-settings.update');
+        
+        // Payment Currencies
+        Route::get('/currencies', 'currencies')->name('landlord.admin.vue.api.currencies');
+        
+        // Payment SAAS Settings
+        Route::get('/saas-settings', 'saasSettings')->name('landlord.admin.vue.api.saas-settings');
+        Route::put('/saas-settings', 'updateSaasSettings')->name('landlord.admin.vue.api.saas-settings.update');
+        
+        // Payment Notifications
+        Route::get('/payment-notifications', 'paymentNotifications')->name('landlord.admin.vue.api.payment-notifications');
+        Route::put('/payment-notifications', 'updatePaymentNotifications')->name('landlord.admin.vue.api.payment-notifications.update');
+        
         // Media
         Route::get('/media', 'media')->name('landlord.admin.vue.api.media');
         
@@ -166,9 +195,136 @@ Route::group(['middleware' => ['auth:admin','adminglobalVariable', 'set_lang'],'
         // Settings
         Route::get('/settings', 'getSettings')->name('landlord.admin.vue.api.settings');
         Route::put('/settings', 'updateSettings')->name('landlord.admin.vue.api.settings.update');
+        Route::get('/settings/email-templates', 'emailTemplates')->name('landlord.admin.vue.api.settings.email-templates');
+        
+        // Reports
+        Route::get('/reports/tenants', 'reportTenants')->name('landlord.admin.vue.api.reports.tenants');
+        Route::get('/reports/revenue', 'reportRevenue')->name('landlord.admin.vue.api.reports.revenue');
+        Route::get('/reports/subscriptions', 'reportSubscriptions')->name('landlord.admin.vue.api.reports.subscriptions');
+        Route::get('/reports/plans', 'reportPlans')->name('landlord.admin.vue.api.reports.plans');
+        
+        // Orders Payment Logs
+        Route::get('/orders/{id}/payment-logs', 'orderPaymentLogs')->name('landlord.admin.vue.api.orders.payment-logs');
         
         // System
         Route::get('/system/languages', 'languages')->name('landlord.admin.vue.api.system.languages');
+        
+        // ==========================================
+        // MEDIA MANAGEMENT
+        // ==========================================
+        Route::get('/media', 'media')->name('landlord.admin.vue.api.media');
+        Route::get('/media/{id}', 'getMedia')->name('landlord.admin.vue.api.media.show');
+        Route::post('/media/upload', 'storeMedia')->name('landlord.admin.vue.api.media.upload');
+        Route::put('/media/{id}', 'updateMedia')->name('landlord.admin.vue.api.media.update');
+        Route::delete('/media/{id}', 'deleteMedia')->name('landlord.admin.vue.api.media.delete');
+        Route::post('/media/bulk-delete', 'bulkDeleteMedia')->name('landlord.admin.vue.api.media.bulk-delete');
+        
+        // ==========================================
+        // PLUGINS MANAGEMENT
+        // ==========================================
+        Route::get('/plugins', 'plugins')->name('landlord.admin.vue.api.plugins');
+        Route::get('/plugins/{id}', 'getPlugin')->name('landlord.admin.vue.api.plugins.show');
+        Route::post('/plugins', 'storePlugin')->name('landlord.admin.vue.api.plugins.store');
+        Route::put('/plugins/{id}', 'updatePlugin')->name('landlord.admin.vue.api.plugins.update');
+        Route::put('/plugins/{id}/activate', 'activatePlugin')->name('landlord.admin.vue.api.plugins.activate');
+        Route::put('/plugins/{id}/deactivate', 'deactivatePlugin')->name('landlord.admin.vue.api.plugins.deactivate');
+        Route::delete('/plugins/{id}', 'deletePlugin')->name('landlord.admin.vue.api.plugins.delete');
+        
+        // ==========================================
+        // APPEARANCES - THEME OPTIONS
+        // ==========================================
+        Route::get('/appearances/theme-options', 'themeOptions')->name('landlord.admin.vue.api.appearances.theme-options');
+        Route::put('/appearances/theme-options', 'updateThemeOptions')->name('landlord.admin.vue.api.appearances.theme-options.update');
+        
+        // ==========================================
+        // APPEARANCES - GENERAL SETTINGS
+        // ==========================================
+        Route::get('/appearances/general', 'appearanceGeneralSettings')->name('landlord.admin.vue.api.appearances.general');
+        Route::put('/appearances/general', 'updateAppearanceGeneralSettings')->name('landlord.admin.vue.api.appearances.general.update');
+        
+        // ==========================================
+        // EMAIL TEMPLATES
+        // ==========================================
+        Route::get('/settings/email-templates', 'emailTemplates')->name('landlord.admin.vue.api.settings.email-templates');
+        Route::get('/settings/email-templates/{id}', 'getEmailTemplate')->name('landlord.admin.vue.api.settings.email-templates.show');
+        Route::post('/settings/email-templates', 'storeEmailTemplate')->name('landlord.admin.vue.api.settings.email-templates.store');
+        Route::put('/settings/email-templates/{id}', 'updateEmailTemplate')->name('landlord.admin.vue.api.settings.email-templates.update');
+        Route::delete('/settings/email-templates/{id}', 'deleteEmailTemplate')->name('landlord.admin.vue.api.settings.email-templates.delete');
+        
+        // ==========================================
+        // LOGIN ACTIVITY
+        // ==========================================
+        Route::get('/users/login-activity', 'loginActivity')->name('landlord.admin.vue.api.users.login-activity');
+        
+        // ==========================================
+        // ROLES CRUD
+        // ==========================================
+        Route::get('/users/roles/{id}', 'getRole')->name('landlord.admin.vue.api.users.roles.show');
+        Route::post('/users/roles', 'storeRole')->name('landlord.admin.vue.api.users.roles.store');
+        Route::put('/users/roles/{id}', 'updateRole')->name('landlord.admin.vue.api.users.roles.update');
+        Route::delete('/users/roles/{id}', 'deleteRole')->name('landlord.admin.vue.api.users.roles.delete');
+        
+        // ==========================================
+        // PERMISSIONS CRUD
+        // ==========================================
+        Route::get('/users/permissions/{id}', 'getPermission')->name('landlord.admin.vue.api.users.permissions.show');
+        Route::post('/users/permissions', 'storePermission')->name('landlord.admin.vue.api.users.permissions.store');
+        Route::put('/users/permissions/{id}', 'updatePermission')->name('landlord.admin.vue.api.users.permissions.update');
+        Route::delete('/users/permissions/{id}', 'deletePermission')->name('landlord.admin.vue.api.users.permissions.delete');
+        
+        // ==========================================
+        // LANGUAGES CRUD
+        // ==========================================
+        Route::get('/system/languages/{id}', 'getLanguage')->name('landlord.admin.vue.api.system.languages.show');
+        Route::post('/system/languages', 'storeLanguage')->name('landlord.admin.vue.api.system.languages.store');
+        Route::put('/system/languages/{id}', 'updateLanguage')->name('landlord.admin.vue.api.system.languages.update');
+        Route::delete('/system/languages/{id}', 'deleteLanguage')->name('landlord.admin.vue.api.system.languages.delete');
+        Route::put('/system/languages/{id}/set-default', 'setDefaultLanguage')->name('landlord.admin.vue.api.system.languages.set-default');
+        
+        // ==========================================
+        // USERS DELETE
+        // ==========================================
+        Route::delete('/users/{id}', 'deleteUser')->name('landlord.admin.vue.api.users.delete');
+        
+        // ==========================================
+        // MENUS CRUD
+        // ==========================================
+        Route::get('/appearances/menus/{id}', 'getMenu')->name('landlord.admin.vue.api.appearances.menus.show');
+        Route::post('/appearances/menus', 'storeMenu')->name('landlord.admin.vue.api.appearances.menus.store');
+        Route::put('/appearances/menus/{id}', 'updateMenu')->name('landlord.admin.vue.api.appearances.menus.update');
+        Route::delete('/appearances/menus/{id}', 'deleteMenu')->name('landlord.admin.vue.api.appearances.menus.delete');
+        
+        // ==========================================
+        // WIDGETS CRUD
+        // ==========================================
+        Route::get('/appearances/widgets/{id}', 'getWidget')->name('landlord.admin.vue.api.appearances.widgets.show');
+        Route::post('/appearances/widgets', 'storeWidget')->name('landlord.admin.vue.api.appearances.widgets.store');
+        Route::put('/appearances/widgets/{id}', 'updateWidget')->name('landlord.admin.vue.api.appearances.widgets.update');
+        Route::put('/appearances/widgets/{id}/activate', 'activateWidget')->name('landlord.admin.vue.api.appearances.widgets.activate');
+        Route::put('/appearances/widgets/{id}/deactivate', 'deactivateWidget')->name('landlord.admin.vue.api.appearances.widgets.deactivate');
+        Route::delete('/appearances/widgets/{id}', 'deleteWidget')->name('landlord.admin.vue.api.appearances.widgets.delete');
+        
+        // ==========================================
+        // THEMES ACTIONS
+        // ==========================================
+        Route::get('/appearances/themes/{id}', 'getTheme')->name('landlord.admin.vue.api.appearances.themes.show');
+        Route::put('/appearances/themes/{id}/activate', 'activateTheme')->name('landlord.admin.vue.api.appearances.themes.activate');
+        Route::delete('/appearances/themes/{id}', 'deleteTheme')->name('landlord.admin.vue.api.appearances.themes.delete');
+        
+        // ==========================================
+        // SYSTEM BACKUPS
+        // ==========================================
+        Route::get('/system/backups', 'backups')->name('landlord.admin.vue.api.system.backups');
+        Route::post('/system/backups', 'createBackup')->name('landlord.admin.vue.api.system.backups.create');
+        Route::post('/system/backups/{id}/restore', 'restoreBackup')->name('landlord.admin.vue.api.system.backups.restore');
+        Route::delete('/system/backups/{id}', 'deleteBackup')->name('landlord.admin.vue.api.system.backups.delete');
+        
+        // ==========================================
+        // SYSTEM SITEMAP
+        // ==========================================
+        Route::get('/system/sitemap', 'sitemap')->name('landlord.admin.vue.api.system.sitemap');
+        Route::post('/system/sitemap/generate', 'generateSitemap')->name('landlord.admin.vue.api.system.sitemap.generate');
+        Route::put('/system/sitemap', 'updateSitemap')->name('landlord.admin.vue.api.system.sitemap.update');
     });
 
     Route::controller(UpdateInfoController::class)->group(function (){

@@ -9,8 +9,8 @@ export default {
     name: 'StatusBadge',
     props: {
         status: {
-            type: String,
-            required: true
+            type: [String, Number],
+            default: 'draft'
         },
         text: {
             type: String,
@@ -30,9 +30,19 @@ export default {
                 published: 'status-published',
                 draft: 'status-draft',
                 enabled: 'status-enabled',
-                disabled: 'status-disabled'
+                disabled: 'status-disabled',
+                publish: 'status-published',
+                '1': 'status-active',
+                '0': 'status-inactive'
             }
-            return statusMap[this.status.toLowerCase()] || 'status-default'
+            
+            // Safely convert status to string and handle edge cases
+            if (!this.status && this.status !== 0) {
+                return 'status-default'
+            }
+            
+            const statusStr = String(this.status).toLowerCase()
+            return statusMap[statusStr] || 'status-default'
         }
     }
 }

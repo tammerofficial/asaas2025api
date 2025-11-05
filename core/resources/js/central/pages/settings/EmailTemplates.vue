@@ -212,8 +212,7 @@ const form = ref({
 const loadTemplates = async () => {
     loading.value = true
     try {
-        // Note: This endpoint might need to be added to API service
-        const response = await api.settings.get({ type: 'email_templates' })
+        const response = await api.settings.emailTemplates()
         
         if (response.data.success) {
             templates.value = response.data.data || []
@@ -263,9 +262,11 @@ const deleteTemplate = async (template) => {
     }
     
     try {
-        // await api.settings.deleteTemplate(template.id)
-        showToastMessage('success', 'Success', 'Template deleted successfully')
-        await loadTemplates()
+        const response = await api.settings.deleteEmailTemplate(template.id)
+        if (response.data.success) {
+            showToastMessage('success', 'Success', 'Template deleted successfully')
+            await loadTemplates()
+        }
     } catch (error) {
         console.error('Error deleting template:', error)
         showToastMessage('error', 'Error', 'Failed to delete template')
@@ -277,12 +278,16 @@ const saveTemplate = async () => {
     try {
         if (form.value.id) {
             // Update template
-            // await api.settings.updateTemplate(form.value.id, form.value)
-            showToastMessage('success', 'Success', 'Template updated successfully')
+            const response = await api.settings.updateEmailTemplate(form.value.id, form.value)
+            if (response.data.success) {
+                showToastMessage('success', 'Success', 'Template updated successfully')
+            }
         } else {
             // Create template
-            // await api.settings.createTemplate(form.value)
-            showToastMessage('success', 'Success', 'Template created successfully')
+            const response = await api.settings.createEmailTemplate(form.value)
+            if (response.data.success) {
+                showToastMessage('success', 'Success', 'Template created successfully')
+            }
         }
         closeModal()
         await loadTemplates()

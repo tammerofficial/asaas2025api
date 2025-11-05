@@ -150,11 +150,24 @@ const sections = ref([
 
 const loadOptions = async () => {
     try {
-        // API call to load theme options
-        // const response = await api.appearances.themeOptions()
-        // options.value = response.data.data || {}
-        
-        // Initialize with default values
+        const response = await api.appearances.themeOptions()
+        if (response.data.success && response.data.data) {
+            options.value = response.data.data
+        } else {
+            // Initialize with default values if no data
+            sections.value.forEach(section => {
+                section.options.forEach(option => {
+                    if (option.type === 'checkbox') {
+                        options.value[option.key] = false
+                    } else {
+                        options.value[option.key] = ''
+                    }
+                })
+            })
+        }
+    } catch (error) {
+        console.error('Error loading theme options:', error)
+        // Initialize with default values on error
         sections.value.forEach(section => {
             section.options.forEach(option => {
                 if (option.type === 'checkbox') {
@@ -164,16 +177,15 @@ const loadOptions = async () => {
                 }
             })
         })
-    } catch (error) {
-        console.error('Error loading theme options:', error)
     }
 }
 
 const saveOptions = async () => {
     try {
-        // API call to save theme options
-        // await api.appearances.updateThemeOptions(options.value)
-        alert('Theme options saved successfully')
+        const response = await api.appearances.updateThemeOptions(options.value)
+        if (response.data.success) {
+            alert('Theme options saved successfully')
+        }
     } catch (error) {
         console.error('Error saving theme options:', error)
         alert('Failed to save theme options')

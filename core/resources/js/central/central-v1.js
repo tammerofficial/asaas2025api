@@ -77,18 +77,18 @@ const routes = [
                 component: () => import('./pages/blog/Settings.vue'),
                 meta: { title: 'Blog Settings' }
             },
-            // Blog placeholders for view/edit (not yet implemented)
+            // Blog View/Edit
             {
                 path: '/blog/:id',
                 name: 'blog-view',
-                component: () => import('./components/PlaceholderPage.vue'),
-                meta: { title: 'View Blog (Coming Soon)' }
+                component: () => import('./pages/blog/BlogView.vue'),
+                meta: { title: 'View Blog' }
             },
             {
                 path: '/blog/edit/:id',
                 name: 'blog-edit',
-                component: () => import('./components/PlaceholderPage.vue'),
-                meta: { title: 'Edit Blog (Coming Soon)' }
+                component: () => import('./pages/blog/BlogEdit.vue'),
+                meta: { title: 'Edit Blog' }
             },
             
             // Pages
@@ -104,12 +104,12 @@ const routes = [
                 component: () => import('./pages/pages/PageCreate.vue'),
                 meta: { title: 'Add New Page' }
             },
-            // Pages placeholder for edit (not yet implemented)
+            // Pages Edit
             {
                 path: '/pages/edit/:id',
                 name: 'pages-edit',
-                component: () => import('./components/PlaceholderPage.vue'),
-                meta: { title: 'Edit Page (Coming Soon)' }
+                component: () => import('./pages/pages/PageEdit.vue'),
+                meta: { title: 'Edit Page' }
             },
             
             // Packages - Static routes must come before dynamic routes
@@ -151,12 +151,12 @@ const routes = [
                 component: () => import('./pages/coupons/CouponCreate.vue'),
                 meta: { title: 'Create New Coupon' }
             },
-            // Coupons placeholder for edit (not yet implemented)
+            // Coupons Edit
             {
                 path: '/coupons/edit/:id',
                 name: 'coupons-edit',
-                component: () => import('./components/PlaceholderPage.vue'),
-                meta: { title: 'Edit Coupon (Coming Soon)' }
+                component: () => import('./pages/coupons/CouponEdit.vue'),
+                meta: { title: 'Edit Coupon' }
             },
             
             // Payments - Static routes must come before dynamic routes
@@ -248,12 +248,12 @@ const routes = [
                 component: () => import('./pages/support/Categories.vue'),
                 meta: { title: 'Support Ticket Categories' }
             },
-            // Support placeholder for edit (not yet implemented)
+            // Support Edit
             {
                 path: '/support/:id/edit',
                 name: 'support-edit',
-                component: () => import('./components/PlaceholderPage.vue'),
-                meta: { title: 'Edit Ticket (Coming Soon)' }
+                component: () => import('./pages/support/TicketEdit.vue'),
+                meta: { title: 'Edit Ticket' }
             },
             {
                 path: '/support/:id',
@@ -350,8 +350,8 @@ const routes = [
             {
                 path: '/users/create',
                 name: 'users-create',
-                component: () => import('./components/PlaceholderPage.vue'),
-                meta: { title: 'Create User (Coming Soon)' }
+                component: () => import('./pages/users/UserCreate.vue'),
+                meta: { title: 'Create User' }
             },
             {
                 path: '/users/roles',
@@ -380,14 +380,14 @@ const routes = [
             {
                 path: '/users/:id',
                 name: 'users-view',
-                component: () => import('./components/PlaceholderPage.vue'),
-                meta: { title: 'View User (Coming Soon)' }
+                component: () => import('./pages/users/UserView.vue'),
+                meta: { title: 'View User' }
             },
             {
                 path: '/users/:id/edit',
                 name: 'users-edit',
-                component: () => import('./components/PlaceholderPage.vue'),
-                meta: { title: 'Edit User (Coming Soon)' }
+                component: () => import('./pages/users/UserEdit.vue'),
+                meta: { title: 'Edit User' }
             },
             
             // System

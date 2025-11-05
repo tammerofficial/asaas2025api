@@ -176,9 +176,11 @@ const deletePermission = async (permission) => {
     }
     
     try {
-        // await api.users.deletePermission(permission.id)
-        showToastMessage('success', 'Success', 'Permission deleted successfully')
-        await loadPermissions()
+        const response = await api.users.deletePermission(permission.id)
+        if (response.data.success) {
+            showToastMessage('success', 'Success', 'Permission deleted successfully')
+            await loadPermissions()
+        }
     } catch (error) {
         console.error('Error deleting permission:', error)
         showToastMessage('error', 'Error', 'Failed to delete permission')
@@ -190,12 +192,16 @@ const savePermission = async () => {
     try {
         if (form.value.id) {
             // Update permission
-            // await api.users.updatePermission(form.value.id, form.value)
-            showToastMessage('success', 'Success', 'Permission updated successfully')
+            const response = await api.users.updatePermission(form.value.id, form.value)
+            if (response.data.success) {
+                showToastMessage('success', 'Success', 'Permission updated successfully')
+            }
         } else {
             // Create permission
-            // await api.users.createPermission(form.value)
-            showToastMessage('success', 'Success', 'Permission created successfully')
+            const response = await api.users.createPermission(form.value)
+            if (response.data.success) {
+                showToastMessage('success', 'Success', 'Permission created successfully')
+            }
         }
         closeModal()
         await loadPermissions()

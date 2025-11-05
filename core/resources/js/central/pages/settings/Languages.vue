@@ -246,9 +246,11 @@ const editLanguage = (language) => {
 
 const setDefault = async (language) => {
     try {
-        // await api.system.setDefaultLanguage(language.id)
-        showToastMessage('success', 'Success', 'Default language updated successfully')
-        await loadLanguages()
+        const response = await api.system.setDefaultLanguage(language.id)
+        if (response.data.success) {
+            showToastMessage('success', 'Success', 'Default language updated successfully')
+            await loadLanguages()
+        }
     } catch (error) {
         console.error('Error setting default language:', error)
         showToastMessage('error', 'Error', 'Failed to set default language')
@@ -261,9 +263,11 @@ const deleteLanguage = async (language) => {
     }
     
     try {
-        // await api.system.deleteLanguage(language.id)
-        showToastMessage('success', 'Success', 'Language deleted successfully')
-        await loadLanguages()
+        const response = await api.system.deleteLanguage(language.id)
+        if (response.data.success) {
+            showToastMessage('success', 'Success', 'Language deleted successfully')
+            await loadLanguages()
+        }
     } catch (error) {
         console.error('Error deleting language:', error)
         showToastMessage('error', 'Error', 'Failed to delete language')
@@ -275,12 +279,16 @@ const saveLanguage = async () => {
     try {
         if (form.value.id) {
             // Update language
-            // await api.system.updateLanguage(form.value.id, form.value)
-            showToastMessage('success', 'Success', 'Language updated successfully')
+            const response = await api.system.updateLanguage(form.value.id, form.value)
+            if (response.data.success) {
+                showToastMessage('success', 'Success', 'Language updated successfully')
+            }
         } else {
             // Create language
-            // await api.system.createLanguage(form.value)
-            showToastMessage('success', 'Success', 'Language created successfully')
+            const response = await api.system.createLanguage(form.value)
+            if (response.data.success) {
+                showToastMessage('success', 'Success', 'Language created successfully')
+            }
         }
         closeModal()
         await loadLanguages()

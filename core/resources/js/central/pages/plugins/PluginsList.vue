@@ -148,36 +148,14 @@ const filteredPlugins = computed(() => {
 const loadPlugins = async () => {
     loading.value = true
     try {
-        // Simulate API call - replace with actual API endpoint
-        // const response = await api.plugins.list()
-        // if (response.data.success) {
-        //     plugins.value = response.data.data || []
-        // }
-        
-        // Mock data for now
-        plugins.value = [
-            {
-                id: 1,
-                name: 'Payment Gateway',
-                description: 'Integration with payment gateways',
-                version: '2.1.0',
-                author: 'System',
-                is_active: true,
-                installed_at: new Date().toISOString()
-            },
-            {
-                id: 2,
-                name: 'SEO Tools',
-                description: 'Advanced SEO optimization tools',
-                version: '1.5.0',
-                author: 'System',
-                is_active: false,
-                installed_at: new Date().toISOString()
-            }
-        ]
+        const response = await api.plugins.list({ search: searchQuery.value })
+        if (response.data.success) {
+            plugins.value = response.data.data || []
+        }
     } catch (error) {
         console.error('Error loading plugins:', error)
         plugins.value = []
+        showToastMessage('error', 'Error', 'Failed to load plugins')
     } finally {
         loading.value = false
     }
@@ -196,12 +174,15 @@ const activatePlugin = async (plugin) => {
     }
     
     try {
-        // API call to activate plugin
-        plugin.is_active = true
-        alert('Plugin activated successfully')
+        const response = await api.plugins.activate(plugin.id)
+        if (response.data.success) {
+            plugin.is_active = true
+            showToastMessage('success', 'Success', 'Plugin activated successfully')
+            await loadPlugins()
+        }
     } catch (error) {
         console.error('Error activating plugin:', error)
-        alert('Failed to activate plugin')
+        showToastMessage('error', 'Error', 'Failed to activate plugin')
     }
 }
 
@@ -211,12 +192,15 @@ const deactivatePlugin = async (plugin) => {
     }
     
     try {
-        // API call to deactivate plugin
-        plugin.is_active = false
-        alert('Plugin deactivated successfully')
+        const response = await api.plugins.deactivate(plugin.id)
+        if (response.data.success) {
+            plugin.is_active = false
+            showToastMessage('success', 'Success', 'Plugin deactivated successfully')
+            await loadPlugins()
+        }
     } catch (error) {
         console.error('Error deactivating plugin:', error)
-        alert('Failed to deactivate plugin')
+        showToastMessage('error', 'Error', 'Failed to deactivate plugin')
     }
 }
 
@@ -234,12 +218,14 @@ const deletePlugin = async (plugin) => {
     }
     
     try {
-        // API call to delete plugin
-        plugins.value = plugins.value.filter(p => p.id !== plugin.id)
-        alert('Plugin deleted successfully')
+        const response = await api.plugins.delete(plugin.id)
+        if (response.data.success) {
+            showToastMessage('success', 'Success', 'Plugin deleted successfully')
+            await loadPlugins()
+        }
     } catch (error) {
         console.error('Error deleting plugin:', error)
-        alert('Failed to delete plugin')
+        showToastMessage('error', 'Error', 'Failed to delete plugin')
     }
 }
 

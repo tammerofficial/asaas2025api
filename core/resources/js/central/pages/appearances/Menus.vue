@@ -100,13 +100,36 @@ const loadMenus = async () => {
     }
 }
 
-const createMenu = () => {
-    alert('Menu creation functionality will be implemented')
+const createMenu = async () => {
+    const name = prompt('Enter menu name:')
+    if (!name) return
+    
+    try {
+        const response = await api.appearances.createMenu({ name, description: '', items: [] })
+        if (response.data.success) {
+            alert('Menu created successfully')
+            await loadMenus()
+        }
+    } catch (error) {
+        console.error('Error creating menu:', error)
+        alert('Failed to create menu')
+    }
 }
 
-const editMenu = (menu) => {
-    alert(`Edit menu: ${menu.name}`)
-    // router.push(`/appearances/menus/${menu.id}/edit`)
+const editMenu = async (menu) => {
+    const name = prompt('Enter menu name:', menu.name)
+    if (!name) return
+    
+    try {
+        const response = await api.appearances.updateMenu(menu.id, { name, description: menu.description || '', items: menu.items || [] })
+        if (response.data.success) {
+            alert('Menu updated successfully')
+            await loadMenus()
+        }
+    } catch (error) {
+        console.error('Error updating menu:', error)
+        alert('Failed to update menu')
+    }
 }
 
 const deleteMenu = async (menu) => {
@@ -115,9 +138,11 @@ const deleteMenu = async (menu) => {
     }
     
     try {
-        // API call to delete menu
-        await loadMenus()
-        alert('Menu deleted successfully')
+        const response = await api.appearances.deleteMenu(menu.id)
+        if (response.data.success) {
+            alert('Menu deleted successfully')
+            await loadMenus()
+        }
     } catch (error) {
         console.error('Error deleting menu:', error)
         alert('Failed to delete menu')

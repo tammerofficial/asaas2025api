@@ -6,6 +6,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Central Dashboard V1 - Vue.js</title>
     
+    <base href="{{ url('/build/') }}/">
+    
     @vite(['resources/css/central-v1.css', 'resources/js/central/central-v1.js'])
 </head>
 <body>

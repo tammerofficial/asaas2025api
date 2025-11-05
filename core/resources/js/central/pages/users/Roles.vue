@@ -188,9 +188,11 @@ const deleteRole = async (role) => {
     }
     
     try {
-        // await api.users.deleteRole(role.id)
-        showToastMessage('success', 'Success', 'Role deleted successfully')
-        await loadRoles()
+        const response = await api.users.deleteRole(role.id)
+        if (response.data.success) {
+            showToastMessage('success', 'Success', 'Role deleted successfully')
+            await loadRoles()
+        }
     } catch (error) {
         console.error('Error deleting role:', error)
         showToastMessage('error', 'Error', 'Failed to delete role')
@@ -202,12 +204,16 @@ const saveRole = async () => {
     try {
         if (form.value.id) {
             // Update role
-            // await api.users.updateRole(form.value.id, form.value)
-            showToastMessage('success', 'Success', 'Role updated successfully')
+            const response = await api.users.updateRole(form.value.id, form.value)
+            if (response.data.success) {
+                showToastMessage('success', 'Success', 'Role updated successfully')
+            }
         } else {
             // Create role
-            // await api.users.createRole(form.value)
-            showToastMessage('success', 'Success', 'Role created successfully')
+            const response = await api.users.createRole(form.value)
+            if (response.data.success) {
+                showToastMessage('success', 'Success', 'Role created successfully')
+            }
         }
         closeModal()
         await loadRoles()

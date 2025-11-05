@@ -211,8 +211,7 @@ const loadActivity = async (page = 1) => {
             params.type = typeFilter.value
         }
         
-        // Note: This endpoint might need to be added to API service
-        const response = await api.users.list(params) // Using users list for now, should be loginActivity endpoint
+        const response = await api.users.loginActivity(params)
         
         if (response.data.success) {
             activities.value = response.data.data || []

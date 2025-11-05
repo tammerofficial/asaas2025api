@@ -1,1 +1,0 @@
-import{P as e}from"./PlaceholderPage-87cc6d31.js";import{_ as t,k as n,o as c,z as a}from"./_plugin-vue_export-helper-25c71bc9.js";const i={name:"LoginActivity",components:{PlaceholderPage:e}};function r(s,p,l,_,m,d){const o=n("PlaceholderPage");return c(),a(o,{title:"Login Activity",endpoint:"/api/central/v1/login-activity"})}const P=t(i,[["render",r]]);export{P as default};

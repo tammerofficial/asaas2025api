@@ -18,7 +18,7 @@
         <div v-else class="media-grid">
             <div v-for="item in media" :key="item.id" class="media-item">
                 <div class="media-preview">
-                    <img v-if="item.type?.startsWith('image')" :src="item.url" :alt="item.title" />
+                    <img v-if="item.url && item.path" :src="item.url" :alt="item.title || item.alt" />
                     <div v-else class="file-icon">📄</div>
                 </div>
                 <div class="media-info">
@@ -58,11 +58,12 @@ export default {
             try {
                 const response = await api.media.list({ search: searchQuery.value })
                 if (response.data.success) {
-                    media.value = response.data.data.data || response.data.data || []
+                    media.value = response.data.data || []
                 }
             } catch (error) {
                 console.error('Error fetching media:', error)
                 showToastMessage('error', 'Error', 'Failed to load media')
+                media.value = []
             } finally {
                 loading.value = false
             }

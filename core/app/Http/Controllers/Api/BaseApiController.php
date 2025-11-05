@@ -3,41 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Cache;
+use App\Http\Controllers\Traits\UsesApiCache;
 
 abstract class BaseApiController extends Controller
 {
-    /**
-     * Get cache store (Redis or Octane if available)
-     */
-    protected function cacheStore()
-    {
-        try {
-            // Try Redis first if available
-            if (config('cache.stores.redis') && config('cache.default') === 'redis') {
-                $redisStore = Cache::store('redis');
-                // Test Redis connection
-                $redisStore->get('test_connection');
-                return $redisStore;
-            }
-        } catch (\Exception $e) {
-            // Redis not available, fallback to default
-        }
-        
-        // Fallback to default cache driver
-        return Cache::store(config('cache.default', 'file'));
-    }
+    use UsesApiCache;
 
     /**
-     * Cache helper method
-     */
-    protected function remember(string $key, int $seconds, callable $callback)
-    {
-        return $this->cacheStore()->remember($key, $seconds, $callback);
-    }
-
-    /**
-     * Clear cache by pattern
+     * Clear cache by pattern (legacy method for backward compatibility)
+     * 
+     * @deprecated Use clearCacheTags() instead for better performance
      */
     protected function clearCache(string $pattern): void
     {

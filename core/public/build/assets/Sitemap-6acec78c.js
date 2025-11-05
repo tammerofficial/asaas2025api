@@ -1,1 +1,0 @@
-import{P as o}from"./PlaceholderPage-87cc6d31.js";import{_ as t,k as a,o as n,z as c}from"./_plugin-vue_export-helper-25c71bc9.js";const r={name:"Sitemap",components:{PlaceholderPage:o}};function p(s,m,i,l,_,d){const e=a("PlaceholderPage");return n(),c(e,{title:"Sitemap",endpoint:"/api/central/v1/sitemap"})}const h=t(r,[["render",p]]);export{h as default};

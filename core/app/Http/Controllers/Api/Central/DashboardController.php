@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\Central;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\BaseApiController;
 use App\Http\Resources\Api\Central\DashboardResource;
 use App\Models\Tenant;
 use App\Models\PaymentLogs;
@@ -10,7 +10,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
-class DashboardController extends Controller
+class DashboardController extends BaseApiController
 {
     /**
      * Get dashboard statistics
@@ -18,8 +18,8 @@ class DashboardController extends Controller
     public function index(): JsonResponse
     {
         try {
-            // Use file cache instead of Redis to avoid configuration issues
-            $stats = cache()->remember('central_dashboard_stats', 300, function () {
+            $key = $this->getCacheKey('central_dashboard_stats');
+            $stats = $this->remember($key, $this->getStatsTtl(), function () {
                 // Get all counts in parallel queries
                 $tenantStats = Tenant::selectRaw('
                     COUNT(*) as total_tenants,
@@ -49,7 +49,7 @@ class DashboardController extends Controller
                     'completed_orders' => (int) ($orderStats->completed_orders ?? 0),
                     'monthly_revenue' => (float) ($revenue->monthly_revenue ?? 0),
                 ];
-            });
+            }, ['tag:dashboard', 'tag:central']);
 
             return response()->json([
                 'success' => true,
@@ -70,8 +70,8 @@ class DashboardController extends Controller
     public function stats(): JsonResponse
     {
         try {
-            // Use file cache instead of Redis to avoid configuration issues
-            $stats = cache()->remember('central_dashboard_stats_detailed', 300, function () {
+            $key = $this->getCacheKey('central_dashboard_stats_detailed');
+            $stats = $this->remember($key, $this->getStatsTtl(), function () {
                 // Optimize with selectRaw
                 $tenantStats = Tenant::selectRaw('
                     COUNT(*) as total,
@@ -123,7 +123,7 @@ class DashboardController extends Controller
                         'yearly' => (float) ($revenue->yearly ?? 0),
                     ],
                 ];
-            });
+            }, ['tag:dashboard', 'tag:central']);
 
             return response()->json([
                 'success' => true,
@@ -144,14 +144,14 @@ class DashboardController extends Controller
     public function recentOrders(): JsonResponse
     {
         try {
-            // Cache recent orders for 1 minute using file cache
-            $recentOrders = cache()->remember('central_recent_orders', 60, function () {
+            $key = $this->getCacheKey('central_recent_orders');
+            $recentOrders = $this->remember($key, $this->getRecentOrdersTtl(), function () {
                 return PaymentLogs::with(['user:id,name,email', 'package:id,title,price'])
                     ->select('id', 'name', 'email', 'package_name', 'package_price', 'payment_status', 'created_at', 'user_id', 'package_id')
                     ->latest()
                     ->limit(10)
                     ->get();
-            });
+            }, ['tag:dashboard', 'tag:orders', 'tag:central']);
 
             return response()->json([
                 'success' => true,
@@ -172,8 +172,8 @@ class DashboardController extends Controller
     public function chartData(): JsonResponse
     {
         try {
-            // Cache chart data for 5 minutes using file cache
-            $chartData = cache()->remember('central_chart_data', 300, function () {
+            $key = $this->getCacheKey('central_chart_data');
+            $chartData = $this->remember($key, $this->getChartDataTtl(), function () {
                 // Monthly revenue for last 12 months
                 $monthlyRevenue = PaymentLogs::where('payment_status', 'complete')
                     ->select(
@@ -209,7 +209,7 @@ class DashboardController extends Controller
                     'orders_by_status' => $ordersByStatus,
                     'tenants_growth' => $tenantsGrowth,
                 ];
-            });
+            }, ['tag:dashboard', 'tag:central']);
 
             return response()->json([
                 'success' => true,

@@ -95,14 +95,29 @@ const loadWidgets = async () => {
     }
 }
 
-const addWidget = () => {
-    alert('Add widget functionality will be implemented')
+const addWidget = async () => {
+    const name = prompt('Enter widget name:')
+    if (!name) return
+    
+    try {
+        const response = await api.appearances.createWidget({ name, description: '', is_active: false })
+        if (response.data.success) {
+            alert('Widget created successfully')
+            await loadWidgets()
+        }
+    } catch (error) {
+        console.error('Error creating widget:', error)
+        alert('Failed to create widget')
+    }
 }
 
 const activateWidget = async (widget) => {
     try {
-        widget.is_active = true
-        alert('Widget activated successfully')
+        const response = await api.appearances.activateWidget(widget.id)
+        if (response.data.success) {
+            alert('Widget activated successfully')
+            await loadWidgets()
+        }
     } catch (error) {
         console.error('Error activating widget:', error)
         alert('Failed to activate widget')
@@ -111,16 +126,31 @@ const activateWidget = async (widget) => {
 
 const deactivateWidget = async (widget) => {
     try {
-        widget.is_active = false
-        alert('Widget deactivated successfully')
+        const response = await api.appearances.deactivateWidget(widget.id)
+        if (response.data.success) {
+            alert('Widget deactivated successfully')
+            await loadWidgets()
+        }
     } catch (error) {
         console.error('Error deactivating widget:', error)
         alert('Failed to deactivate widget')
     }
 }
 
-const editWidget = (widget) => {
-    alert(`Edit widget: ${widget.name}`)
+const editWidget = async (widget) => {
+    const name = prompt('Enter widget name:', widget.name)
+    if (!name) return
+    
+    try {
+        const response = await api.appearances.updateWidget(widget.id, { name, description: widget.description || '', is_active: widget.is_active })
+        if (response.data.success) {
+            alert('Widget updated successfully')
+            await loadWidgets()
+        }
+    } catch (error) {
+        console.error('Error updating widget:', error)
+        alert('Failed to update widget')
+    }
 }
 
 const deleteWidget = async (widget) => {
@@ -129,8 +159,11 @@ const deleteWidget = async (widget) => {
     }
     
     try {
-        widgets.value = widgets.value.filter(w => w.id !== widget.id)
-        alert('Widget deleted successfully')
+        const response = await api.appearances.deleteWidget(widget.id)
+        if (response.data.success) {
+            alert('Widget deleted successfully')
+            await loadWidgets()
+        }
     } catch (error) {
         console.error('Error deleting widget:', error)
         alert('Failed to delete widget')

@@ -21,3 +21,5 @@ frankenphp-worker.php
 # Laravel cache files (but keep .gitkeep)
 /bootstrap/cache/*
 !/bootstrap/cache/.gitkeep
+rr
+.rr.yaml

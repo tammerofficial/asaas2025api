@@ -1,0 +1,1 @@
+import o from"./PlaceholderPage-b826436d.js";import{_ as t,k as n,o as a,z as s}from"./_plugin-vue_export-helper-80b3f0a9.js";const c={name:"PaymentMethods",components:{PlaceholderPage:o}};function r(p,m,d,l,_,P){const e=n("PlaceholderPage");return a(),s(e,{title:"Payment Methods",endpoint:"/api/central/v1/payment-methods"})}const f=t(c,[["render",r]]);export{f as default};

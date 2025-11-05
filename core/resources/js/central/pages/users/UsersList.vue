@@ -211,9 +211,11 @@ const deleteUser = async (user) => {
     }
     
     try {
-        // await api.users.delete(user.id)
-        await loadUsers(pagination.value.current_page)
-        alert('User deleted successfully')
+        const response = await api.users.delete(user.id)
+        if (response.data.success) {
+            await loadUsers(pagination.value.current_page)
+            alert('User deleted successfully')
+        }
     } catch (error) {
         console.error('Error deleting user:', error)
         alert('Failed to delete user')

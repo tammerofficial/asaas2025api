@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\Tenant;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\BaseApiController;
 use App\Http\Resources\Api\Tenant\DashboardResource;
 use App\Models\Admin;
 use App\Models\ProductOrder;
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Blog\Entities\Blog;
 use Modules\Product\Entities\Product;
 
-class DashboardController extends Controller
+class DashboardController extends BaseApiController
 {
     /**
      * Get dashboard statistics
@@ -28,8 +28,8 @@ class DashboardController extends Controller
             ], 404);
         }
 
-        // Use Redis caching to improve performance (5 minutes cache)
-        $stats = cache()->store('redis')->remember("tenant_dashboard_stats_{$tenant->id}", 300, function () use ($tenant) {
+        $key = $this->getCacheKey("tenant_dashboard_stats_{$tenant->id}");
+        $stats = $this->remember($key, $this->getStatsTtl(), function () use ($tenant) {
             // Optimize queries with selectRaw
             $orderStats = ProductOrder::selectRaw('
                 COUNT(*) as total_orders,
@@ -51,7 +51,7 @@ class DashboardController extends Controller
                 'total_admins' => Admin::count(),
                 'monthly_sales' => (float) ($orderStats->monthly_sales ?? 0),
             ];
-        });
+        }, ['tag:dashboard', 'tag:tenant', "tag:tenant:{$tenant->id}"]);
 
         return response()->json([
             'success' => true,
@@ -74,8 +74,8 @@ class DashboardController extends Controller
             ], 404);
         }
 
-        // Use Redis caching with optimized queries
-        $stats = cache()->store('redis')->remember("tenant_dashboard_stats_detailed_{$tenant->id}", 300, function () use ($tenant) {
+        $key = $this->getCacheKey("tenant_dashboard_stats_detailed_{$tenant->id}");
+        $stats = $this->remember($key, $this->getStatsTtl(), function () use ($tenant) {
             $productStats = Product::selectRaw('
                 COUNT(*) as total,
                 SUM(CASE WHEN status_id = ? THEN 1 ELSE 0 END) as active,
@@ -128,7 +128,7 @@ class DashboardController extends Controller
                     'yearly' => (float) ($sales->yearly ?? 0),
                 ],
             ];
-        });
+        }, ['tag:dashboard', 'tag:tenant', "tag:tenant:{$tenant->id}"]);
 
         return response()->json([
             'success' => true,
@@ -151,14 +151,14 @@ class DashboardController extends Controller
             ], 404);
         }
 
-        // Cache recent orders for 1 minute
-        $recentOrders = cache()->store('redis')->remember("tenant_recent_orders_{$tenant->id}", 60, function () {
+        $key = $this->getCacheKey("tenant_recent_orders_{$tenant->id}");
+        $recentOrders = $this->remember($key, $this->getRecentOrdersTtl(), function () {
             return ProductOrder::with(['user:id,name,email'])
                 ->select('id', 'name', 'email', 'total_amount', 'payment_gateway', 'payment_status', 'status', 'created_at')
                 ->latest()
                 ->limit(10)
                 ->get();
-        });
+        }, ['tag:dashboard', 'tag:orders', 'tag:tenant', "tag:tenant:{$tenant->id}"]);
 
         return response()->json([
             'success' => true,
@@ -181,8 +181,8 @@ class DashboardController extends Controller
             ], 404);
         }
 
-        // Cache chart data for 5 minutes
-        $chartData = cache()->store('redis')->remember("tenant_chart_data_{$tenant->id}", 300, function () {
+        $key = $this->getCacheKey("tenant_chart_data_{$tenant->id}");
+        $chartData = $this->remember($key, $this->getChartDataTtl(), function () {
             // Monthly sales for last 12 months
             $monthlySales = ProductOrder::where('payment_status', 'success')
                 ->select(
@@ -230,7 +230,7 @@ class DashboardController extends Controller
                 'orders_by_status' => $ordersByStatus,
                 'products_growth' => $productsGrowth,
             ];
-        });
+        }, ['tag:dashboard', 'tag:tenant', "tag:tenant:{$tenant->id}"]);
 
         return response()->json([
             'success' => true,

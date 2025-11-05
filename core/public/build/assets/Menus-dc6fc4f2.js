@@ -1,1 +1,0 @@
-import{P as o}from"./PlaceholderPage-87cc6d31.js";import{_ as n,k as t,o as a,z as s}from"./_plugin-vue_export-helper-25c71bc9.js";const c={name:"Menus",components:{PlaceholderPage:o}};function r(p,l,_,m,d,i){const e=t("PlaceholderPage");return a(),s(e,{title:"Menus",endpoint:"/api/central/v1/menus"})}const P=n(c,[["render",r]]);export{P as default};

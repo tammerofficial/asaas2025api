@@ -35,7 +35,8 @@ const api = {
     // Orders
     orders: {
         list: (params) => axios.get('/orders', { params }),
-        get: (id) => axios.get(`/orders/${id}`)
+        get: (id) => axios.get(`/orders/${id}`),
+        paymentLogs: (id) => axios.get(`/orders/${id}/payment-logs`)
     },
 
     // Payments
@@ -69,21 +70,63 @@ const api = {
     // Users
     users: {
         list: (params) => axios.get('/users', { params }),
+        get: (id) => axios.get(`/users/${id}`),
+        create: (data) => axios.post('/users', data),
+        update: (id, data) => axios.put(`/users/${id}`, data),
+        delete: (id) => axios.delete(`/users/${id}`),
         roles: (params) => axios.get('/users/roles', { params }),
+        getRole: (id) => axios.get(`/users/roles/${id}`),
+        createRole: (data) => axios.post('/users/roles', data),
+        updateRole: (id, data) => axios.put(`/users/roles/${id}`, data),
+        deleteRole: (id) => axios.delete(`/users/roles/${id}`),
         permissions: (params) => axios.get('/users/permissions', { params }),
-        activityLogs: (params) => axios.get('/users/activity-logs', { params })
+        getPermission: (id) => axios.get(`/users/permissions/${id}`),
+        createPermission: (data) => axios.post('/users/permissions', data),
+        updatePermission: (id, data) => axios.put(`/users/permissions/${id}`, data),
+        deletePermission: (id) => axios.delete(`/users/permissions/${id}`),
+        activityLogs: (params) => axios.get('/users/activity-logs', { params }),
+        loginActivity: (params) => axios.get('/users/login-activity', { params })
     },
 
     // Appearances
     appearances: {
         themes: (params) => axios.get('/appearances/themes', { params }),
+        getTheme: (id) => axios.get(`/appearances/themes/${id}`),
+        activateTheme: (id) => axios.put(`/appearances/themes/${id}/activate`),
+        deleteTheme: (id) => axios.delete(`/appearances/themes/${id}`),
         menus: (params) => axios.get('/appearances/menus', { params }),
-        widgets: (params) => axios.get('/appearances/widgets', { params })
+        getMenu: (id) => axios.get(`/appearances/menus/${id}`),
+        createMenu: (data) => axios.post('/appearances/menus', data),
+        updateMenu: (id, data) => axios.put(`/appearances/menus/${id}`, data),
+        deleteMenu: (id) => axios.delete(`/appearances/menus/${id}`),
+        widgets: (params) => axios.get('/appearances/widgets', { params }),
+        getWidget: (id) => axios.get(`/appearances/widgets/${id}`),
+        createWidget: (data) => axios.post('/appearances/widgets', data),
+        updateWidget: (id, data) => axios.put(`/appearances/widgets/${id}`, data),
+        activateWidget: (id) => axios.put(`/appearances/widgets/${id}/activate`),
+        deactivateWidget: (id) => axios.put(`/appearances/widgets/${id}/deactivate`),
+        deleteWidget: (id) => axios.delete(`/appearances/widgets/${id}`),
+        themeOptions: () => axios.get('/appearances/theme-options'),
+        updateThemeOptions: (options) => axios.put('/appearances/theme-options', { options }),
+        generalSettings: () => axios.get('/appearances/general'),
+        updateGeneralSettings: (settings) => axios.put('/appearances/general', { settings })
     },
 
     // System
     system: {
-        languages: (params) => axios.get('/system/languages', { params })
+        languages: (params) => axios.get('/system/languages', { params }),
+        getLanguage: (id) => axios.get(`/system/languages/${id}`),
+        createLanguage: (data) => axios.post('/system/languages', data),
+        updateLanguage: (id, data) => axios.put(`/system/languages/${id}`, data),
+        deleteLanguage: (id) => axios.delete(`/system/languages/${id}`),
+        setDefaultLanguage: (id) => axios.put(`/system/languages/${id}/set-default`),
+        backups: (params) => axios.get('/system/backups', { params }),
+        createBackup: (data) => axios.post('/system/backups', data),
+        restoreBackup: (id) => axios.post(`/system/backups/${id}/restore`),
+        deleteBackup: (id) => axios.delete(`/system/backups/${id}`),
+        sitemap: () => axios.get('/system/sitemap'),
+        generateSitemap: () => axios.post('/system/sitemap/generate'),
+        updateSitemap: (data) => axios.put('/system/sitemap', data)
     },
 
     // Pages
@@ -145,8 +188,34 @@ const api = {
 
     // Settings
     settings: {
+        list: (params) => axios.get('/settings', { params }),
         get: (params) => axios.get('/settings', { params }),
-        update: (data) => axios.put('/settings', { settings: data })
+        update: (data) => axios.put('/settings', { settings: data }),
+        emailTemplates: (params) => axios.get('/settings/email-templates', { params }),
+        getEmailTemplate: (id) => axios.get(`/settings/email-templates/${id}`),
+        createEmailTemplate: (data) => axios.post('/settings/email-templates', data),
+        updateEmailTemplate: (id, data) => axios.put(`/settings/email-templates/${id}`, data),
+        deleteEmailTemplate: (id) => axios.delete(`/settings/email-templates/${id}`)
+    },
+    
+    // Plans (alias for packages)
+    plans: {
+        list: (params) => axios.get('/packages', { params }),
+        get: (id) => axios.get(`/packages/${id}`),
+        create: (data) => axios.post('/packages', data),
+        update: (id, data) => axios.put(`/packages/${id}`, data),
+        delete: (id) => axios.delete(`/packages/${id}`)
+    },
+
+    // Plugins
+    plugins: {
+        list: (params) => axios.get('/plugins', { params }),
+        get: (id) => axios.get(`/plugins/${id}`),
+        create: (data) => axios.post('/plugins', data),
+        update: (id, data) => axios.put(`/plugins/${id}`, data),
+        activate: (id) => axios.put(`/plugins/${id}/activate`),
+        deactivate: (id) => axios.put(`/plugins/${id}/deactivate`),
+        delete: (id) => axios.delete(`/plugins/${id}`)
     }
 }
 

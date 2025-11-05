@@ -95,9 +95,10 @@ const settings = ref({
 
 const loadSettings = async () => {
     try {
-        // API call to load settings
-        // const response = await api.appearances.generalSettings()
-        // settings.value = response.data.data || {}
+        const response = await api.appearances.generalSettings()
+        if (response.data.success && response.data.data) {
+            settings.value = { ...settings.value, ...response.data.data }
+        }
     } catch (error) {
         console.error('Error loading settings:', error)
     }
@@ -105,9 +106,10 @@ const loadSettings = async () => {
 
 const saveSettings = async () => {
     try {
-        // API call to save settings
-        // await api.appearances.updateGeneralSettings(settings.value)
-        alert('Settings saved successfully')
+        const response = await api.appearances.updateGeneralSettings(settings.value)
+        if (response.data.success) {
+            alert('Settings saved successfully')
+        }
     } catch (error) {
         console.error('Error saving settings:', error)
         alert('Failed to save settings')
