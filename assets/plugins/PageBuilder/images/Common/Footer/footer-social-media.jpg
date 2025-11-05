@@ -1,0 +1,13 @@
+<svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="200" fill="#f5f5f5"/>
+  <text x="150" y="30" font-family="Arial" font-size="20" font-weight="bold" text-anchor="middle" fill="#333">Footer Social Media</text>
+  <circle cx="100" cy="100" r="20" fill="#3b5998"/>
+  <text x="100" y="105" font-family="Arial" font-size="12" text-anchor="middle" fill="#fff">f</text>
+  <circle cx="150" cy="100" r="20" fill="#e4405f"/>
+  <text x="150" y="105" font-family="Arial" font-size="12" text-anchor="middle" fill="#fff">ig</text>
+  <circle cx="200" cy="100" r="20" fill="#1da1f2"/>
+  <text x="200" y="105" font-family="Arial" font-size="12" text-anchor="middle" fill="#fff">t</text>
+  <circle cx="250" cy="100" r="20" fill="#25d366"/>
+  <text x="250" y="105" font-family="Arial" font-size="12" text-anchor="middle" fill="#fff">w</text>
+</svg>
+

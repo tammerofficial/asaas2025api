@@ -1,312 +1,212 @@
 <!-- 62d555ba-d09e-49af-9624-a3e79a446ce5 bb139175-4510-4b4a-8a70-190a66dba3d0 -->
-# PageBuilder Common Addons Implementation Plan
+# Footer PageBuilder Widgets Implementation Plan
 
 ## Overview
 
-Create reusable, theme-agnostic PageBuilder addons in `core/plugins/PageBuilder/Addons/Common/` that work across all tenant themes. These addons will be registered globally and available to all tenants regardless of their theme.
+إضافة 5 widgets منفصلة للـ Footer Builder في PageBuilder لتوفير:
 
-## Directory Structure
-
-### Addon Classes (PHP Files)
-
-```
-core/plugins/PageBuilder/Addons/Common/
-├── Hero/
-│   └── Hero.php
-├── Heading/
-│   └── Heading.php
-├── TextEditor/
-│   └── TextEditor.php
-├── Button/
-│   └── Button.php
-├── BackgroundOverlay/
-│   └── BackgroundOverlay.php
-├── IconBox/
-│   └── IconBox.php
-├── ImageLottie/
-│   └── ImageLottie.php
-├── PricingTable/
-│   └── PricingTable.php
-├── Tabs/
-│   └── Tabs.php
-├── Testimonials/
-│   └── Testimonials.php
-├── Reviews/
-│   └── Reviews.php
-├── CallToAction/
-│   └── CallToAction.php
-├── LogosCarousel/
-│   └── LogosCarousel.php
-├── StepsTimeline/
-│   └── StepsTimeline.php
-├── VideoBox/
-│   └── VideoBox.php
-└── FormWidget/
-    └── FormWidget.php
-```
-
-### View Files (Blade Templates)
-
-```
-core/plugins/PageBuilder/views/common/
-├── hero.blade.php
-├── heading.blade.php
-├── text-editor.blade.php
-├── button.blade.php
-├── background-overlay.blade.php
-├── icon-box.blade.php
-├── image-lottie.blade.php
-├── pricing-table.blade.php
-├── tabs.blade.php
-├── testimonials.blade.php
-├── reviews.blade.php
-├── call-to-action.blade.php
-├── logos-carousel.blade.php
-├── steps-timeline.blade.php
-├── video-box.blade.php
-└── form-widget.blade.php
-```
-
-**Important Notes:**
-
-- Views are in `core/plugins/PageBuilder/views/common/` (NOT in resources/views)
-- Views are registered via `PageBuilderServiceProvider` as namespace `pagebuilder`
-- View path in code: `common.hero` (not `common.hero.view`)
+- FooterLogo: عرض الشعار
+- FooterDescription: عرض الوصف تحت الشعار
+- FooterSocialMedia: عرض وسائل التواصل الاجتماعي
+- FooterUsefulLinks: عرض روابط مفيدة من النظام (Home, Products, Categories, Blog)
+- FooterPagesLinks: عرض روابط الصفحات من جدول Page (من نحن، الشروط والأحكام، إلخ)
 
 ## Implementation Steps
 
-### 1. Update PageBuilderSetup Registration
+### Step 1: Create FooterLogo Widget
 
-- Modify `core/plugins/PageBuilder/PageBuilderSetup.php`
-- Add Common addons to `$globalAddons` array (around line 199)
-- Ensure they're available for all tenant themes
-
-### 2. Create Base Addon Structure
-
-Each addon will:
+**File**: `core/plugins/PageBuilder/Addons/Common/Footer/FooterLogo/FooterLogo.php`
 
 - Extend `PageBuilderBase`
-- Implement `admin_render()`, `frontend_render()`, `preview_image()`, `addon_title()`
-- Use PageBuilder Fields (Text, Image, Repeater, Select, etc.)
-- Support multilingual content
-- Include padding/spacing options
-- Use `renderView()` for frontend rendering
+- Fields:
+  - `Image` field for logo upload
+  - `Text` field for alt text
+  - `Text` field for link URL (default: home)
+  - `Select` field for alignment (left/center/right)
+- View: `core/plugins/PageBuilder/views/common/footer/footer-logo.blade.php`
+- Preview image: `assets/plugins/PageBuilder/images/Common/Footer/footer-logo.jpg`
 
-### 3. Addon Specifications
+### Step 2: Create FooterDescription Widget
 
-#### Hero Section
+**File**: `core/plugins/PageBuilder/Addons/Common/Footer/FooterDescription/FooterDescription.php`
 
-- Fields: Title, Subtitle, Description, Button Text/URL, Background Image, Overlay Color/Opacity, Align (left/center/right)
-- View: Full-width hero with customizable content positioning
+- Extend `PageBuilderBase`
+- Fields:
+  - `Textarea` field for description text
+  - `Select` field for text alignment (left/center/right)
+  - `ColorPicker` field for text color (optional)
+- View: `core/plugins/PageBuilder/views/common/footer/footer-description.blade.php`
+- Preview image: `assets/plugins/PageBuilder/images/Common/Footer/footer-description.jpg`
 
-#### Heading
+### Step 3: Create FooterSocialMedia Widget
 
-- Fields: Text, Size (H1-H6), Align, Color, Margin Top/Bottom
-- View: Simple heading component
+**File**: `core/plugins/PageBuilder/Addons/Common/Footer/FooterSocialMedia/FooterSocialMedia.php`
 
-#### Text Editor
+- Extend `PageBuilderBase`
+- Fields:
+  - `Repeater` field with:
+    - Icon Picker
+    - Text field for URL
+    - Text field for title/tooltip
+  - `Select` field for icon style (rounded/square/circle)
+  - `Select` field for icon size (small/medium/large)
+  - `Select` field for alignment (left/center/right)
+- View: `core/plugins/PageBuilder/views/common/footer/footer-social-media.blade.php`
+- Preview image: `assets/plugins/PageBuilder/images/Common/Footer/footer-social-media.jpg`
 
-- Fields: Content (Summernote/WYSIWYG), Align, Width
-- View: Rich text content area
+### Step 4: Create FooterUsefulLinks Widget
 
-#### Button
+**File**: `core/plugins/PageBuilder/Addons/Common/Footer/FooterUsefulLinks/FooterUsefulLinks.php`
 
-- Fields: Text, URL, Icon, Style (primary/secondary), Size, Target (blank/self)
-- View: Styled button component
+- Extend `PageBuilderBase`
+- Logic:
+  - Get links from system automatically:
+    - Home: `get_static_option('home_page')` → get page slug → generate URL
+    - Products: Check if products module active → generate products route
+    - Categories: Check if products module active → generate categories route
+    - Blog: `get_static_option('blog_page')` → get page slug → generate URL
+  - Allow admin to enable/disable each link via `Switcher` fields
+  - `Text` field for widget title (default: "روابط مفيدة")
+  - `Select` field for alignment (left/center/right)
+- View: `core/plugins/PageBuilder/views/common/footer/footer-useful-links.blade.php`
+- Preview image: `assets/plugins/PageBuilder/images/Common/Footer/footer-useful-links.jpg`
 
-#### Background Overlay
+### Step 5: Create FooterPagesLinks Widget
 
-- Fields: Overlay Color, Opacity (0-100), Gradient Support
-- View: Overlay layer component (used with other sections)
+**File**: `core/plugins/PageBuilder/Addons/Common/Footer/FooterPagesLinks/FooterPagesLinks.php`
 
-#### Icon Box / Feature Box
+- Extend `PageBuilderBase`
+- Logic:
+  - Get all pages from `Page::where('status', 1)->get()`
+  - Allow admin to select which pages to display via `Select` field with multiple selection
+  - Or display all pages by default with option to exclude specific pages
+  - `Text` field for widget title (default: "صفحات مهمة")
+  - `Select` field for alignment (left/center/right)
+- View: `core/plugins/PageBuilder/views/common/footer/footer-pages-links.blade.php`
+- Preview image: `assets/plugins/PageBuilder/images/Common/Footer/footer-pages-links.jpg`
 
-- Fields: Repeater for features (Icon, Title, Description, Link)
-- View: Grid/list of feature boxes (AI powered, Dashboard, Analytics, etc.)
+### Step 6: Register All Footer Widgets
 
-#### Image / Lottie Animation
+**File**: `core/plugins/PageBuilder/PageBuilderSetup.php`
 
-- Fields: Image Upload, Lottie JSON URL, Animation Type, Animation Speed
-- View: Animated image/Lottie component
+- Add `use` statements for all 5 Footer widgets
+- Add all 5 widgets to `$globalAddons` array in `registerd_widgets()` method
 
-#### Pricing Table
+### Step 7: Create View Files
 
-- Fields: Title, Subtitle, Order By, Order, Custom CSS Class
-- View: Display tenant's PricePlans with features (essential for SaaS)
+Create Blade view files for each widget:
 
-#### Tabs / Toggle
+- `core/plugins/PageBuilder/views/common/footer/footer-logo.blade.php`
+- `core/plugins/PageBuilder/views/common/footer/footer-description.blade.php`
+- `core/plugins/PageBuilder/views/common/footer/footer-social-media.blade.php`
+- `core/plugins/PageBuilder/views/common/footer/footer-useful-links.blade.php`
+- `core/plugins/PageBuilder/views/common/footer/footer-pages-links.blade.php`
 
-- Fields: Repeater for tabs (Tab Title, Tab Content), Default Tab, Style
-- View: Tabbed content sections (Features, Integrations, Plans)
+### Step 8: Create Preview Images
 
-#### Testimonials
+Create directory: `assets/plugins/PageBuilder/images/Common/Footer/`
 
-- Fields: Repeater (Name, Role, Company, Image, Content, Rating)
-- View: Testimonial cards/slider
+Generate 5 placeholder SVG images for previews
 
-#### Reviews + Stars
+### Step 9: Helper Functions for Useful Links
 
-- Fields: Repeater (Name, Rating 1-5, Review Text, Date, Image)
-- View: Review cards with star ratings
+Create helper functions or use existing ones to generate URLs:
 
-#### Call To Action
+- Home URL: `url('/')` or get page slug from `get_static_option('home_page')`
+- Products URL: Check if route exists `route('tenant.frontend.products')` or similar
+- Categories URL: Check if route exists `route('tenant.frontend.categories')` or similar
+- Blog URL: Get page slug from `get_static_option('blog_page')` and generate URL
 
-- Fields: Title, Subtitle, Primary Button (Text/URL), Secondary Button (Text/URL), Background, Style
-- View: CTA section (Buy now, Start free trial)
+### Step 10: Testing
 
-#### Logos Carousel
-
-- Fields: Repeater (Logo Image, Link, Alt Text), Autoplay, Speed
-- View: Carousel of partner/SDK/Integration logos
-
-#### Steps / Timeline
-
-- Fields: Repeater (Step Number, Title, Description, Icon, Date), Layout (vertical/horizontal)
-- View: Step-by-step or timeline visualization (Changelog, How it works)
-
-#### Video Box
-
-- Fields: Video URL (YouTube/Vimeo), Thumbnail, Autoplay, Controls
-- View: Video embed component (Demo video, system preview)
-
-#### Form Widget
-
-- Fields: Select Form (from FormBuilder), Integration Type (HubSpot/Email/WhatsApp), Custom Fields, Success Message
-- View: Lead generation form with integration support
-
-### 4. View Files Location
-
-- Views will be in: `core/resources/views/pagebuilder/addons/common/{addon-name}/`
-- Each addon uses `renderView()` method pointing to its view path
-- Views should be responsive and use TailwindCSS classes
-
-### 5. Registration Update
-
-Update `PageBuilderSetup.php` to register Common addons:
-
-```php
-// Global addons for all theme
-$globalAddons = [
-    RawHTML::class,
-    FaqOne::class,
-    // Common addons
-    \Plugins\PageBuilder\Addons\Common\Hero\Hero::class,
-    \Plugins\PageBuilder\Addons\Common\Heading\Heading::class,
-    // ... all other common addons
-];
-```
-
-### 6. Preview Images
-
-- Create preview images in `core/public/assets/pagebuilder-previews/common/`
-- Each addon should have a preview image showing its design
-
-### 7. Enable Method
-
-- All Common addons should return `true` in `enable()` method
-- Available for all tenants: `return !is_null(tenant());`
-
-## Files to Create/Modify
-
-### Core Files
-
-1. `core/plugins/PageBuilder/Addons/Common/Hero/Hero.php`
-2. `core/plugins/PageBuilder/Addons/Common/Heading/Heading.php`
-3. `core/plugins/PageBuilder/Addons/Common/TextEditor/TextEditor.php`
-4. `core/plugins/PageBuilder/Addons/Common/Button/Button.php`
-5. `core/plugins/PageBuilder/Addons/Common/BackgroundOverlay/BackgroundOverlay.php`
-6. `core/plugins/PageBuilder/Addons/Common/IconBox/IconBox.php`
-7. `core/plugins/PageBuilder/Addons/Common/ImageLottie/ImageLottie.php`
-8. `core/plugins/PageBuilder/Addons/Common/PricingTable/PricingTable.php`
-9. `core/plugins/PageBuilder/Addons/Common/Tabs/Tabs.php`
-10. `core/plugins/PageBuilder/Addons/Common/Testimonials/Testimonials.php`
-11. `core/plugins/PageBuilder/Addons/Common/Reviews/Reviews.php`
-12. `core/plugins/PageBuilder/Addons/Common/CallToAction/CallToAction.php`
-13. `core/plugins/PageBuilder/Addons/Common/LogosCarousel/LogosCarousel.php`
-14. `core/plugins/PageBuilder/Addons/Common/StepsTimeline/StepsTimeline.php`
-15. `core/plugins/PageBuilder/Addons/Common/VideoBox/VideoBox.php`
-16. `core/plugins/PageBuilder/Addons/Common/FormWidget/FormWidget.php`
-
-### View Files
-
-1. `core/resources/views/pagebuilder/addons/common/hero/view.blade.php`
-2. `core/resources/views/pagebuilder/addons/common/heading/view.blade.php`
-3. `core/resources/views/pagebuilder/addons/common/text-editor/view.blade.php`
-4. `core/resources/views/pagebuilder/addons/common/button/view.blade.php`
-5. `core/resources/views/pagebuilder/addons/common/background-overlay/view.blade.php`
-6. `core/resources/views/pagebuilder/addons/common/icon-box/view.blade.php`
-7. `core/resources/views/pagebuilder/addons/common/image-lottie/view.blade.php`
-8. `core/resources/views/pagebuilder/addons/common/pricing-table/view.blade.php`
-9. `core/resources/views/pagebuilder/addons/common/tabs/view.blade.php`
-10. `core/resources/views/pagebuilder/addons/common/testimonials/view.blade.php`
-11. `core/resources/views/pagebuilder/addons/common/reviews/view.blade.php`
-12. `core/resources/views/pagebuilder/addons/common/call-to-action/view.blade.php`
-13. `core/resources/views/pagebuilder/addons/common/logos-carousel/view.blade.php`
-14. `core/resources/views/pagebuilder/addons/common/steps-timeline/view.blade.php`
-15. `core/resources/views/pagebuilder/addons/common/video-box/view.blade.php`
-16. `core/resources/views/pagebuilder/addons/common/form-widget/view.blade.php`
-
-### Configuration Update
-
-1. `core/plugins/PageBuilder/PageBuilderSetup.php` - Add Common addons to global registration
+- Test each widget in Footer Builder admin panel
+- Test frontend rendering
+- Verify all links work correctly
+- Test responsive design
 
 ## Technical Notes
 
-- All addons extend `PageBuilderBase`
-- Use `SanitizeInput` for all output
-- Support multilingual content via `admin_language_tab()`
-- Include padding/spacing options via `padding_fields()`
-- Use `section_id_and_class_fields()` for custom CSS
-- Views should be mobile-responsive
-- Follow existing PageBuilder patterns for consistency
+### Useful Links Implementation
 
-## Safety & Risk Analysis
+```php
+// In FooterUsefulLinks.php frontend_render()
+$home_page_id = get_static_option('home_page');
+$home_url = $home_page_id ? get_page_slug($home_page_id) : url('/');
 
-### Current System Safety
+$blog_page_id = get_static_option('blog_page');
+$blog_url = $blog_page_id ? get_page_slug($blog_page_id) : null;
 
-✅ **Safe Features Already in Place:**
+$products_url = null;
+if (isPluginActive('Product')) {
+    $products_url = route('tenant.frontend.products') ?? url('/products');
+}
 
-- Uses `class_exists()` check before instantiating addons
-- Uses `try-catch` in admin panel widget listing
-- Uses `enable()` method to conditionally show addons
-- `globalAddons` array already exists and is used safely
+$categories_url = null;
+if (isPluginActive('Product')) {
+    $categories_url = route('tenant.frontend.categories') ?? url('/categories');
+}
+```
 
-### Risk Level: LOW ✅
+### Pages Links Implementation
 
-**Why Safe:**
+```php
+// In FooterPagesLinks.php frontend_render()
+$selected_page_ids = $this->setting_item('selected_pages') ?? [];
+$pages = Page::where('status', 1)
+    ->when(!empty($selected_page_ids), function($query) use ($selected_page_ids) {
+        return $query->whereIn('id', $selected_page_ids);
+    })
+    ->get();
+```
 
-- Adding to `globalAddons` array only (non-breaking)
-- Each addon uses `class_exists()` check
-- `enable()` method controls visibility
-- If addon has errors, it simply won't appear in widget list
+### View Structure
 
-### Safety Recommendations
+All footer widgets should follow this structure:
 
-1. **Before Implementation:**
+```blade
+<div class="footer-widget footer-{widget-name}" 
+     data-padding-top="{{$data['padding_top']}}"
+     data-padding-bottom="{{$data['padding_bottom']}}"
+     id="{{$data['section_id']}}">
+    {{-- Widget content --}}
+</div>
+```
 
-   - Create database and code backup
-   - Test in staging/dev environment first
-   - Add addons one by one, test each
+## Files to Create/Modify
 
-2. **During Implementation:**
+### New Files (15 files):
 
-   - Test each addon individually before adding to array
-   - Use proper error handling in each addon class
-   - Follow existing addon patterns exactly
+1. `core/plugins/PageBuilder/Addons/Common/Footer/FooterLogo/FooterLogo.php`
+2. `core/plugins/PageBuilder/Addons/Common/Footer/FooterDescription/FooterDescription.php`
+3. `core/plugins/PageBuilder/Addons/Common/Footer/FooterSocialMedia/FooterSocialMedia.php`
+4. `core/plugins/PageBuilder/Addons/Common/Footer/FooterUsefulLinks/FooterUsefulLinks.php`
+5. `core/plugins/PageBuilder/Addons/Common/Footer/FooterPagesLinks/FooterPagesLinks.php`
+6. `core/plugins/PageBuilder/views/common/footer/footer-logo.blade.php`
+7. `core/plugins/PageBuilder/views/common/footer/footer-description.blade.php`
+8. `core/plugins/PageBuilder/views/common/footer/footer-social-media.blade.php`
+9. `core/plugins/PageBuilder/views/common/footer/footer-useful-links.blade.php`
+10. `core/plugins/PageBuilder/views/common/footer/footer-pages-links.blade.php`
 
-3. **Code Safety:**
+11-15. Preview images (5 SVG files)
 
-   - Add try-catch in frontend rendering for extra safety
-   - Log errors instead of breaking page
-   - Return empty string on error (graceful degradation)
+### Modified Files (1 file):
 
-### Rollback Plan
+1. `core/plugins/PageBuilder/PageBuilderSetup.php` - Register widgets
 
-If something breaks:
+## Dependencies
 
-1. **Quick Fix**: Remove Common addons from `globalAddons` array
-2. **Full Rollback**: Restore from backup
+- PageBuilder system (already exists)
+- Page model (already exists)
+- StaticOption helpers (already exists)
+- Route helpers (already exists)
 
-### Conclusion
+### To-dos
 
-✅ **Safe to Proceed** - Addons are additive and won't break existing functionality
+- [ ] Create FooterLogo widget class and view file
+- [ ] Create FooterDescription widget class and view file
+- [ ] Create FooterSocialMedia widget class and view file
+- [ ] Create FooterUsefulLinks widget with automatic system links (Home, Products, Categories, Blog)
+- [ ] Create FooterPagesLinks widget with automatic pages from Page model
+- [ ] Register all 5 Footer widgets in PageBuilderSetup.php
+- [ ] Create preview images for all 5 Footer widgets
+- [ ] Test all Footer widgets in admin panel and frontend

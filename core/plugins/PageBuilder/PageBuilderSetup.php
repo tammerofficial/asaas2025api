@@ -58,6 +58,11 @@ use Plugins\PageBuilder\Addons\Common\SocialIcons\SocialIcons;
 use Plugins\PageBuilder\Addons\Common\Header\HeaderLogo;
 use Plugins\PageBuilder\Addons\Common\Header\HeaderMenu;
 use Plugins\PageBuilder\Addons\Common\Header\HeaderSearch;
+use Plugins\PageBuilder\Addons\Common\Footer\FooterLogo;
+use Plugins\PageBuilder\Addons\Common\Footer\FooterDescription;
+use Plugins\PageBuilder\Addons\Common\Footer\FooterSocialMedia;
+use Plugins\PageBuilder\Addons\Common\Footer\FooterUsefulLinks;
+use Plugins\PageBuilder\Addons\Common\Footer\FooterPagesLinks;
 use Plugins\PageBuilder\Addons\Landlord\Header\AboutHeaderStyleOne;
 use Plugins\PageBuilder\Addons\Landlord\Header\FeaturesStyleOne;
 use Plugins\PageBuilder\Addons\Landlord\Header\HeaderStyleOne;
@@ -256,6 +261,12 @@ class PageBuilderSetup
                 FormWidget::class,
                 BackgroundOverlay::class,
                 ImageLottie::class,
+                // Footer widgets
+                FooterLogo::class,
+                FooterDescription::class,
+                FooterSocialMedia::class,
+                FooterUsefulLinks::class,
+                FooterPagesLinks::class,
                 // Phase 1 - Safest addons (no external dependencies)
                 Divider::class,
                 Spacer::class,
